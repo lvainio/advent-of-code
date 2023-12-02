@@ -2,11 +2,7 @@
 import fileinput
 import re
 
-NUM_RED = 12
-NUM_GREEN = 13
-NUM_BLUE = 14
-
-num_regex = r'[0-9]+'
+number_regex = r'[0-9]+'
 color_regex = r'(red|green|blue)'
 split_regex = r'[;,]'
 
@@ -22,7 +18,7 @@ for line in fileinput.input(files ='input.txt'):
 
     for count in counts:
 
-        num = int(re.search(num_regex, count).group())
+        num = int(re.search(number_regex, count).group())
         color = re.search(color_regex, count).group()
 
         if color == "red":

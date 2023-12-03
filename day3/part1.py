@@ -48,8 +48,7 @@ def is_part_number(row, col, size):
 
 
 
-for line in open("input.txt"):
-    lines.append(line[:COLS])
+lines = open("input.txt").read().splitlines()
 
 sum = 0
 for row in range(ROWS):

@@ -67,6 +67,19 @@ for i, mapping in enumerate(mappings):
         if range_start < start+length:
             range_tuples[i+1].append((range_start, start+length-range_start))
 
+        # Visualization of different cases we need to consider. The first line
+        # represents the tuple we are looking to map to the next category and
+        # the different cases represents a range that a single mapping can have
+        # in relation to our tuple. 
+
+        # TUPLE: ========|--------|======== 
+        # CASE1: =|--|===================== 
+        # CASE2: ====================|---|=
+        # CASE3: ====|-------|=============
+        # CASE4: ==============|------|====
+        # CASE5: ==========|----|==========
+        # CASE6: ===|-------------------|==
+
 min_location = float('inf')
 for tuple in range_tuples[7]:
     min_location = min(min_location, tuple[0])

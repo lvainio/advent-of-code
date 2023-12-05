@@ -17,7 +17,6 @@ for seed in seeds:
                 number = dest + (number - src) 
                 break
 
-    if number < min_location:
-        min_location = number
+    min_location = min(number, min_location)
 
 print(min_location)

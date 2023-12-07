@@ -5,58 +5,67 @@ from functools import cmp_to_key
 card_values = {'A': 13, 'K': 12, 'Q': 11, 'T': 10,
                '9': 9, '8': 8, '7': 7, '6': 6, '5': 5, '4': 4, '3': 3, '2': 2, 'J': 1}
 
+hand_values = {'five_of_a_kind': 7, 'four_of_a_kind': 6, 'full_house': 5, 
+               'three_of_a_kind': 4, 'two_pairs': 3, 'pair': 2, 'all_distinct': 1}
+
 def get_type(hand):
     """
     Returns the type of the hand as an integer. The
-    stronger the hand the greater the integer. There
-    are seven possible types so numbers 1-7 are used.
+    stronger the hand the greater the integer.
     """
 
     counts = Counter(hand)
     values = counts.values()
     keys = counts.keys()
 
-    if 5 in values: # Five of a kind
-        return 7
+    if 5 in values:
+        return hand_values['five_of_a_kind']
     
-    elif 4 in values:  # Four of a kind
-        if 'J' in keys: # Joker convert to 5 of a kind
-            return 7
+    elif 4 in values:
+        if 'J' in keys: 
+            # AAAAJ or JJJJA -> AAAAA
+            return hand_values['five_of_a_kind']
         else:
-            return 6
+            return hand_values['four_of_a_kind']
     
-    elif 2 in values and 3 in values: # Full house
-        if 'J' in keys: # Jokers convert to 5 of a kind
-            return 7
+    elif 2 in values and 3 in values:
+        if 'J' in keys: 
+            # AAAJJ or JJJAA -> AAAAA
+            return hand_values['five_of_a_kind']
         else:
-            return 5
+            return hand_values['full_house']
 
-    elif 3 in values: # Three of a kind
-        if 'J' in keys: # Joker converts to four of a kind
-            return 6
-        else:
-            return 4
-
-    elif list(values).count(2) == 2: # Two pairs
+    elif 3 in values:
         if 'J' in keys:
-            if counts['J'] == 1: # 1 Joker converts to full house
-                return 5
-            else: # 2 jokers converts to 4 of a kind
-                return 6
+            # AAAJQ or JJJAQ -> AAAAQ
+            return hand_values['four_of_a_kind']
+        else:
+            return hand_values['three_of_a_kind']
+
+    elif list(values).count(2) == 2:
+        if 'J' in keys:
+            if counts['J'] == 1:
+                # AAQQJ -> AAQQA 
+                return hand_values['full_house']
+            else: 
+                # AAJJQ -> AAAAQ
+                return hand_values['four_of_a_kind']
         else:
             return 3
 
-    elif 2 in values: # Single pair
-        if 'J' in keys: # Joker converts to 3 of a kind
-            return 4
+    elif 2 in values:
+        if 'J' in keys:
+            # AAJKQ -> AAAKQ
+            return hand_values['three_of_a_kind']
         else:
-            return 2 
+            return hand_values['pair'] 
         
-    else: # All distinct
-        if 'J' in keys: # Joker converts to pair
-            return 2
+    else:
+        if 'J' in keys:
+            # AJKQT -> AAKQT 
+            return hand_values['pair']
         else:
-            return 1
+            return hand_values['all_distinct']
 
 def compare_hands(a, b):
     """

@@ -18,7 +18,7 @@ def get_type(hand):
     values = sorted(counts.values())
     keys = counts.keys()
 
-    if sorted(values) == [5]:
+    if values == [5]:
         return hand_values['five_of_a_kind']
     
     elif values == [1, 4]:

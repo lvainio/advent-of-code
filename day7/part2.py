@@ -15,54 +15,47 @@ def get_type(hand):
     """
 
     counts = Counter(hand)
-    values = counts.values()
+    values = sorted(counts.values())
     keys = counts.keys()
 
-    if 5 in values:
+    if sorted(values) == [5]:
         return hand_values['five_of_a_kind']
     
-    elif 4 in values:
+    elif values == [1, 4]:
         if 'J' in keys: 
-            # AAAAJ or JJJJA -> AAAAA
             return hand_values['five_of_a_kind']
         else:
             return hand_values['four_of_a_kind']
     
-    elif 2 in values and 3 in values:
+    elif values == [2, 3]:
         if 'J' in keys: 
-            # AAAJJ or JJJAA -> AAAAA
             return hand_values['five_of_a_kind']
         else:
             return hand_values['full_house']
 
-    elif 3 in values:
+    elif values == [1, 1, 3]:
         if 'J' in keys:
-            # AAAJQ or JJJAQ -> AAAAQ
             return hand_values['four_of_a_kind']
         else:
             return hand_values['three_of_a_kind']
 
-    elif list(values).count(2) == 2:
+    elif values == [1, 2, 2]:
         if 'J' in keys:
             if counts['J'] == 1:
-                # AAQQJ -> AAQQA 
                 return hand_values['full_house']
             else: 
-                # AAJJQ -> AAAAQ
                 return hand_values['four_of_a_kind']
         else:
             return 3
 
-    elif 2 in values:
+    elif values == [1, 1, 1, 2]:
         if 'J' in keys:
-            # AAJKQ -> AAAKQ
             return hand_values['three_of_a_kind']
         else:
             return hand_values['pair'] 
         
     else:
         if 'J' in keys:
-            # AJKQT -> AAKQT 
             return hand_values['pair']
         else:
             return hand_values['all_distinct']

@@ -1,5 +1,5 @@
 # Advent Of Code 2023
-| &nbsp;| &nbsp;| &nbsp;| &nbsp;| &nbsp;|
+| &#8203;|&#8203;|&#8203;|&#8203;|&#8203;|
 |:-----:|:-----:|:-----:|:-----:|:-----:|
 | [Day 1](https://github.com/lvainio/Advent-Of-Code-2023/tree/main/solutions/day1) | [Day 2](https://github.com/lvainio/Advent-Of-Code-2023/tree/main/solutions/day2) | [Day 3](https://github.com/lvainio/Advent-Of-Code-2023/tree/main/solutions/day3) | [Day 4](https://github.com/lvainio/Advent-Of-Code-2023/tree/main/solutions/day4) | [Day 5](https://github.com/lvainio/Advent-Of-Code-2023/tree/main/solutions/day5) |
 | [Day 6](https://github.com/lvainio/Advent-Of-Code-2023/tree/main/solutions/day6) | [Day 7](https://github.com/lvainio/Advent-Of-Code-2023/tree/main/solutions/day7) | [Day 8](https://github.com/lvainio/Advent-Of-Code-2023/tree/main/solutions/day8) | [Day 9](https://github.com/lvainio/Advent-Of-Code-2023/tree/main/solutions/day9) | [Day 10](https://github.com/lvainio/Advent-Of-Code-2023/tree/main/solutions/day10) |

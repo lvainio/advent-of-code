@@ -10,7 +10,7 @@ These are my solutions to Advent Of Code.
 <a href="https://github.com/lvainio/Advent-Of-Code-2023/tree/main/2023/day21" style="margin:0"><img src="assets/day_21.jpg" alt="alt text" width="20%" /></a><a href="https://github.com/lvainio/Advent-Of-Code-2023/tree/main/2023/day22" style="margin:0"><img src="assets/day_22.jpg" alt="alt text" width="20%" /></a><a href="https://github.com/lvainio/Advent-Of-Code-2023/tree/main/2023/day23" style="margin:0"><img src="assets/day_23.jpg" alt="alt text" width="20%" /></a><a href="https://github.com/lvainio/Advent-Of-Code-2023/tree/main/2023/day24" style="margin:0"><img src="assets/day_24.jpg" alt="alt text" width="20%" /></a><a href="https://github.com/lvainio/Advent-Of-Code-2023/tree/main/2023/day25" style="margin:0"><img src="assets/day_25.jpg" alt="alt text" width="20%" /></a>
 
 
-<img src="days.jpg" usemap="#adventmap" alt="Advent Calendar" />
+<img src="days.jpeg" usemap="#adventmap" alt="Advent Calendar" />
 
 <map name="adventmap">
   <!-- coords are left,top,right,bottom -->

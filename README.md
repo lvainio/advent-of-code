@@ -1,5 +1,10 @@
 # Advent Of Code 2023
 
+<style>
+table, th, td {
+  border: 1px solid white;
+}
+</style>
 
 | [Day 1](https://github.com/lvainio/Advent-Of-Code-2023/tree/main/solutions/day1) | [Day 2](https://github.com/lvainio/Advent-Of-Code-2023/tree/main/solutions/day2) | [Day 3](https://github.com/lvainio/Advent-Of-Code-2023/tree/main/solutions/day3) | [Day 4](https://github.com/lvainio/Advent-Of-Code-2023/tree/main/solutions/day4) | [Day 5](https://github.com/lvainio/Advent-Of-Code-2023/tree/main/solutions/day5) |
 |:-----:|:-----:|:-----:|:-----:|:-----:|

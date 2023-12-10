@@ -1,6 +1,6 @@
 # Advent Of Code
 
-TODO: desc
+These are my solutions to Advent Of Code.
 
 ## 2023
 

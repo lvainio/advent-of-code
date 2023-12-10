@@ -3,7 +3,7 @@ def find_start(grid):
         if 'S' in row:
             return (row_index, row.index('S'))
 
-def is_within_grid(grid, node):
+def is_in_grid(grid, node):
     return 0 <= node[0] < len(grid) and 0 <= node[1] < len(grid[0])
 
 def get_neighbors(grid, node):
@@ -20,7 +20,7 @@ def get_neighbors(grid, node):
         '.': []
     }
 
-    return [n for n in neighbors[symbol] if is_within_grid(grid, n)]
+    return [n for n in neighbors[symbol] if is_in_grid(grid, n)]
 
 def get_cycle(grid, start):
     visited = set()

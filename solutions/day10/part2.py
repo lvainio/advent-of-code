@@ -24,7 +24,7 @@ def get_neighbors(grid, node):
 
 def get_cycle(grid, start):
     visited = set()
-    stack = [(start, set())]
+    stack = [(start, [])]
 
     while stack:
         node, path = stack.pop()
@@ -37,7 +37,7 @@ def get_cycle(grid, start):
         visited.add(node)
         for neighbor in get_neighbors(grid, node):
             if neighbor not in visited or (neighbor == start and len(path) > 1):
-                stack.append((neighbor, path | {node}))
+                stack.append((neighbor, path + [node]))
 
 def is_inside(grid, cycle, node): 
     if node in cycle:
@@ -65,7 +65,7 @@ def main():
     start = find_start(grid)
     grid[start[0]] = grid[start[0]].replace('S', 'L') # Change 'L' to whatever fits the map
 
-    cycle = get_cycle(grid, start)
+    cycle = set(get_cycle(grid, start))
 
     num_inside = 0
     for i in range(len(grid)):

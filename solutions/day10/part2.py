@@ -43,7 +43,7 @@ def is_inside(grid, cycle, node):
     if node in cycle:
         return False
     
-    count = 0
+    num_boundaries = 0
     first_corner = None
     for offset, symbol in enumerate(grid[node[0]][node[1]+1:]):
         if not (node[0], node[1]+offset+1) in cycle:
@@ -52,9 +52,9 @@ def is_inside(grid, cycle, node):
         if symbol in ['F', 'L']:
             first_corner = symbol
         elif symbol == '|' or (first_corner, symbol) in [('F', 'J'), ('L', '7')]:
-            count += 1
+            num_boundaries += 1
 
-    return count % 2 == 1
+    return num_boundaries % 2 == 1
     
 
 

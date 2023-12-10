@@ -1,4 +1,4 @@
-
+from collections import deque
 # index (i, j) of S in grid
 def find_start_position(grid):
     for i, row in enumerate(grid):
@@ -14,13 +14,11 @@ def is_within_grid(grid, position):
     i, j = position
     return 0 <= i < len(grid) and 0 <= j < len(grid[0])
 
-# list of (i, j) of all neighbors of node
 def get_neighbors(grid, node):
     i, j = node
     symbol = grid[i][j]
 
-    directions = {
-        'S': [(i-1, j), (i+1, j), (i, j-1), (i, j+1)],  # North, South, West, East
+    neighbors = {
         '|': [(i-1, j), (i+1, j)],                      # North, South
         '-': [(i, j-1), (i, j+1)],                      # West, East
         'L': [(i-1, j), (i, j+1)],                      # North, East
@@ -30,17 +28,12 @@ def get_neighbors(grid, node):
         '.': []
     }
 
-    neighbors = []
-    for direction in directions.get(symbol, []):
-        if is_within_grid(grid, direction):
-            neighbors.append(direction)
-
-    return neighbors
+    return [n for n in neighbors[symbol] if is_within_grid(grid, n)]
 
 # find length of the cycle my man
 def get_cycle_length(grid, start):
     visited = set()
-    stack = [(start, 0)]
+    stack = deque([(start, 0)])
 
     while stack:
         node, length = stack.pop()
@@ -62,6 +55,7 @@ def main():
         grid = file.read().splitlines()
 
         start = find_start_position(grid)
+        grid[start[0]] = grid[start[0]].replace('S', 'F')
 
         length = get_cycle_length(grid, start)
 

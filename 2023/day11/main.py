@@ -1,4 +1,4 @@
-import itertools
+from itertools import product, combinations
 
 def distance(n, g1, g2, empty_rows, empty_cols):
     distance = abs(g2[0] - g1[0]) + abs(g2[1] - g1[1])
@@ -18,7 +18,7 @@ def main():
         universe = file.read().splitlines()
 
     galaxies = []
-    for row, col in itertools.product(range(len(universe)), range(len(universe[0]))):
+    for row, col in product(range(len(universe)), range(len(universe[0]))):
         if universe[row][col] == '#':
             galaxies.append((row, col))
 
@@ -26,7 +26,7 @@ def main():
     empty_cols = [j for j, col in enumerate(zip(*universe)) if '#' not in col]
     
     part1, part2 = 0, 0
-    for g1, g2 in itertools.combinations(galaxies, 2):
+    for g1, g2 in combinations(galaxies, 2):
         part1 += distance(2, g1, g2, empty_rows, empty_cols)
         part2 += distance(1_000_000, g1, g2, empty_rows, empty_cols)
     print(f'part1: {part1}, part2: {part2}')

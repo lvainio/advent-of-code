@@ -17,20 +17,13 @@ def main():
     with open("input.txt") as file:
         universe = file.read().splitlines()
 
-    num_rows = len(universe)
-    num_cols = len(universe[0])
-
     galaxies = []
-    for row, col in itertools.product(range(num_rows), range(num_cols)):
+    for row, col in itertools.product(range(len(universe)), range(len(universe[0]))):
         if universe[row][col] == '#':
             galaxies.append((row, col))
 
     empty_rows = [i for i, row in enumerate(universe) if '#' not in row]
-    empty_cols = []
-    for col in range(num_cols):
-        contains_galaxy = any('#' in universe[row][col] for row in range(num_rows))
-        if not contains_galaxy:
-            empty_cols.append(col)
+    empty_cols = [j for j, col in enumerate(zip(*universe)) if '#' not in col]
     
     part1, part2 = 0, 0
     for g1, g2 in itertools.combinations(galaxies, 2):

@@ -12,4 +12,8 @@ Python
 
 ## 2021
 
-Typescript?
+Typescript
+
+## 2020
+
+25 different languages

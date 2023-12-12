@@ -1,38 +1,34 @@
 #include <stdio.h>
 #include <string.h>
 
-char *fields[] = { "byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid", "cid" };
-char *optional[] = { "cid" };
-
 int main(int argc, char **argv) {
-
     FILE *file;
     file = fopen("input.txt", "r");
 
-    char *text;
-    int total = 0;
+    int part1 = 0;
+    int part2 = 0;
 
-    int num_fields_seen = 0;
-    while(fgets(text, 140, file) != NULL) { // newline included in string, remember that when checking for len        
-        if (strcmp(text,"\n") == 0) { // blank line means new passport
-            if (num_fields_seen == 7) { // all except cid we dont care about cid. 
-                total++;
-            }
-            num_fields_seen = 0;
+    char line[100];
+    int num_fields = 0;
+    while(fgets(line, sizeof(line), file) != NULL) {    
+        if (strcmp(line, "\n") == 0) {
+            if (num_fields == 7)
+                part1++;
+            num_fields = 0;
             continue;
         }
 
-        char *token = strtok(text, " ");
+        char *line_ptr;
+        char *token = strtok_r(line, " ", &line_ptr);
         while (token != NULL) {
-            token = strtok(NULL, delimiters);
-            char *t2 = strtok(token, ":");
-            if strcmp(t2, "cid") {
-                num_fields_seen++;
-            }
+            char *field = strtok(token, ":");
+            if (strcmp(field, "cid"))
+                num_fields++;
+            token = strtok_r(NULL, " ", &line_ptr);
         }
     }
-
-    printf("%d", total);
+    
+    printf("part1: %d, part2:", part1);
 
     return 0;
 }

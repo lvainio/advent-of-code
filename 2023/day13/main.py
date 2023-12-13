@@ -5,25 +5,19 @@ def count_mismatches(grid, i):
     return num_mismatches
 
 
-def main():
-    with open('input.txt') as file:
-        grids = [g.splitlines() for g in file.read().split('\n\n')]
+with open('input.txt') as file:
+    grids = [g.splitlines() for g in file.read().split('\n\n')]
 
-    part1 = 0
-    part2 = 0
-    for grid in grids:
-        for i in range(1, len(grid)):
-            num_mismatches = count_mismatches(grid, i)
-            part1 += 100 * i if num_mismatches == 0 else 0
-            part2 += 100 * i if num_mismatches == 1 else 0
-            
-        for i in range(1, len(grid[0])):
-            num_mismatches = count_mismatches(list(zip(*grid)), i)
-            part1 += i if num_mismatches == 0 else 0
-            part2 += i if num_mismatches == 1 else 0
+part1 = 0
+part2 = 0
+for grid in grids:
+    for i in range(1, len(grid)):
+        num_mismatches = count_mismatches(grid, i)
+        part1 += 100 * i if num_mismatches == 0 else 0
+        part2 += 100 * i if num_mismatches == 1 else 0
+    for i in range(1, len(grid[0])):
+        num_mismatches = count_mismatches(list(zip(*grid)), i)
+        part1 += i if num_mismatches == 0 else 0
+        part2 += i if num_mismatches == 1 else 0
 
-    print(f'part1: {part1}, part2: {part2}')
-
-
-if __name__ == '__main__':
-    main()
+print(f'part1: {part1}, part2: {part2}')

@@ -16,4 +16,4 @@ Typescript
 
 ## 2020
 
-25 different languages
+Python, Java, Kotlin, C, C++

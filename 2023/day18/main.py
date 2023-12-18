@@ -1,25 +1,30 @@
 import re
 from itertools import product
 
-import sys
-sys.setrecursionlimit(30000)
-
 
 def flood_fill(grid, row, col):
-    rows, cols = len(grid), len(grid[0])
-
-    if not (0 <= row < rows) or not (0 <= col < cols) or grid[row][col] != '.':
+    if grid[row][col] != '.':
         return
 
-    grid[row][col] = 'O'
+    num_rows = len(grid)
+    num_cols = len(grid[0])
 
-    flood_fill(grid, row - 1, col)  # Up
-    flood_fill(grid, row + 1, col)  # Down
-    flood_fill(grid, row, col - 1)  # Left
-    flood_fill(grid, row, col + 1)  # Right
+    stack = [(row, col)]
+    while stack:
+        row, col = stack.pop()
+
+        if not (0 <= row < num_rows) or not (0 <= col < num_cols) or grid[row][col] != '.':
+            continue
+
+        grid[row][col] = 'O'
+
+        stack.append((row - 1, col))
+        stack.append((row + 1, col))
+        stack.append((row, col - 1))
+        stack.append((row, col + 1))
 
 
-def count_outside_points(grid):
+def count_inside_points(grid):
     num_rows = len(grid)
     num_cols = len(grid[0])
 
@@ -40,19 +45,10 @@ def count_outside_points(grid):
     count = 0
     for row in grid:
         count += row.count('O')
-    return count
+    return num_rows*num_cols - count
 
 
-
-def print_grid(grid):
-    for row in grid:
-        print(' '.join(row))
-
-
-def main():
-    with open('input.txt') as file:
-        lines = file.read().splitlines()
-
+def part1(lines):
     regex = re.compile(r'^([UDLR]) ([0-9]+) \(#([0-9a-f]{6})\)$')
     visited = set()
 
@@ -72,7 +68,7 @@ def main():
         match = re.search(regex, line)
         dir, num_times, color = match.groups()
 
-        for _ in range(int(num_times)*2):
+        for _ in range(int(num_times)):
             x += dir_map[dir][0]
             y += dir_map[dir][1]
             visited.add((x, y))
@@ -88,18 +84,55 @@ def main():
     grid = [['.' for _ in range(grid_cols)] for _ in range(grid_rows)]
     for coord in visited:
         x, y = coord
-        grid[x - min_x][y - min_y] = '#' 
-             
-    num_outside = count_outside_points(grid)
-    
-  
+        grid[x - min_x][y - min_y] = '#'
 
-    num_rows = len(grid)
-    num_cols = len(grid[0])
+    return count_inside_points(grid)
 
-    total = num_rows*num_cols - num_outside
 
-    print(total)
+def shoelace(points):
+    total = 0
+    for p1, p2 in zip(points[:-1], points[1:]):
+        total += (p1[0] * p2[1] - p2[0] * p1[1])
+    return int(abs(total / 2))
+
+   
+def part2(lines):
+    regex = re.compile(r'^([UDLR]) ([0-9]+) \(#([0-9a-f]{6})\)$')
+
+    dir_map = {  
+        3: (-1, 0),     
+        1: (1, 0),    
+        2: (0, -1),   
+        0: (0, 1)    
+    }
+
+    points = []
+    x = 0
+    y = 0
+    points.append((x,y))
+    edge_distance = 0
+    for line in lines:
+        match = re.search(regex, line)
+        _, _, color = match.groups()
+
+        num = int(color[:5], 16)
+        dir = int(color[5])
+
+        x += dir_map[dir][0] * num
+        y += dir_map[dir][1] * num
+
+        edge_distance += num
+
+        points.append((x, y))
+
+    return shoelace(points) + edge_distance//2 + 1
+
+
+def main():
+    with open('input.txt') as file:
+        lines = file.read().splitlines()
+
+    print(f'part1: {part1(lines)}, part2: {part2(lines)}')
         
 
 

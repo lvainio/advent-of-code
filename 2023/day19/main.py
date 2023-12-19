@@ -29,22 +29,16 @@ def process(action, workflows, categories):
 
 
 def explore(action, workflows, ranges):
-    for lower, upper in ranges.values(): 
-        if upper < lower:
-            return 0
-
     if action == 'A':
         num_accepted = 1
         for lower, upper in ranges.values():
             num_accepted *= upper - lower + 1
-        return num_accepted
-       
+        return num_accepted 
     elif action == 'R':
         return 0
 
     total = 0
-
-    # TODO: make into a map instead for ease modification. 
+ 
     x_lower, x_upper = ranges['x']
     m_lower, m_upper = ranges['m']
     a_lower, a_upper = ranges['a']
@@ -142,8 +136,6 @@ def explore(action, workflows, ranges):
     return total
       
 
-
-
 def main():
     with open('input.txt') as file:
         data1, data2 = file.read().split('\n\n')
@@ -162,7 +154,6 @@ def main():
     for part in data2:
         categories = {item.split('=')[0]: int(item.split('=')[1]) for item in part[1:-1].split(',')}
         is_valid = process('in', workflows, categories)
-
         if is_valid:
             part1 += sum(categories.values())
 
@@ -172,7 +163,6 @@ def main():
         'a': (1, 4000),
         's': (1, 4000)
     }
-
     part2 = explore('in', workflows, ranges)
 
     print(f'part1: {part1}, part2: {part2}')

@@ -1,7 +1,7 @@
 import re
 
 
-workflow_regex = re.compile(r'^[a-z]+$') # change to action regex for more clarity
+action_regex = re.compile(r'^(?P<workflow>[a-z]+)$|^(?P<accept>A)$|^(?P<reject>R)$')
 comparison_regex = re.compile(r'^([xmas])(<|>)([0-9]+):([a-z]+|[AR])$')
 
 
@@ -12,38 +12,135 @@ def process(action, workflows, categories):
         return False
 
     for rule in workflows[action]:
-        if rule == 'A':
-            return True
-        elif rule == 'R':
-            return False
-        
-        if re.match(workflow_regex, rule):
-            return process(rule, workflows, categories)
+        action_match = re.match(action_regex, rule)
+        if action_match:
+            if action_match.group('accept'):
+                return True
+            elif action_match.group('reject'):
+                return False
+            elif action_match.group('workflow'):
+                return process(rule, workflows, categories)
         
         category, operator, value, action = re.match(comparison_regex, rule).groups()
         if operator == '>' and categories[category] > int(value):
             return process(action, workflows, categories)
-
         if operator == '<' and categories[category] < int(value):
             return process(action, workflows, categories)
 
 
-def explore(workflows):
-    start = 'in'
-    ranges = {
-        'x': (1, 4000),
-        'm': (1, 4000),
-        'a': (1, 4000),
-        's': (1, 4000)
-    }
+def explore(action, workflows, ranges):
+    for lower, upper in ranges.values(): 
+        if upper < lower:
+            return 0
 
-    # starting from in we go all paths and for each path we keep track of a lower and higher bound for each number maybe idk. 
-    # The total for each path would be the range sizes multiplied together no?
+    if action == 'A':
+        num_accepted = 1
+        for lower, upper in ranges.values():
+            num_accepted *= upper - lower + 1
+        return num_accepted
+       
+    elif action == 'R':
+        return 0
 
-    # if we reach a terminal state and it is accepting. We should just be able to take the ranges and multiply them together and then yeah. 
-    # one issue might be overlapping things...
+    total = 0
 
-    # maybe we can afford to check the overlaps however? and just take into consideration the overlaps in our calculations and subtract it. 
+    # TODO: make into a map instead for ease modification. 
+    x_lower, x_upper = ranges['x']
+    m_lower, m_upper = ranges['m']
+    a_lower, a_upper = ranges['a']
+    s_lower, s_upper = ranges['s']
+
+    for rule in workflows[action]:
+        action_match = re.match(action_regex, rule)
+        if action_match:
+            new_ranges = {
+                'x': (x_lower, x_upper),
+                'm': (m_lower, m_upper),
+                'a': (a_lower, a_upper),
+                's': (s_lower, s_upper)
+            }
+            total += explore(rule, workflows, new_ranges)
+            break
+        
+        category, operator, value, action = re.match(comparison_regex, rule).groups()
+        if operator == '>':
+            if category == 'x':
+                new_ranges = {
+                    'x': (int(value)+1, x_upper),
+                    'm': (m_lower, m_upper),
+                    'a': (a_lower, a_upper),
+                    's': (s_lower, s_upper)
+                }
+                total += explore(action, workflows, new_ranges)
+                x_upper = int(value)
+            elif category == 'm':
+                new_ranges = {
+                    'x': (x_lower, x_upper),
+                    'm': (int(value)+1, m_upper),
+                    'a': (a_lower, a_upper),
+                    's': (s_lower, s_upper)
+                }
+                total += explore(action, workflows, new_ranges)
+                m_upper = int(value)
+            elif category == 'a':
+                new_ranges = {
+                    'x': (x_lower, x_upper),
+                    'm': (m_lower, m_upper),
+                    'a': (int(value)+1, a_upper),
+                    's': (s_lower, s_upper)
+                }
+                total += explore(action, workflows, new_ranges)
+                a_upper = int(value)
+            elif category == 's':
+                new_ranges = {
+                    'x': (x_lower, x_upper),
+                    'm': (m_lower, m_upper),
+                    'a': (a_lower, a_upper),
+                    's': (int(value)+1, s_upper)
+                }
+                total += explore(action, workflows, new_ranges)
+                s_upper = int(value)
+
+        if operator == '<':
+            if category == 'x':
+                new_ranges = {
+                    'x': (x_lower, int(value)-1),
+                    'm': (m_lower, m_upper),
+                    'a': (a_lower, a_upper),
+                    's': (s_lower, s_upper)
+                }
+                total += explore(action, workflows, new_ranges)
+                x_lower = int(value)
+            elif category == 'm':
+                new_ranges = {
+                    'x': (x_lower, x_upper),
+                    'm': (m_lower, int(value)-1),
+                    'a': (a_lower, a_upper),
+                    's': (s_lower, s_upper)
+                }
+                total += explore(action, workflows, new_ranges)
+                m_lower = int(value)
+            elif category == 'a':
+                new_ranges = {
+                    'x': (x_lower, x_upper),
+                    'm': (m_lower, m_upper),
+                    'a': (a_lower, int(value)-1),
+                    's': (s_lower, s_upper)
+                }
+                total += explore(action, workflows, new_ranges)
+                a_lower = int(value)
+            elif category == 's':
+                new_ranges = {
+                    'x': (x_lower, x_upper),
+                    'm': (m_lower, m_upper),
+                    'a': (a_lower, a_upper),
+                    's': (s_lower, int(value)-1)
+                }
+                total += explore(action, workflows, new_ranges)
+                s_lower = int(value)
+
+    return total
+      
 
 
 
@@ -68,6 +165,15 @@ def main():
 
         if is_valid:
             part1 += sum(categories.values())
+
+    ranges = {
+        'x': (1, 4000),
+        'm': (1, 4000),
+        'a': (1, 4000),
+        's': (1, 4000)
+    }
+
+    part2 = explore('in', workflows, ranges)
 
     print(f'part1: {part1}, part2: {part2}')
 

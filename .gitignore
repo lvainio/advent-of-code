@@ -3,3 +3,4 @@ __pycache__
 *.jar
 *.exe
 .vscode/
+node_modules

@@ -39,10 +39,13 @@ def part2(grid, num_steps):
     num_odd_grids = (num_grids_to_end // 2 * 2 + 1) ** 2
     num_even_grids = ((num_grids_to_end + 1) // 2 * 2) ** 2
 
+    # Fully reached grids.
     num_reached = (num_odd_grids * odd_count) + (num_even_grids * even_count)
 
+    # Corner and edge odd grids.
     num_reached += (num_grids_to_end + 2) * part1(grid, size//2, start_row, start_col) + (3 * num_grids_to_end + 2) * odd_count
 
+    # Edge even grids.
     num_reached +=  (num_grids_to_end + 1) * (even_count - part1(grid, size//2-1, start_row, start_col))
 
     return num_reached

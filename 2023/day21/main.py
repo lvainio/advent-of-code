@@ -1,5 +1,5 @@
 from collections import deque
-from itertools import product
+
 
 def is_valid(grid, row, col):
     return 0 <= row < len(grid) and 0 <= col < len(grid[0]) and grid[row][col] != '#'

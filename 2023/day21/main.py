@@ -37,9 +37,12 @@ def part2(grid, num_steps):
     num_E_grids = ((num_full_grids_to_end + 1) // 2 * 2) ** 2
 
     num_reached = (num_O_grids * num_reached_in_O) + (num_E_grids * num_reached_in_E)
-    num_reached += 2 * num_reached_in_O  + 2 * part1(grid, size//2, start_row, start_col)
-    num_reached += 4 * num_full_grids_to_end * num_reached_in_O - num_full_grids_to_end * (num_reached_in_O - part1(grid, size//2, start_row, start_col))
-    num_reached += (num_full_grids_to_end+1) * num_reached_in_E - (num_full_grids_to_end+1) * (part1(grid, size//2-1, start_row, start_col))
+
+    num_reached += 2 * (num_reached_in_O  + part1(grid, size//2, start_row, start_col))
+
+    num_reached += num_full_grids_to_end * (3 * num_reached_in_O + part1(grid, size//2, start_row, start_col))
+
+    num_reached +=  (num_full_grids_to_end + 1) * (num_reached_in_E - part1(grid, size//2-1, start_row, start_col))
 
     return num_reached
 
@@ -49,7 +52,7 @@ def main():
         grid = file.read().splitlines()
 
     start_row, start_col = find_start(grid)
-    
+
     p1 = part1(grid, 64, start_row, start_col)
     p2 = part2(grid, 26501365)
 

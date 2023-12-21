@@ -28,21 +28,19 @@ def part2(grid, num_steps):
     size = len(grid)
     start_row, start_col = find_start(grid)
     
-    num_full_grids_to_end = num_steps // size - 1
+    num_grids_to_end = num_steps // size - 1
 
-    num_reached_in_O = part1(grid, size, start_row, start_col)
-    num_reached_in_E = part1(grid, size + 1, start_row, start_col)
+    odd_count = part1(grid, size, start_row, start_col)
+    even_count = part1(grid, size + 1, start_row, start_col)
 
-    num_O_grids = (num_full_grids_to_end // 2 * 2 + 1) ** 2
-    num_E_grids = ((num_full_grids_to_end + 1) // 2 * 2) ** 2
+    num_odd_grids = (num_grids_to_end // 2 * 2 + 1) ** 2
+    num_even_grids = ((num_grids_to_end + 1) // 2 * 2) ** 2
 
-    num_reached = (num_O_grids * num_reached_in_O) + (num_E_grids * num_reached_in_E)
+    num_reached = (num_odd_grids * odd_count) + (num_even_grids * even_count)
 
-    num_reached += 2 * (num_reached_in_O  + part1(grid, size//2, start_row, start_col))
+    num_reached += (num_grids_to_end + 2) * part1(grid, size//2, start_row, start_col) + (3 * num_grids_to_end + 2) * odd_count
 
-    num_reached += num_full_grids_to_end * (3 * num_reached_in_O + part1(grid, size//2, start_row, start_col))
-
-    num_reached +=  (num_full_grids_to_end + 1) * (num_reached_in_E - part1(grid, size//2-1, start_row, start_col))
+    num_reached +=  (num_grids_to_end + 1) * (even_count - part1(grid, size//2-1, start_row, start_col))
 
     return num_reached
 

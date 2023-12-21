@@ -4,3 +4,5 @@ __pycache__
 *.exe
 .vscode/
 node_modules
+*.o
+*.hi

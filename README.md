@@ -16,4 +16,4 @@ Typescript
 
 ## 2020
 
-Python, Java, Kotlin, C, Prolog, Go, Javascript, Typescript, c++
+Python, Java, Kotlin, C, Prolog, Go, Javascript, Typescript, C++, Haskell

@@ -1,80 +1,100 @@
-from collections import deque
+from collections import deque, defaultdict
+from itertools import product
+
 
 def find_start_and_end(grid):
     return (0, grid[0].index('.')), (len(grid)-1, grid[-1].index('.'))
 
 
-def get_neighbours(grid, r, c, path):
+def is_conjunction(grid, r, c):
+    if grid[r][c] == '#':
+        return False
+    count = 0
+    for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]: 
+        nr = r + dr
+        nc = c + dc
+        if 0 <= nr < len(grid) and 0 <= nc < len(grid[0]) and grid[nr][nc] != '#':
+            count += 1
+    return count > 2
+
+
+def find_conjunctions(grid):
+    conjunctions = set()
+    for r, c in product(range(len(grid)), range(len(grid[0]))):
+        if is_conjunction(grid, r, c):
+            conjunctions.add((r, c))
+    return conjunctions
+
+
+def get_neighbours(grid, r, c): 
     neighbours = []
     for dr, dc, slope in [(1, 0, 'v'), (-1, 0, '^'), (0, 1, '>'), (0, -1, '<')]: 
         nr = r + dr
         nc = c + dc
 
-        if (nr, nc) not in path and \
+        if  0 <= nr < len(grid) and \
+            0 <= nc < len(grid[0]) and \
             grid[r][c] == '.' and \
-            not grid[nr][nc] == '#' and \
-            0 <= nr < len(grid) and \
-            0 <= nc < len(grid[0]):
+            not grid[nr][nc] == '#':
             neighbours.append((nr, nc))
 
-        if (nr, nc) not in path and \
+        if  0 <= nr < len(grid) and \
+            0 <= nc < len(grid[0]) and \
             grid[r][c] == slope and \
-            not grid[nr][nc] == '#' and \
-            0 <= nr < len(grid) and \
-            0 <= nc < len(grid[0]):
+            not grid[nr][nc] == '#':
             neighbours.append((nr, nc))     
 
     return neighbours
 
 
-def find_max_length(grid):
+def build_graph(grid):
     (sr, sc), (er, ec) = find_start_and_end(grid)
+    nodes = find_conjunctions(grid) | {(sr, sc), (er, ec)}
+    graph = defaultdict(list)
+    for node in nodes:
+        stack = deque()
+        visited = set()
+        stack.append((node[0], node[1], 0))
+        while stack:
+            r, c, length = stack.pop()
+            visited.add((r, c))
+            for nr, nc in get_neighbours(grid, r, c):
+                if (nr, nc) != node and (nr, nc) in nodes:
+                    graph[node].append((nr, nc, length + 1))
+                    break
+                if not (nr, nc) in visited:
+                    stack.append((nr, nc, length+1))
+    return graph
 
-    queue = deque()
 
-    queue.append((sr, sc, set((sr, sc))))
-
+def find_longest_path(node, end_node, length, visited, graph):
+    if node == end_node:
+        return length
+    if node in visited:
+        return 0
+    
+    visited.add(node)
     longest_path = 0
-
-    while queue:
-        r, c, path = queue.popleft()
-
-
-        if (r, c) == (er, ec):
-            
-            
-            longest_path = len(path)  - 2
-            
-            continue
-
-        for nr, nc in get_neighbours(grid, r, c, path):
-
-            
-            new_path = path.copy()
-            new_path.add((nr, nc))
-
-            queue.append((nr, nc, new_path))
-
+    for nr, nc, distance in graph[node]:
+        longest_path = max(find_longest_path((nr, nc), end_node, length+distance, visited, graph), longest_path)
+    visited.remove(node)
     return longest_path
-
-
-
-
-def part2(grid):
-    return 0
 
 
 def main():
     with open('input.txt') as file:
         grid = file.read().splitlines()
 
-    part1 = find_max_length(grid)
-    
-    for row in range(len(grid)):
-        for char in ['v', '^', '<', '>']:
-            grid[row] = grid[row].replace(char, '.')
+    start_node, end_node = find_start_and_end(grid)
 
-    part2 = find_max_length(grid)
+    graph1 = build_graph(grid)
+    part1 = find_longest_path(start_node, end_node, 0, set(), graph1)
+
+    for i in range(len(grid)):
+        for char in ['v', '^', '>', '<']:
+            grid[i] = grid[i].replace(char, '.')
+    graph2 = build_graph(grid)
+    part2 = find_longest_path(start_node, end_node, 0, set(), graph2)
 
     print(f'part1: {part1}, part2: {part2}')
 

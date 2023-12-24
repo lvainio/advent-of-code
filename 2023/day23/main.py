@@ -66,8 +66,8 @@ def build_graph(grid):
                     stack.append((nr, nc, length+1))
     return graph
 
-
-def find_longest_path(node, end_node, length, visited, graph):
+visited = set()
+def find_longest_path(node, end_node, length, graph):
     if node == end_node:
         return length
     if node in visited:
@@ -76,7 +76,7 @@ def find_longest_path(node, end_node, length, visited, graph):
     visited.add(node)
     longest_path = 0
     for nr, nc, distance in graph[node]:
-        longest_path = max(find_longest_path((nr, nc), end_node, length+distance, visited, graph), longest_path)
+        longest_path = max(find_longest_path((nr, nc), end_node, length+distance, graph), longest_path)
     visited.remove(node)
     return longest_path
 
@@ -88,13 +88,13 @@ def main():
     start_node, end_node = find_start_and_end(grid)
 
     graph1 = build_graph(grid)
-    part1 = find_longest_path(start_node, end_node, 0, set(), graph1)
+    part1 = find_longest_path(start_node, end_node, 0, graph1)
 
     for i in range(len(grid)):
         for char in ['v', '^', '>', '<']:
             grid[i] = grid[i].replace(char, '.')
     graph2 = build_graph(grid)
-    part2 = find_longest_path(start_node, end_node, 0, set(), graph2)
+    part2 = find_longest_path(start_node, end_node, 0, graph2)
 
     print(f'part1: {part1}, part2: {part2}')
 

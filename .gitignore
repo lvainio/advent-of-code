@@ -8,3 +8,5 @@ node_modules
 *.hi
 *.txt
 *.pdb
+*.sln
+*.dll

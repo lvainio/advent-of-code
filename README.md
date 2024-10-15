@@ -17,3 +17,7 @@ Typescript
 ## 2020
 
 Python, Java, Kotlin, C, Prolog, Go, Javascript, Typescript, C++, Haskell, Ruby, Rust, PHP, Perl, Scala
+
+## 2019
+
+Rust

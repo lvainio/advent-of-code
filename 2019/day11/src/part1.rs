@@ -132,25 +132,30 @@ impl Command {
     fn exec(&self, ptr: &mut usize, rel: &mut usize, mem: &mut HashMap<usize, i64>) {
         match self {
             Command::Add(p) => {
+                println!("ADD");
                 let p0 = *mem.entry(p.params[0]).or_insert(0);
                 let p1 = *mem.entry(p.params[1]).or_insert(0);
                 mem.insert(p.params[2], p0 + p1);
                 *ptr += 4;
             }
             Command::Multiply(p) => {
+                println!("MUL");
                 let p0 = *mem.entry(p.params[0]).or_insert(0);
                 let p1 = *mem.entry(p.params[1]).or_insert(0);
                 mem.insert(p.params[2], p0 * p1);
                 *ptr += 4;
             }
             Command::Input(p) => {
+                println!("INP");
                 mem.insert(p.params[0], p.params[1] as i64);
                 *ptr += 2;
             }
             Command::Output(_) => {
+                println!("OUT");
                 *ptr += 2;
             }
             Command::JumpIfTrue(p) => {
+                println!("JIT");
                 let p0 = *mem.entry(p.params[0]).or_insert(0);
                 let p1 = *mem.entry(p.params[1]).or_insert(0);
                 if p0 != 0 {
@@ -160,6 +165,7 @@ impl Command {
                 }
             }
             Command::JumpIfFalse(p) => {
+                println!("JIF");
                 let p0 = *mem.entry(p.params[0]).or_insert(0);
                 let p1 = *mem.entry(p.params[1]).or_insert(0);
                 if p0 == 0 {
@@ -169,6 +175,7 @@ impl Command {
                 }
             }
             Command::LessThan(p) => {
+                println!("LE");
                 let p0 = *mem.entry(p.params[0]).or_insert(0);
                 let p1 = *mem.entry(p.params[1]).or_insert(0);
                 if p0 < p1 {
@@ -179,6 +186,7 @@ impl Command {
                 *ptr += 4;
             }
             Command::Equals(p) => {
+                println!("EQ");
                 let p0 = *mem.entry(p.params[0]).or_insert(0);
                 let p1 = *mem.entry(p.params[1]).or_insert(0);
                 if p0 == p1 {
@@ -189,6 +197,7 @@ impl Command {
                 *ptr += 4;
             }
             Command::AdjustRelativeBase(p) => {
+                println!("ARB");
                 let p0 = *mem.entry(p.params[0]).or_insert(0);
                 *rel = ((*rel as i64) + p0) as usize;
                 *ptr += 2;
@@ -207,6 +216,8 @@ struct IntCodeComputer {
     out1: i64,
     hasout1: bool,
     out2: i64,
+    hasout2: bool,
+    has_sig: bool,
 }
 
 impl IntCodeComputer {
@@ -219,6 +230,8 @@ impl IntCodeComputer {
             out1: 0,
             hasout1: false,
             out2: 0,
+            hasout2: false,
+            has_sig: false,
         }
     }
 
@@ -227,7 +240,16 @@ impl IntCodeComputer {
         loop {
             let op = *self.mem.entry(self.ptr).or_insert(0) % 100;
             if op == 3 {
-                command = Command::from(self.ptr, self.relative_base, &mut self.mem, Some(signal));
+                println!("input");
+                if !self.has_sig {
+                    command = Command::from(self.ptr, self.relative_base, &mut self.mem, Some(signal));
+                    self.has_sig = true;
+                } else {
+                    self.has_sig = false;
+                    self.hasout1 = false;
+                    self.hasout2 = false;
+                    return (self.out1, self.out2, false);
+                }
             } else if op == 99 {
                 return (self.out1, self.out2, true);
             } else {
@@ -237,16 +259,9 @@ impl IntCodeComputer {
                 if !self.hasout1 {
                     self.hasout1 = true;
                     self.out1 = *self.mem.entry(p.params[0]).or_insert(0);
-
-                    println!("\nNEW ROUND");
-                    println!("1: {} {} {}", self.hasout1, self.out1, self.out2);
                 } else {
                     self.out2 = *self.mem.entry(p.params[0]).or_insert(0);
-                    println!("2: {} {} {}", self.hasout1, self.out1, self.out2);
-                    self.hasout1 = false;
-                    return (self.out1, self.out2, false);
-
-                    // problem might be that we are not executing the output command right:
+                    self.hasout2 = true;   
                 }
             }
             command.exec(&mut self.ptr, &mut self.relative_base, &mut self.mem);
@@ -303,16 +318,20 @@ pub fn solve() {
     let mut grid: HashMap<(i64, i64), i64> = HashMap::new();
 
     loop {
+
+        println!("\nNEW ROUND");
         let input = *grid.entry((robot.x, robot.y)).or_insert(0);
 
         let (color, dir, halted) = computer.run(input);
 
-        grid.insert((robot.x, robot.y), color);
-        robot.turn(dir);
-
         if halted {
             break;
         }
+
+        grid.insert((robot.x, robot.y), color);
+        robot.turn(dir);
+
+        
     }
     println!("Part1: {}", grid.keys().len());
 }

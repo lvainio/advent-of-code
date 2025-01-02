@@ -8,13 +8,18 @@ public class Main {
         Path inputFilePath = Path.of("input.txt");
 
         try {
-            String content = Files.readString(inputFilePath);
+            String[] lines = Files.readString(inputFilePath).split("\r?\n");
+            char[][] grid = new char[lines.length][];
+
+            for (int i = 0; i < lines.length; i++) {
+                grid[i] = lines[i].toCharArray();
+            }
 
             Part1 p1 = new Part1();
             Part2 p2 = new Part2();
 
-            p1.solve(content);
-            p2.solve(content);
+            p1.solve(grid);
+            p2.solve(grid);
 
         } catch (IOException e) {
             System.out.println("Could not read file " + inputFilePath.toString());

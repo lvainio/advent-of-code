@@ -40,7 +40,7 @@ public class Main {
             Part2 p2 = new Part2();
 
             p1.solve(orderingRulesMap, updates);
-            p2.solve();
+            p2.solve(orderingRulesMap, updates);
 
         } catch (IOException e) {
             System.out.println("Could not read file " + inputFilePath.toString());

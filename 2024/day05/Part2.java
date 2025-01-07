@@ -4,14 +4,16 @@ import java.util.HashSet;
 import java.util.List;
 
 public class Part2 {
-    public void solve(HashMap<Integer, HashSet<Integer>> orderingRulesMap, List<List<Integer>> updates) {
-        int sum = 0;
-        for (List<Integer> update : updates) {
-            if (!isUpdateCorrectlyOrdered(orderingRulesMap, update)) {
-                List<Integer> updateOrdered = orderUpdate(orderingRulesMap, update);
-                sum += updateOrdered.get(updateOrdered.size() / 2);
-            }
-        }
+    public void solve(
+        HashMap<Integer, HashSet<Integer>> orderingRulesMap, 
+        List<List<Integer>> updates
+    ) {
+        int sum = updates.stream()
+            .filter(update -> !isUpdateCorrectlyOrdered(orderingRulesMap, update))
+            .map(update -> orderUpdate(orderingRulesMap, update))
+            .map(update -> update.get(update.size() / 2))
+            .reduce(0, Integer::sum);
+
         System.out.println("Part2: " + sum);
     }
 

@@ -8,12 +8,11 @@ public class Part1 {
         HashMap<Integer, HashSet<Integer>> orderingRulesMap, 
         List<List<Integer>> updates
     ) {
-        int sum = 0;
-        for (List<Integer> update : updates) {
-            if (isUpdateCorrectlyOrdered(orderingRulesMap, update)) {
-                sum += update.get(update.size() / 2);
-            }
-        }
+        int sum = updates.stream()
+            .filter(update -> isUpdateCorrectlyOrdered(orderingRulesMap, update))
+            .map(update -> update.get(update.size() / 2))
+            .reduce(0, Integer::sum);
+
         System.out.println("Part1: " + sum);
     }
 

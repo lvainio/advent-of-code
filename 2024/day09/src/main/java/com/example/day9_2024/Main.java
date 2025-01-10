@@ -19,14 +19,14 @@ public class Main {
                 break;
             }
 
-            System.out.println(i + ", " + pointer);
-
             if (memory.get(i) != FREE_SPACE) {
                 while (memory.get(pointer) != FREE_SPACE) {
                     pointer++;
                 }
-                memory.set(pointer, memory.get(i));
-                memory.set(i, FREE_SPACE);
+                if (pointer < i) {
+                    memory.set(pointer, memory.get(i));
+                    memory.set(i, FREE_SPACE);
+                } 
             }
         }
 

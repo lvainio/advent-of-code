@@ -2,6 +2,7 @@ package com.example.day9_2024;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.stream.IntStream;
 import java.io.FileNotFoundException;
 
 public class Main {
@@ -19,30 +20,78 @@ public class Main {
         }
 
         List<Integer> memory = parser.getMemory();
+
+        List<Integer> memoryPart1 = new ArrayList<>(memory);
         int pointer = 0;
-        for (int i = memory.size() - 1; i >= 0; i--) {
+        for (int i = memoryPart1.size() - 1; i >= 0; i--) {
             if (pointer > i) {
                 break;
             }
 
-            if (memory.get(i) != FREE_SPACE) {
-                while (memory.get(pointer) != FREE_SPACE) {
+            if (memoryPart1.get(i) != FREE_SPACE) {
+                while (memoryPart1.get(pointer) != FREE_SPACE) {
                     pointer++;
                 }
                 if (pointer < i) {
-                    memory.set(pointer, memory.get(i));
-                    memory.set(i, FREE_SPACE);
+                    memoryPart1.set(pointer, memoryPart1.get(i));
+                    memoryPart1.set(i, FREE_SPACE);
                 } 
             }
         }
 
-        int i = 0;
-        long total = 0;
-        while(memory.get(i) != FREE_SPACE) {
-            total += (long) i * memory.get(i);
-            i++;
+        List<Integer> memoryPart2 = new ArrayList<>(memory);
+        for (int i = memoryPart2.size() - 1; i >= 0; i--) {
+
+            int id = memoryPart2.get(i);
+            int fileSize = 1;
+            while (i - 1 >= 0 && memoryPart2.get(i-1) == id) {
+                fileSize++;
+                i--;
+            }
+
+            int firstFreeSpace = findFreeSpace(memoryPart2, fileSize, i);
+
+            // set old to free space
+            for (int j = i; j < i + fileSize; j++) {
+                memoryPart2.set(j, -1);
+            }
+
+            // set free space to id
+            for (int j = firstFreeSpace; j < firstFreeSpace + fileSize; j++) {
+                memoryPart2.set(j, id);
+            }
         }
 
-        System.out.println("Part1: " + total);
+        long part1 = calculateChecksum(memoryPart1);
+        long part2 = calculateChecksum(memoryPart2);
+       
+        System.out.println("Part1: " + part1);
+        System.out.println("Part2: " + part2);
+    }
+
+    private static long calculateChecksum(List<Integer> memory) {
+        return IntStream.range(0, memory.size())
+                .mapToLong(i -> memory.get(i) == -1 ? 0 : (long) i * memory.get(i))
+                .sum();
+    }
+
+    private static int findFreeSpace(List<Integer> memory, int fileSize, int fileIndex) {
+        // find first space in memory that fits the filesize:
+
+        int count = 0;
+        for (int i = 0; i < fileIndex; i++) {
+            if (memory.get(i) != -1) {
+                count = 0;
+                continue;
+            } 
+
+            count++;
+
+            if (count == fileSize) { 
+                return i - fileSize + 1;
+            }
+        }
+
+        return fileIndex;
     }
 }

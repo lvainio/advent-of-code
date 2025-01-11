@@ -2,6 +2,10 @@
 
 This repository contain my solutions to Advent Of Code.
 
+## 2024
+
+Java
+
 ## 2023
 
 Python

@@ -1,8 +1,11 @@
 package com.example.day15_2024;
 
+import java.util.HashSet;
 import java.util.List;
 
 public class Warehouse {
+
+    private record Point(int row, int col) {};
 
     private Cell[][] map;
 
@@ -25,11 +28,27 @@ public class Warehouse {
         moves.forEach(m -> move(m));
     }
 
+    public void makeMovesPart2(List<Move> moves) {
+        moves.forEach(m -> movePart2(m));
+    }
+
     public int countScore() {
         int total = 0;
         for (int row = 0; row < this.map.length; row++) {
             for (int col = 0; col < this.map[0].length; col++) {
                 if (this.map[row][col] == Cell.BOX) {
+                    total += row * 100 + col;
+                }
+            }
+        }
+        return total;
+    }
+
+    public int countScorePart2() {
+        int total = 0;
+        for (int row = 0; row < this.map.length; row++) {
+            for (int col = 0; col < this.map[0].length; col++) {
+                if (this.map[row][col] == Cell.BOXLEFT) {
                     total += row * 100 + col;
                 }
             }
@@ -45,6 +64,171 @@ public class Warehouse {
             case DOWN -> moveDown();
             default -> throw new IllegalArgumentException("Invalid move: " + move);
         }
+    }
+
+    public void movePart2(Move move) {
+        switch (move) {
+            case LEFT -> moveLeftPart2();
+            case RIGHT -> moveRightPart2();
+            case UP -> moveUpPart2();
+            case DOWN -> moveDownPart2();
+            default -> throw new IllegalArgumentException("Invalid move: " + move);
+        }
+    }
+
+    private void moveLeftPart2() {
+        int row = this.robotRow;
+        int col = this.robotCol;
+
+        boolean canMove = canMovePart2(row, col-1, Move.LEFT);
+        if (canMove) {
+            int currentCol = col-1;
+            while (this.map[row][currentCol] == Cell.BOXLEFT ||
+                    this.map[row][currentCol] == Cell.BOXRIGHT) {
+                currentCol--;
+            }
+            for (int c = currentCol; c < col; c++) {
+                this.map[row][c] = this.map[row][c+1];
+            }
+            this.map[row][col] = Cell.EMPTY;
+            this.robotCol--;
+        } 
+    }
+
+    private void moveRightPart2() {
+        int row = this.robotRow;
+        int col = this.robotCol;
+
+        boolean canMove = canMovePart2(row, col+1, Move.RIGHT);
+        if (canMove) {
+            int currentCol = col+1;
+            while (this.map[row][currentCol] == Cell.BOXLEFT ||
+                    this.map[row][currentCol] == Cell.BOXRIGHT) {
+                currentCol++;
+            }
+            for (int c = currentCol; c > col; c--) {
+                this.map[row][c] = this.map[row][c-1];
+            }
+            this.map[row][col] = Cell.EMPTY;
+            this.robotCol++;
+        } 
+    }
+
+    private void moveUpPart2() {
+        int row = this.robotRow;
+        int col = this.robotCol;
+
+        boolean canMove = canMovePart2(row-1, col, Move.UP);
+
+        if (canMove) {
+            moveUpPart2Helper(row, col, new HashSet<>());
+            this.robotRow--;
+            this.map[row][col] = Cell.EMPTY;
+            this.map[this.robotRow][this.robotCol] = Cell.ROBOT;
+        }
+    }
+
+    private void moveUpPart2Helper(int row, int col, HashSet<Point> visited) {
+        if (this.map[row][col] == Cell.EMPTY) {
+            return;
+        }
+        if (visited.contains(new Point(row, col))) {
+            return;
+        }
+        visited.add(new Point(row, col));
+
+        int newRow = row-1;
+        if (this.map[newRow][col] == Cell.BOXLEFT) {
+            moveUpPart2Helper(newRow, col, visited);
+            moveUpPart2Helper(newRow, col+1, visited);
+        } else if (this.map[newRow][col] == Cell.BOXRIGHT) {
+            moveUpPart2Helper(newRow, col, visited);
+            moveUpPart2Helper(newRow, col-1, visited);
+        }
+
+        this.map[newRow][col] = this.map[row][col];
+        this.map[row][col] = Cell.EMPTY;
+
+        visited.add(new Point(newRow, col));
+    }
+
+    private void moveDownPart2() {
+        int row = this.robotRow;
+        int col = this.robotCol;
+
+        boolean canMove = canMovePart2(row+1, col, Move.DOWN);
+
+        if (canMove) {
+            moveDownPart2Helper(row, col, new HashSet<>());
+            this.robotRow++;
+            this.map[row][col] = Cell.EMPTY;
+            this.map[this.robotRow][this.robotCol] = Cell.ROBOT;
+        }
+    }
+
+    private void moveDownPart2Helper(int row, int col, HashSet<Point> visited) {
+        if (this.map[row][col] == Cell.EMPTY) {
+            return;
+        }
+        if (visited.contains(new Point(row, col))) {
+            return;
+        }
+        visited.add(new Point(row, col));
+
+        int newRow = row+1;
+        if (this.map[newRow][col] == Cell.BOXLEFT) {
+            moveDownPart2Helper(newRow, col, visited);
+            moveDownPart2Helper(newRow, col+1, visited);
+        } else if (this.map[newRow][col] == Cell.BOXRIGHT) {
+            moveDownPart2Helper(newRow, col, visited);
+            moveDownPart2Helper(newRow, col-1, visited);
+        }
+
+        this.map[newRow][col] = this.map[row][col];
+        this.map[row][col] = Cell.EMPTY;
+
+        visited.add(new Point(newRow, col));
+    }
+
+    private boolean canMovePart2(int row, int col, Move move) {
+        if (this.map[row][col] == Cell.WALL) {
+            return false;
+        } else if (this.map[row][col] == Cell.EMPTY) {
+            return true;
+        } 
+
+        // box
+        return switch (move) {
+            case LEFT -> {
+                int newCol = col-2;
+                yield canMovePart2(row, newCol, move);
+            }
+            case RIGHT -> {
+                int newCol = col+2;
+                yield canMovePart2(row, newCol, move);
+            }
+            case UP -> {
+                int newRow = row-1;
+                if (this.map[row][col] == Cell.BOXLEFT) {
+                    yield canMovePart2(newRow, col, move) &&
+                            canMovePart2(newRow, col+1, move);
+                } else {
+                    yield canMovePart2(newRow, col, move) &&
+                            canMovePart2(newRow, col-1, move);
+                }
+            }
+            case DOWN -> {
+                int newRow = row+1;
+                if (this.map[row][col] == Cell.BOXLEFT) {
+                    yield canMovePart2(newRow, col, move) &&
+                            canMovePart2(newRow, col+1, move);
+                } else {
+                    yield canMovePart2(newRow, col, move) &&
+                            canMovePart2(newRow, col-1, move);
+                }
+            }
+            default -> true;
+        };
     }
 
     private void moveLeft() {
@@ -81,9 +265,6 @@ public class Warehouse {
                     this.map[row][col] = Cell.EMPTY;
                     this.robotCol--;
                 }
-            }
-            case ROBOT -> {
-                throw new IllegalArgumentException("Can not exist two robots at the same time!");
             }
             default -> throw new IllegalArgumentException("Invalid cell: " + leftCell);   
         }
@@ -124,9 +305,6 @@ public class Warehouse {
                     this.robotCol++;
                 }
             }
-            case ROBOT -> {
-                throw new IllegalArgumentException("Can not exist two robots at the same time!");
-            }
             default -> throw new IllegalArgumentException("Invalid cell: " + rightCell);   
         }
     }
@@ -166,9 +344,6 @@ public class Warehouse {
                     this.robotRow--;
                 }
             }
-            case ROBOT -> {
-                throw new IllegalArgumentException("Can not exist two robots at the same time!");
-            }
             default -> throw new IllegalArgumentException("Invalid cell: " + aboveCell);   
         }
     }
@@ -207,9 +382,6 @@ public class Warehouse {
                     this.map[row][col] = Cell.EMPTY;
                     this.robotRow++;
                 }
-            }
-            case ROBOT -> {
-                throw new IllegalArgumentException("Can not exist two robots at the same time!");
             }
             default -> throw new IllegalArgumentException("Invalid cell: " + belowCell);   
         }

@@ -3,6 +3,8 @@ package com.example.day15_2024;
 enum Cell {
     WALL('#'),
     BOX('O'),
+    BOXLEFT('['),
+    BOXRIGHT(']'),
     EMPTY('.'),
     ROBOT('@');
 

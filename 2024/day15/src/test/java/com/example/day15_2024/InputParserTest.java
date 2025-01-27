@@ -42,7 +42,7 @@ public class InputParserTest {
             {Cell.WALL, Cell.EMPTY, Cell.EMPTY, Cell.EMPTY, Cell.EMPTY, Cell.EMPTY, Cell.EMPTY, Cell.WALL},
             {Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL, Cell.WALL}
         };
-        assertArrayEquals(expectedMap, ip2.getMap());
+        assertArrayEquals(expectedMap, ip2.getMap1());
     }
 
     @Test

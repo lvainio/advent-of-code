@@ -8,7 +8,7 @@ public class Day20 {
         InputParser parser = new InputParser();
         parser.parseInputFile("input.txt");
 
-        
+
 
         
     }

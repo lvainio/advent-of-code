@@ -4,27 +4,19 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Day19 {
-    public static void main( String[] args ) {
+    public static void main(String[] args) {
         InputParser parser = new InputParser();
         parser.parseInputFile("input.txt");
 
         List<String> patterns = parser.getPatterns();
         List<String> designs = parser.getDesigns();
 
-        int numValidDesigns = 0;
-        for (String design : designs) {
-            if (isValidDesign(design, patterns)) {
-                numValidDesigns++;
-            }
-        }
+        long numValidDesigns = designs.stream().filter(s -> isValidDesign(s, patterns)).count();
         System.out.println("Part1: " + numValidDesigns);
 
-        long numArrangements = 0;
-        HashMap<String, Long> designToCount = new HashMap<>();
-        for (String design : designs) {
-            numArrangements += countArrangements(design, patterns, designToCount);
-            System.out.println(numArrangements);
-        }
+        HashMap<String, Long> mem = new HashMap<>();
+        long numArrangements =
+                designs.stream().mapToLong(s -> countArrangements(s, patterns, mem)).sum();
         System.out.println("Part2: " + numArrangements);
     }
 
@@ -33,14 +25,16 @@ public class Day19 {
             return true;
         }
         for (String pattern : patterns) {
-            if (design.startsWith(pattern) && isValidDesign(design.substring(pattern.length()), patterns)) {
+            if (design.startsWith(pattern)
+                    && isValidDesign(design.substring(pattern.length()), patterns)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static long countArrangements(String design, List<String> patterns, HashMap<String, Long> designToCount) {
+    public static long countArrangements(
+            String design, List<String> patterns, HashMap<String, Long> designToCount) {
         if (design.length() == 0) {
             return 1;
         }
@@ -50,7 +44,9 @@ public class Day19 {
         long count = 0;
         for (String pattern : patterns) {
             if (design.startsWith(pattern)) {
-                count += countArrangements(design.substring(pattern.length()), patterns, designToCount);
+                count +=
+                        countArrangements(
+                                design.substring(pattern.length()), patterns, designToCount);
             }
         }
         designToCount.put(design, count);

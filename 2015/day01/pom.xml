@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example.day01_2024</groupId>
+  <groupId>com.example.day01_2015</groupId>
   <artifactId>day01</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
@@ -39,7 +39,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.example.day01_2024.Day01</mainClass>
+                    <mainClass>com.example.day01_2015.Day01</mainClass>
                 </configuration>
             </plugin>
 
@@ -50,7 +50,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.example.day01_2024.Day01</mainClass>
+                            <mainClass>com.example.day01_2015.Day01</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

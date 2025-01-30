@@ -9,10 +9,12 @@ public class Day20 {
         Node startNode = parser.getStartPosition();
         Node endNode = parser.getEndPosition();
 
-        GridGraph gg = new GridGraph(grid, startNode, endNode);
+        GridGraph gridGraph = new GridGraph(grid, startNode, endNode);
 
-        int part1 = gg.search();
+        int part1 = gridGraph.countSavings(2);
+        int part2 = gridGraph.countSavings(20);
 
         System.out.println("Part1: " + part1);
+        System.out.println("Part1: " + part2);
     }
 }

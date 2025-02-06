@@ -61,6 +61,8 @@ public class InputParser {
                     case "OR" -> new OrGate(inputWire1, inputWire2, outputWire);
                     default -> throw new IllegalStateException("Invalid operation: " + operation);
                 };
+                inputWire1.addTargetGate(gate);
+                inputWire2.addTargetGate(gate);
                 outputWire.setSourceGate(gate);
 
                 wires.put(inputId1, inputWire1);

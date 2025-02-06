@@ -1,15 +1,21 @@
 package com.example.day24_2024;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Wire {
 
     private final String id; 
     private Signal signal; 
 
     private Gate sourceGate;
+    private Set<Gate> targetGates;
 
     public Wire(String id, Signal signal) {
         this.id = id;
         this.signal = signal;
+        this.sourceGate = null;
+        this.targetGates = new HashSet<>();
     }
 
     public String getId() {
@@ -30,6 +36,14 @@ public class Wire {
 
     public void setSourceGate(Gate sourcGate) {
         this.sourceGate = sourcGate;
+    }
+
+    public Set<Gate> getTargetGates() {
+        return this.targetGates;
+    }
+
+    public void addTargetGate(Gate targetGate) {
+        this.targetGates.add(targetGate);
     }
 
     @Override

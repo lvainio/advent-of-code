@@ -1,5 +1,7 @@
 package com.example.day24_2024;
 
+import java.util.HashSet;
+
 public sealed abstract class Gate permits XorGate, AndGate, OrGate {
 
     protected Wire input1;
@@ -16,9 +18,13 @@ public sealed abstract class Gate permits XorGate, AndGate, OrGate {
         return this.output;
     }
 
+    public void setOutput(Wire output) {
+        this.output = output;
+    }
+
     public String getOutputId() {
         return this.output.getId();
     }
 
-    public abstract Signal computeOutputSignal();
+    public abstract Signal computeOutputSignal(HashSet<String> visited);
 }

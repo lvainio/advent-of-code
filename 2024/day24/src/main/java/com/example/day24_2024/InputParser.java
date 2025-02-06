@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 
 public class InputParser {
 
-    private Map<String, Gate> gates = null; 
+    private Circuit circuit = null; 
 
-    public Map<String, Gate> getGates() {
-        return this.gates;
+    public Circuit getCircuit() {
+        return this.circuit;
     }
 
     public void parseInputFile(String inputFile) {
@@ -34,7 +34,7 @@ public class InputParser {
             .collect(Collectors.toMap(Wire::getId, wire -> wire));
 
             Pattern pattern = Pattern.compile("([a-zA-Z0-9]+)\\s+(XOR|OR|AND)\\s+([a-zA-Z0-9]+)\\s+->\\s+([a-zA-Z0-9]+)");
-            this.gates = inputsAndGates[1].lines().map(line -> {
+            Map<String, Gate> gates = inputsAndGates[1].lines().map(line -> {
                 Matcher matcher = pattern.matcher(line);
                 matcher.find();
                 String inputId1 = matcher.group(1).trim();
@@ -72,7 +72,7 @@ public class InputParser {
                 return gate;
             })
             .collect(Collectors.toMap(Gate::getOutputId, gate -> gate));
-            
+            this.circuit = new Circuit(gates, wires);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);

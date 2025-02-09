@@ -4,7 +4,7 @@ This repository contain my solutions to Advent Of Code.
 
 ## Usage
 
-The program automatically retrieves the problem input, and therefore requires the Advent of Code session cookie. To use it, retrieve the session cookie from your browser and set it as an environment variable `AOC_SESSION`:
+The program automatically retrieves the problem input, and therefore requires the Advent of Code session cookie. To use it, retrieve the session cookie from your browser and set it as an environment variable `AOC_SESSION`. In Windows it can be set with the following command:
 
 ```bash
 setx AOC_SESSION <your_session_cookie_here>

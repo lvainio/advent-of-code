@@ -1,1 +1,0 @@
-C:\Users\leojv\advent-of-code\2024\day01\target\debug\day01.exe: C:\Users\leojv\advent-of-code\2024\day01\src\main.rs C:\Users\leojv\advent-of-code\2024\day01\src\part1.rs C:\Users\leojv\advent-of-code\2024\day01\src\part2.rs

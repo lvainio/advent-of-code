@@ -55,13 +55,25 @@ public class Main {
 
         String part1 = null;
         String part2 = null;
+
+        Long durationPart1 = 0L;
+        Long durationPart2 = 0L;
+
         try {
             String className = "leo.aoc.year" + year + ".day" + day + ".Solver"; 
             Class<?> solverClass = Class.forName(className);
             if (AbstractSolver.class.isAssignableFrom(solverClass)) {
                 Object solverInstance = solverClass.getConstructor(String.class).newInstance(input);
+
+                long startPart1 = System.nanoTime();
                 part1 = invokeMethod(solverInstance, "solvePart1");
+                long endPart1 = System.nanoTime();
+                durationPart1 = endPart1 - startPart1;
+
+                long startPart2 = System.nanoTime();
                 part2 = invokeMethod(solverInstance, "solvePart2");
+                long endPart2 = System.nanoTime();
+                durationPart2 = endPart2 - startPart2;
             } else {
                 System.err.println("ERROR: The class does not implement AbstractSolver!");
                 System.exit(1);
@@ -70,8 +82,11 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
+        
         System.out.println("  Part1: " + part1);
         System.out.println("  part2: " + part2 + "\n");
+        System.out.println("  Time part1: " + durationPart1 / 1_000_000.0 + " ms");
+        System.out.println("  Time part2: " + durationPart2 / 1_000_000.0 + " ms\n");
         System.out.println("*-----------------------------*\n");
     }
 
@@ -81,17 +96,15 @@ public class Main {
         String cookie
     ) throws IOException, InterruptedException {
         URI uri = URI.create("https://adventofcode.com/" + year + "/day/" + day + "/input");
-
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .header("Cookie", "session=" + cookie)
                 .GET()
                 .build();
-
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {
-            throw new IOException("Failed to fetch the input data, HTTP response code: " + response.statusCode());
+            throw new IOException("Failed to fetch the input data.");
         }
         return response.body().trim(); 
     }
@@ -99,11 +112,7 @@ public class Main {
     private static String invokeMethod(
         Object instance, 
         String methodName
-    ) throws 
-        NoSuchMethodException, 
-        IllegalAccessException, 
-        InvocationTargetException 
-    {
+    ) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Method method = instance.getClass().getMethod(methodName);
         String result = (String) method.invoke(instance);
         return result; 

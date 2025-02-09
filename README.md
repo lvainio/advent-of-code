@@ -2,12 +2,19 @@
 
 This repository contain my solutions to Advent Of Code.
 
+## Prerequisites
+
+Before running this project, make sure you have the following software installed:
+
+1. **Java 23** (or higher)  
+2. **Maven**
+
 ## Usage
 
-The program automatically retrieves the problem input, and therefore requires the Advent of Code session cookie. To use it, retrieve the session cookie from your browser and set it as an environment variable `AOC_SESSION`. In Windows it can be set with the following command:
+The program automatically retrieves the problem input, and therefore requires the Advent of Code session cookie. To use it, retrieve the session cookie from your browser and set it as an environment variable `AOC_SESSION`. For example, in Windows it can be set with the following command:
 
 ```bash
-setx AOC_SESSION <your_session_cookie_here>
+setx AOC_SESSION "<your_session_cookie_here>"
 ```
 
 Build the project with the following command:

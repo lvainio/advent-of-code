@@ -2,6 +2,14 @@
 
 This repository contain my solutions to Advent Of Code.
 
+## Usage
+
+To solve a specific Advent of Code problem, run the following Maven command with the `-year` and `-day` flags to specify the year and day of the puzzle:
+
+```bash
+mvn exec:java -Dyear=<year> -Dday=<day>
+```
+
 ## 2024
 
 Java

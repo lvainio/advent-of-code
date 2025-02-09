@@ -1,6 +1,6 @@
 # Advent Of Code ⭐⭐
 
-This repository contain my solutions to Advent Of Code.
+This repository contains my solutions to Advent Of Code.
 
 ## Prerequisites
 
@@ -29,26 +29,36 @@ Run the program with following Maven command with the `-year` and `-day` flags t
 mvn exec:java -Dyear=<year> -Dday=<day>
 ```
 
-## 2024
+## Solutions
+
+### 2024
 
 Java
 
-## 2023
+### 2023
 
 Python
 
-## 2022
+### 2022
 
 Python
 
-## 2021
+### 2021
 
 Typescript
 
-## 2020
+### 2020
 
 Python, Java, Kotlin, C, Prolog, Go, Javascript, Typescript, C++, Haskell, Ruby, Rust, PHP, Perl, Scala
 
-## 2019
+### 2019
 
 Rust
+
+### 2018
+
+### 2017
+
+### 2016
+
+### 2015

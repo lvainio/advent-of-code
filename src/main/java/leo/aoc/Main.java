@@ -22,5 +22,8 @@ public class Main {
         System.out.println("  Day:   " + day);
         System.out.println("*-----------------------------*");
         System.out.println();
+
+        String sessionCookie = System.getenv("AOC_SESSION");
+        System.out.println("SESSION COOKIE: " + sessionCookie);
     }
 }

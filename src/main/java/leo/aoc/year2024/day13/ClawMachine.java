@@ -1,4 +1,4 @@
-package com.example.day13_2024;
+package leo.aoc.year2024.day13;
 
 public record ClawMachine(
     long ax,

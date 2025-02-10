@@ -1,5 +1,7 @@
 package leo.aoc.util;
 
+import java.util.List;
+
 public enum Direction {
     EAST(0),       
     NORTHEAST(45), 
@@ -60,14 +62,7 @@ public enum Direction {
      * @throws IllegalArgumentException if the angle is not a multiple of 45°.
      */
     public Direction turnLeft(int degrees) {
-        if (degrees % 45 != 0) {
-            throw new IllegalArgumentException("Invalid angle, degrees must be a multiple of 45");
-        }
-        int newAngle = (this.angle + degrees) % 360;
-        if (newAngle < 0) {
-            newAngle += 360;
-        }
-        return Direction.fromAngle(newAngle); 
+        return turnRight(-degrees); 
     }
 
     private static Direction fromAngle(int angle) {
@@ -125,5 +120,23 @@ public enum Direction {
      */
     public int getDc() {
         return getDx();
+    }
+
+    /**
+     * Returns a list of the four cardinal directions.
+     *
+     * @return an immutable list containing the cardinal directions.
+     */
+    public List<Direction> getCardinalDirections() {
+        return List.of(EAST, NORTH, WEST, SOUTH);
+    }
+
+    /**
+     * Returns a list of all directions.
+     * 
+     * @return an immutable list containing all directions.
+     */
+    public List<Direction> getAllDirections() {
+        return List.of(EAST, NORTHEAST, NORTH, NORTHWEST, WEST, SOUTHWEST, SOUTH, SOUTHWEST); 
     }
 }

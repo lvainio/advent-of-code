@@ -1,13 +1,19 @@
 package leo.aoc;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class Main {
+
+    private static final String CACHE_DIR = "aoc_cache";
 
     public static void main(String[] args) {
         HashMap<String, String> parsedArgs = parseArgs(args);
@@ -109,6 +115,33 @@ public class Main {
     }
 
     private static String retrieveInput(String year, String day, String cookie) {
+        final String fileName = CACHE_DIR + "/year" + year + "day" + day + ".txt";
+        File cacheFile = new File(fileName);
+
+        String input = null;
+        if (cacheFile.exists()) {
+            try {
+                input = new String(Files.readAllBytes(cacheFile.toPath()), StandardCharsets.UTF_8);
+                System.out.println("  Input retrieved from cache!\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+        } else {
+            input = retrieveInputFromAPI(year, day, cookie);
+            try {
+                Files.createDirectories(Paths.get(CACHE_DIR));
+                Files.write(Paths.get(fileName), input.getBytes(StandardCharsets.UTF_8));
+                System.out.println("  Input retrieved from API!\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }
+        return input;
+    }
+
+    private static String retrieveInputFromAPI(String year, String day, String cookie) {
         URI uri = URI.create("https://adventofcode.com/" + year + "/day/" + day + "/input");
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -133,7 +166,6 @@ public class Main {
             System.err.println("ERROR: failed to retrieve input data, input:" + input);
             System.exit(1);
         }
-        System.out.println("  AOC input retrieved!\n");
         return input; 
     }
 }

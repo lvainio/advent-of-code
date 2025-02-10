@@ -1,9 +1,11 @@
-package com.example.day12_2024;
+package leo.aoc.year2024.day12;
 
 import java.util.HashSet;
 import java.util.stream.IntStream;
 
-public class Day12 {
+import leo.aoc.AbstractSolver;
+
+public class Solver extends AbstractSolver {
 
     private record Node(int row, int col) {}
 
@@ -12,22 +14,23 @@ public class Day12 {
             return new Counts(this.area + other.area, this.perimeter + other.perimeter);
         }
     }
+    
+    private char[][] grid;
 
-    public static void main( String[] args ) {
-        InputParser parser = new InputParser();
-        parser.parseInputFile("input.txt");
-        char[][] grid = parser.getGrid();
+    public Solver(String input) {
+        super(input);
 
-        System.out.println("Part1: " + solvePart1(grid));
-        System.out.println("Part2: " + solvePart2(grid));
+        this.grid = input.lines()
+                .map(line -> line.toCharArray())
+                .toArray(char[][]::new);
     }
 
-    public static int solvePart1(char[][] grid) {
-        int numRows = grid.length;
-        int numCols = grid[0].length;
-
+    @Override
+    public String solvePart1() {
+        final int numRows = grid.length;
+        final int numCols = grid[0].length;
         HashSet<Node> visited = new HashSet<>();
-        return IntStream.range(0, numRows)
+        int total = IntStream.range(0, numRows)
             .map(row -> IntStream.range(0, numCols)
                 .reduce(0, (sum, col) -> {
                     Node node = new Node(row, col);
@@ -38,14 +41,15 @@ public class Day12 {
                     return sum + (result.area() * result.perimeter());
                 }))
             .sum();
+        return Integer.toString(total);
     }
 
-    public static int solvePart2(char[][] grid) {
-        int numRows = grid.length;
-        int numCols = grid[0].length;
-
+    @Override
+    public String solvePart2() {
+        final int numRows = grid.length;
+        final int numCols = grid[0].length;
         HashSet<Node> visited = new HashSet<>();
-        return IntStream.range(0, numRows)
+        int total = IntStream.range(0, numRows)
             .map(row -> IntStream.range(0, numCols)
                 .reduce(0, (sum, col) -> {
                     Node node = new Node(row, col);
@@ -56,9 +60,15 @@ public class Day12 {
                     return sum + (result.area() * result.perimeter());
                 }))
             .sum();
+        return Integer.toString(total);
     }
 
-    public static Counts searchRegionPart1(char[][] grid, Node node, char plantType, HashSet<Node> visited) {
+    public static Counts searchRegionPart1(
+        char[][] grid, 
+        Node node, 
+        char plantType, 
+        HashSet<Node> visited
+    ) {
         int row = node.row();
         int col = node.col();
         if (row < 0 || row >= grid.length || col < 0 || col >= grid[0].length) {
@@ -78,7 +88,12 @@ public class Day12 {
             .add(searchRegionPart1(grid, new Node(row, col+1), plantType, visited));
     }
 
-    public static Counts searchRegionPart2(char[][] grid, Node node, char plantType, HashSet<Node> visited) {
+    public static Counts searchRegionPart2(
+        char[][] grid, 
+        Node node, 
+        char plantType, 
+        HashSet<Node> visited
+    ) {
         int row = node.row();
         int col = node.col();
         if (row < 0 || row >= grid.length || col < 0 || col >= grid[0].length) {
@@ -103,15 +118,27 @@ public class Day12 {
         int row = node.row();
         int col = node.col();
 
-        boolean isNorthEastCornerConvex = !isNodeType(grid, row-1, col, plantType) && !isNodeType(grid, row, col+1, plantType);
-        boolean isNorthWestCornerConvex = !isNodeType(grid, row-1, col, plantType) && !isNodeType(grid, row, col-1, plantType);
-        boolean isSouthEastCornerConvex = !isNodeType(grid, row+1, col, plantType) && !isNodeType(grid, row, col+1, plantType);
-        boolean isSouthWestCornerConvex = !isNodeType(grid, row+1, col, plantType) && !isNodeType(grid, row, col-1, plantType);
+        boolean isNorthEastCornerConvex = !isNodeType(grid, row-1, col, plantType) 
+            && !isNodeType(grid, row, col+1, plantType);
+        boolean isNorthWestCornerConvex = !isNodeType(grid, row-1, col, plantType) 
+            && !isNodeType(grid, row, col-1, plantType);
+        boolean isSouthEastCornerConvex = !isNodeType(grid, row+1, col, plantType) 
+            && !isNodeType(grid, row, col+1, plantType);
+        boolean isSouthWestCornerConvex = !isNodeType(grid, row+1, col, plantType) 
+            && !isNodeType(grid, row, col-1, plantType);
 
-        boolean isNorthEastCornerConcave = isNodeType(grid, row-1, col, plantType) && isNodeType(grid, row, col+1, plantType) && !isNodeType(grid, row-1, col+1, plantType);
-        boolean isNorthWestCornerConcave = isNodeType(grid, row-1, col, plantType) && isNodeType(grid, row, col-1, plantType) && !isNodeType(grid, row-1, col-1, plantType);
-        boolean isSouthEastCornerConcave = isNodeType(grid, row+1, col, plantType) && isNodeType(grid, row, col+1, plantType) && !isNodeType(grid, row+1, col+1, plantType);
-        boolean isSouthWestCornerConcave = isNodeType(grid, row+1, col, plantType) && isNodeType(grid, row, col-1, plantType) && !isNodeType(grid, row+1, col-1, plantType);
+        boolean isNorthEastCornerConcave = isNodeType(grid, row-1, col, plantType) 
+            && isNodeType(grid, row, col+1, plantType) 
+            && !isNodeType(grid, row-1, col+1, plantType);
+        boolean isNorthWestCornerConcave = isNodeType(grid, row-1, col, plantType) 
+            && isNodeType(grid, row, col-1, plantType) 
+            && !isNodeType(grid, row-1, col-1, plantType);
+        boolean isSouthEastCornerConcave = isNodeType(grid, row+1, col, plantType) 
+            && isNodeType(grid, row, col+1, plantType) 
+            && !isNodeType(grid, row+1, col+1, plantType);
+        boolean isSouthWestCornerConcave = isNodeType(grid, row+1, col, plantType) 
+            && isNodeType(grid, row, col-1, plantType)
+            && !isNodeType(grid, row+1, col-1, plantType);
 
         int count = 0;
         count += isNorthEastCornerConvex ? 1 : 0;

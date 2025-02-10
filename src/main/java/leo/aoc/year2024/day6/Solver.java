@@ -100,6 +100,7 @@ public class Solver extends AbstractSolver {
     private boolean nextIsObstacle(Point p, Direction dir) {
         int newRow = p.row() + dir.getDr();
         int newCol = p.col() + dir.getDc();
-        return !isOutsideGrid(new Point(newRow, newCol)) && this.grid[newRow][newCol] == OBSTACLE;
+        Point newPoint = new Point(newRow, newCol);
+        return !isOutsideGrid(newPoint) && this.grid[newRow][newCol] == OBSTACLE;
     }
 }

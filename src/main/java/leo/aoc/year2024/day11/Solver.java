@@ -1,28 +1,46 @@
-package com.example.day11_2024;
+package leo.aoc.year2024.day11;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class Day11 {
+import leo.aoc.AbstractSolver;
+
+public class Solver extends AbstractSolver {
 
     private record CacheKey(long stone, int blinksLeft) {}
 
-    public static void main( String[] args ) {
-        InputParser parser = new InputParser();
-        parser.parseInputFile("input.txt");
-        List<Long> stones = parser.getStones();
+    private final List<Long> stones;
 
-        HashMap<CacheKey, Long> cache = new HashMap<>();
-        long part1 = stones.stream()
-            .reduce(0L, (sum, stone) -> sum + numStonesAfterBlinks(stone, 25, cache));
-        long part2 = stones.stream()
-            .reduce(0L, (sum, stone) -> sum + numStonesAfterBlinks(stone, 75, cache));
-
-        System.out.println("Part1: " + part1);
-        System.out.println("Part2: " + part2);
+    public Solver(String input) {
+        super(input);
+        
+        this.stones = Arrays.stream(input.split(" "))
+                .map(Long::parseLong)
+                .toList();
     }
 
-    public static long numStonesAfterBlinks(long stone, int numBlinksLeft, HashMap<CacheKey, Long> cache) {
+    @Override
+    public String solvePart1() {
+        HashMap<CacheKey, Long> cache = new HashMap<>();
+        long numStones = stones.stream()
+            .reduce(0L, (sum, stone) -> sum + numStonesAfterBlinks(stone, 25, cache));
+        return Long.toString(numStones);
+    }
+
+    @Override
+    public String solvePart2() {
+        HashMap<CacheKey, Long> cache = new HashMap<>();
+        long numStones = stones.stream()
+            .reduce(0L, (sum, stone) -> sum + numStonesAfterBlinks(stone, 75, cache));
+        return Long.toString(numStones);
+    }
+
+    private long numStonesAfterBlinks(
+        long stone, 
+        int numBlinksLeft, 
+        HashMap<CacheKey, Long> cache
+    ) {
         CacheKey key = new CacheKey(stone, numBlinksLeft);
         if (cache.containsKey(key)) {
             return cache.get(key);

@@ -49,8 +49,8 @@ public class Solver extends AbstractSolver {
         int row, 
         int col, 
         int currentHeight, 
-        HashSet<Node> visited) 
-    {
+        HashSet<Node> visited
+        ) {
         if (row < 0 || row >= grid.length ||
             col < 0 || col >= grid[0].length) {
                 return 0;

@@ -16,16 +16,17 @@ public class Solver extends AbstractSolver {
         this.reports = this.input.lines()
                 .map(line -> line.split("\\s+")) 
                 .map(nums -> 
-                    List.of(nums).stream().map(Integer::parseInt).collect(Collectors.toList())
-                )
+                    List.of(nums).stream().map(Integer::parseInt).collect(Collectors.toList()))
                 .collect(Collectors.toList());
     }
 
+    @Override
     public String solvePart1() {
         long numSafe = this.reports.stream().filter(report -> isSafePart1(report)).count();
         return Long.toString(numSafe);
     }
 
+    @Override
     public String solvePart2() {
         long numSafe = this.reports.stream().filter(report -> isSafePart2(report)).count();
         return Long.toString(numSafe);

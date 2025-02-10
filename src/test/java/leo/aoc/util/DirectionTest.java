@@ -11,6 +11,9 @@ public class DirectionTest {
         assertSame(Direction.WEST, Direction.NORTH.turnRight(-90));
         assertSame(Direction.WEST, Direction.EAST.turnRight(180 + 360));
         assertSame(Direction.SOUTHEAST, Direction.NORTHEAST.turnRight(90));
+
+        assertThrows(IllegalArgumentException.class, () -> Direction.NORTH.turnRight(36));
+        assertThrows(IllegalArgumentException.class, () -> Direction.EAST.turnRight(-38));
     }
 
     @Test
@@ -19,5 +22,8 @@ public class DirectionTest {
         assertSame(Direction.EAST, Direction.NORTH.turnLeft(-90));
         assertSame(Direction.WEST, Direction.EAST.turnLeft(180 + 360));
         assertSame(Direction.NORTHWEST, Direction.NORTHEAST.turnLeft(90));
+
+        assertThrows(IllegalArgumentException.class, () -> Direction.NORTH.turnLeft(36)); 
+        assertThrows(IllegalArgumentException.class, () -> Direction.EAST.turnLeft(-38)); 
     }
 }

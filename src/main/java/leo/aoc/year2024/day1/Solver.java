@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -47,7 +48,7 @@ public class Solver extends AbstractSolver {
     @Override
     public String solvePart2() {
         Map<Integer, Long> frequencyMap = this.rightList.stream()
-            .collect(Collectors.groupingBy(i -> i, Collectors.counting()));
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
         long similarityScore = this.leftList.stream()
             .mapToLong(key -> key * frequencyMap.getOrDefault(key, 0L))

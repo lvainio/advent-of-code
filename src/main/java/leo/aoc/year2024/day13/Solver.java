@@ -70,7 +70,7 @@ public class Solver extends AbstractSolver {
     @Override
     public String solvePart1() {
         long sum = this.clawMachines.stream()
-            .mapToLong(machine -> machine.calculateCheapestWin())
+            .mapToLong(ClawMachine::calculateCheapestWin)
             .sum();
         return Long.toString(sum);
     }
@@ -79,7 +79,7 @@ public class Solver extends AbstractSolver {
     public String solvePart2() {
         long sum = this.clawMachines.stream()
             .map(machine -> machine.addLongToPrizeCoordinates(10000000000000L))
-            .mapToLong(machine -> machine.calculateCheapestWin())
+            .mapToLong(ClawMachine::calculateCheapestWin)
             .sum();
         return Long.toString(sum);
     }  

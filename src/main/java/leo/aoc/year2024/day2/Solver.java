@@ -1,18 +1,41 @@
+package leo.aoc.year2024.day2;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class Part2 {
-    public void solve(List<List<Integer>> reports) {
-        int numSafeReports = 0;
-        for (List<Integer> report : reports) {
-            if (isSafe(report)) {
-                numSafeReports++;
-            }
-        }
-        System.out.println("Part2: " + numSafeReports);
+import leo.aoc.AbstractSolver;
+
+public class Solver extends AbstractSolver {
+
+    private List<List<Integer>> reports;
+
+    public Solver(String input) {
+        super(input);
+
+        this.reports = this.input.lines()
+                .map(line -> line.split("\\s+")) 
+                .map(nums -> 
+                    List.of(nums).stream().map(Integer::parseInt).collect(Collectors.toList())
+                )
+                .collect(Collectors.toList());
     }
 
-    private boolean isSafe(List<Integer> report) {
+    public String solvePart1() {
+        long numSafe = this.reports.stream().filter(report -> isSafePart1(report)).count();
+        return Long.toString(numSafe);
+    }
+
+    public String solvePart2() {
+        long numSafe = this.reports.stream().filter(report -> isSafePart2(report)).count();
+        return Long.toString(numSafe);
+    }
+
+    private boolean isSafePart1(List<Integer> report) {
+        return (isAscending(report) || isDescending(report)) && hasSafeDiffs(report);
+    }
+
+    private boolean isSafePart2(List<Integer> report) {
         if ((isAscending(report) || isDescending(report)) && hasSafeDiffs(report)) {
             return true;
         }

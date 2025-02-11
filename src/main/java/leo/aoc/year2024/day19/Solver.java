@@ -1,26 +1,40 @@
-package com.example.day19_2024;
+package leo.aoc.year2024.day19;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class Day19 {
-    public static void main(String[] args) {
-        InputParser parser = new InputParser();
-        parser.parseInputFile("input.txt");
+import leo.aoc.AbstractSolver;
 
-        List<String> patterns = parser.getPatterns();
-        List<String> designs = parser.getDesigns();
+public class Solver extends AbstractSolver {
 
+    private List<String> patterns = null;
+    private List<String> designs = null;
+
+    public Solver(String input) {
+        super(input);
+        
+        String[] PatternsAndDesigns = input.split("\r?\n\r?\n");
+
+        this.patterns = Arrays.asList(PatternsAndDesigns[0].split(", "));
+        this.designs = Arrays.asList(PatternsAndDesigns[1].split("\r?\n"));
+    }
+
+    @Override
+    public String solvePart1() {
         long numValidDesigns = designs.stream().filter(s -> isValidDesign(s, patterns)).count();
-        System.out.println("Part1: " + numValidDesigns);
+        return Long.toString(numValidDesigns);
+    }
 
+    @Override
+    public String solvePart2() {
         HashMap<String, Long> mem = new HashMap<>();
         long numArrangements =
                 designs.stream().mapToLong(s -> countArrangements(s, patterns, mem)).sum();
-        System.out.println("Part2: " + numArrangements);
+        return Long.toString(numArrangements);
     }
-
-    public static boolean isValidDesign(String design, List<String> patterns) {
+    
+    private boolean isValidDesign(String design, List<String> patterns) {
         if (design.length() == 0) {
             return true;
         }
@@ -33,7 +47,7 @@ public class Day19 {
         return false;
     }
 
-    public static long countArrangements(
+    private long countArrangements(
             String design, List<String> patterns, HashMap<String, Long> designToCount) {
         if (design.length() == 0) {
             return 1;

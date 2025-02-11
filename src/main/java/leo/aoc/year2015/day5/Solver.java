@@ -1,28 +1,37 @@
-package com.example.day05_2015;
+package leo.aoc.year2015.day5;
 
 import java.util.List;
 
-public class Day05 {
-    public static void main(String[] args) {
-        InputParser parser = new InputParser();
-        parser.parseInputFile("input.txt");
+import leo.aoc.AbstractSolver;
 
-        // Part1
-        List<String> strings = parser.getStrings();
-        long count = strings.stream().filter(Day05::isNiceString).count();
-        System.out.println(count);
+public class Solver extends AbstractSolver {
 
-        // Part2
-        long count2 = strings.stream().filter(Day05::isNiceString2).count();
-        System.out.println(count2);
+    private List<String> strings;
+
+    public Solver(String input) {
+        super(input);
+        this.strings = input.lines().toList();
     }
 
-    private static boolean isNiceString2(String s) {
+    @Override
+    public String solvePart1() {
+        long count = strings.stream().filter(this::isNiceString).count();
+        return Long.toString(count);
+    }
+
+    @Override
+    public String solvePart2() {
+        long count = strings.stream().filter(this::isNiceString2).count();
+        return Long.toString(count);
+    }
+
+
+    private boolean isNiceString2(String s) {
         return containsRepeatingLetter(s) 
             && containsRepeatingPair(s);
     }
 
-    private static boolean containsRepeatingLetter(String s) {
+    private boolean containsRepeatingLetter(String s) {
         for (int i = 0; i < s.length() - 2; i++) {
             if (s.charAt(i) == s.charAt(i+2)) {
                 return true;
@@ -31,7 +40,7 @@ public class Day05 {
         return false;
     }
 
-    private static boolean containsRepeatingPair(String s) {
+    private boolean containsRepeatingPair(String s) {
         for (int i = 0; i < s.length()-1; i++) {
             String pair = s.substring(i, i+2);
             if (s.substring(i+2).contains(pair)) {
@@ -41,13 +50,13 @@ public class Day05 {
         return false;
     }
 
-    private static boolean isNiceString(String s) {
+    private boolean isNiceString(String s) {
         return !containsSubstrings(s) 
             && containsConsecutiveLetters(s) 
             && containsThreeVowels(s);
     }
     
-    public static boolean containsThreeVowels(String s) {
+    public boolean containsThreeVowels(String s) {
         int vowelCount = 0;
         String vowels = "aeiou"; 
         for (int i = 0; i < s.length(); i++) {
@@ -59,7 +68,7 @@ public class Day05 {
         return vowelCount >= 3;
     }
 
-    public static boolean containsConsecutiveLetters(String s) {
+    public boolean containsConsecutiveLetters(String s) {
         for (int i = 0; i < s.length() - 1; i++) {
             if (s.charAt(i) == s.charAt(i + 1)) {
                 return true;
@@ -68,7 +77,7 @@ public class Day05 {
         return false;
     }
 
-    public static boolean containsSubstrings(String s) {
+    public boolean containsSubstrings(String s) {
         String[] substrings = {"ab", "cd", "pq", "xy"};
         for (String sub : substrings) {
             if (s.contains(sub)) {

@@ -1,20 +1,32 @@
-package com.example.day22_2024;
+package leo.aoc.year2024.day22;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class Day22 {
+import leo.aoc.AbstractSolver;
 
-    public static void main(String[] args) {
-        InputParser parser = new InputParser();
-        parser.parseInputFile("input.txt");
+public class Solver extends AbstractSolver {
 
-        List<Long> numbers = parser.getNumbers();
+    private record SecretPriceChange(long secret, long price, long change) {}
+
+    public record ChangeSequence(long c1, long c2, long c3, long c4) {}
+
+    private List<Long> numbers = null;
+
+    public Solver(String input) {
+        super(input);
+        
+        this.numbers = input.lines()
+                        .map(line -> Long.parseLong(line))
+                        .collect(Collectors.toList());
+    }
+
+    @Override
+    public String solvePart1() {
         Hasher hasher = new Hasher();
         List<List<SecretPriceChange>> mem = new ArrayList<>();
-
-        // PART 1
         long total = 0;
         for (Long secret : numbers) {
             List<SecretPriceChange> secretsPricesChanges = hasher.getSecretsPricesChanges(secret, 2000);
@@ -22,9 +34,17 @@ public class Day22 {
 
             total += secretsPricesChanges.get(secretsPricesChanges.size()-1).secret();
         }
-        System.out.println("Part1: " + total);
+        return Long.toString(total);
+    }
 
-        // PART 2
+    @Override
+    public String solvePart2() {
+        Hasher hasher = new Hasher();
+        List<List<SecretPriceChange>> mem = new ArrayList<>();
+        for (Long secret : numbers) {
+            List<SecretPriceChange> secretsPricesChanges = hasher.getSecretsPricesChanges(secret, 2000);
+            mem.add(secretsPricesChanges);
+        }
         HashMap<Integer, HashMap<ChangeSequence, Long>> priceMap = new HashMap<>();
         for (int buyer = 0; buyer < mem.size(); buyer++) {
             List<SecretPriceChange> secretsPricesChanges = mem.get(buyer);
@@ -34,7 +54,6 @@ public class Day22 {
                 long c2 = secretsPricesChanges.get(i+1).change();
                 long c3 = secretsPricesChanges.get(i+2).change();
                 long c4 = secretsPricesChanges.get(i+3).change();
-
                 ChangeSequence cs = new ChangeSequence(c1, c2, c3, c4);
                 if (!priceMap.get(buyer).containsKey(cs)) {
                     priceMap.get(buyer).put(cs, secretsPricesChanges.get(i+3).price());
@@ -60,6 +79,34 @@ public class Day22 {
                 }
             }
         }
-        System.out.println("Part2: " + maxSale);
+        return Long.toString(maxSale);
+    }
+
+    private class Hasher {
+        public List<SecretPriceChange> getSecretsPricesChanges(long secret, int n) {
+            List<SecretPriceChange> secretsPricesChanges = new ArrayList<>();
+            secretsPricesChanges.add(
+                new SecretPriceChange(secret, secret%10, Long.MIN_VALUE));
+
+            for (int i = 0; i < n; i++) {
+                long previous = secret;
+
+                secret = prune(mix(secret, 64L * secret));
+                secret = prune(mix(secret, secret / 32L));
+                secret = prune(mix(secret, 2048L * secret));
+
+                secretsPricesChanges.add(
+                    new SecretPriceChange(secret, secret%10, (secret%10) - (previous%10)));
+            }
+            return secretsPricesChanges;
+        }
+
+        private long mix(long secret, long value) {
+            return secret ^ value;
+        }
+
+        private long prune(long secret) {
+            return secret % 16777216L;
+        }
     }
 }

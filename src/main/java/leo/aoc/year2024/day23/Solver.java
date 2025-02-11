@@ -1,4 +1,4 @@
-package com.example.day23_2024;
+package leo.aoc.year2024.day23;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,17 +9,29 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Day23 {
+import leo.aoc.AbstractSolver;
 
-    public static void main(String[] args) {
-        InputParser parser = new InputParser();
-        parser.parseInputFile("input.txt");
+public class Solver extends AbstractSolver {
 
-        HashMap<String, HashSet<String>> network = parser.getNetwork();
+    private HashMap<String, HashSet<String>> network;
 
+    public Solver(String input) {
+        super(input);
+        
+        HashMap<String, HashSet<String>> network = new HashMap<>();
+        input.lines().forEach(line -> {
+            String[] edge = line.split("-");
+            String n1 = edge[0].trim();
+            String n2 = edge[1].trim();
+            network.computeIfAbsent(n1, _ -> new HashSet<>()).add(n2);
+            network.computeIfAbsent(n2, _ -> new HashSet<>()).add(n1);
+        });
+        this.network = network;
+    }
+
+    @Override
+    public String solvePart1() {
         Set<Set<String>> triples = findFullyConnectedTriples(network);
-
-        // Part1
         int count = 0;
         for (Set<String> triple : triples) {
             for (String node : triple) {
@@ -29,15 +41,17 @@ public class Day23 {
                 }
             }
         }
-        System.out.println("Part1: " + count);
+        return Integer.toString(count);
+    }
 
-        // Part2
+    @Override
+    public String solvePart2() {
         Set<String> largestClique = findLargestClique(network, 14);
         List<String> lanParty = new ArrayList<>(largestClique);
         Collections.sort(lanParty);
-        System.out.println(lanParty.stream().collect(Collectors.joining(",")));
+        return lanParty.stream().collect(Collectors.joining(","));
     }
-
+    
     public static Set<Set<String>> findFullyConnectedTriples(
         HashMap<String, HashSet<String>> network) 
     {

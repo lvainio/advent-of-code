@@ -127,7 +127,7 @@ public enum Direction {
      *
      * @return an immutable list containing the cardinal directions.
      */
-    public List<Direction> getCardinalDirections() {
+    public static List<Direction> getCardinalDirections() {
         return List.of(EAST, NORTH, WEST, SOUTH);
     }
 
@@ -136,7 +136,7 @@ public enum Direction {
      * 
      * @return an immutable list containing all directions.
      */
-    public List<Direction> getAllDirections() {
+    public static List<Direction> getAllDirections() {
         return List.of(EAST, NORTHEAST, NORTH, NORTHWEST, WEST, SOUTHWEST, SOUTH, SOUTHWEST); 
     }
 }

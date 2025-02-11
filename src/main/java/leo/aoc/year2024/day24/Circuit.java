@@ -1,6 +1,7 @@
-package com.example.day24_2024;
+package leo.aoc.year2024.day24;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -39,6 +40,9 @@ public class Circuit {
             return 0L;
         }
         if (numBits < 0 || numBits > NUM_OUTPUT_BITS) {
+
+            System.out.println(numBits);
+
             throw new IllegalArgumentException();
         }
         String binaryString = this.gates.keySet().stream()
@@ -49,60 +53,71 @@ public class Circuit {
         return Long.parseLong(binaryString.substring(NUM_OUTPUT_BITS-numBits, NUM_OUTPUT_BITS), 2);
     }
 
-    private HashSet<Pair> swapsMade = new HashSet<>();
-
-    public String getBrokenWires(int numBits) {
-
-        List<Pair> swaps = new ArrayList<>();
-
-        // FIRST:
-        swapGateOutputs("hdt", "z05");
-        swapsMade.add(new Pair("hdt", "z05"));
-        swapsMade.add(new Pair("z05", "hdt"));
-
-        // SECOND:
-        swapGateOutputs("z09", "gbf");
-        swapsMade.add(new Pair("z09", "gbf"));
-        swapsMade.add(new Pair("gbf", "z09"));
-
-        // THIRD:
-        swapGateOutputs("mht", "jgt");
-        swapsMade.add(new Pair("mht", "jgt"));
-        swapsMade.add(new Pair("jgt", "mht"));
-
-        // FOURTH:
-        swapGateOutputs("z30", "nbf");
-        swapsMade.add(new Pair("z30", "nbf"));
-        swapsMade.add(new Pair("nbf", "z30"));
-
-        for (int i = 0; i <= numBits; i++) {
-
-            System.out.println(i);
-
-            if (!verifyAdd(i)) {
-
-                System.out.println("FAILED FOR LEVEL: " + i);
-
-                List<String> keys = new ArrayList<>(gates.keySet());
-
-                swaps = getSuccessfulSwaps(i);
-
-                System.out.println(swaps);
-            } 
+    public String getBrokenWires() {
+        HashSet<Pair> brokenWires = getBrokenWiresRecursive(new HashSet<>());
+        List<String> sortedIds = new ArrayList<>();
+        for (Pair pair : brokenWires) {
+            sortedIds.add(pair.id1());
+            sortedIds.add(pair.id2());
         }
-        return "";
+        Collections.sort(sortedIds);
+        return sortedIds.stream().collect(Collectors.joining(","));
     }
+
+    private HashSet<Pair> getBrokenWiresRecursive(HashSet<Pair> swaps) {
+        if (swaps.size() == 4) {
+            for (Pair pair : swaps) {
+                swapGateOutputs(pair.id1(), pair.id2());
+            }
+            if (verifyAdd(NUM_INPUT_BITS)) {
+                return swaps;
+            } else {
+                for (Pair pair : swaps) {
+                    swapGateOutputs(pair.id1(), pair.id2());
+                }
+                return null;
+            }
+        }
+
+        for (Pair pair : swaps) {
+            swapGateOutputs(pair.id1(), pair.id2());
+        }
+
+        for (int i = 0; i <= NUM_INPUT_BITS; i++) {
+            if (!verifyAdd(i)) {
+                List<Pair> potentialSwaps = getSuccessfulSwaps(i, swaps);
+
+                // Swap back earlier gates to not interfer with recursive call.
+                for (Pair pair : swaps) {
+                    swapGateOutputs(pair.id1(), pair.id2());
+                }
+
+                // Try each potential swap recursively.
+                for (Pair pair : potentialSwaps) {
+                    HashSet<Pair> newSwaps = new HashSet<>(swaps);
+                    newSwaps.add(pair);
+                    HashSet<Pair> brokenWires = getBrokenWiresRecursive(newSwaps);
+                    if (brokenWires != null) {
+                        return brokenWires;
+                    }
+                }   
+                break;
+            }
+        }
+        return null;
+    } 
+
 
     /*
      * Returns a list of swaps that makes addition work up to numBits input sizes.
      */
-    public List<Pair> getSuccessfulSwaps(int numBits) {
+    public List<Pair> getSuccessfulSwaps(int numBits, HashSet<Pair> swapsMade) {
         List<Pair> swaps = new ArrayList<>();
         List<String> keys = new ArrayList<>(gates.keySet());
         for (int i = 0; i < keys.size(); i++) {
             for (int j = i + 1; j < keys.size(); j++) {
 
-                if (this.swapsMade.contains(new Pair(keys.get(i), keys.get(j)))) {
+                if (swapsMade.contains(new Pair(keys.get(i), keys.get(j)))) {
                     continue;
                 }
 
@@ -118,24 +133,6 @@ public class Circuit {
             }
         }
         return swaps;
-    }
-
-    /*
-     * Returns current value on x or y wires.
-     */
-    private long getInputValue(String prefix, int numBits) {
-        if (numBits == 0) {
-            return 0L;
-        }
-        if (numBits < 0 || numBits > NUM_INPUT_BITS) {
-            throw new IllegalArgumentException();
-        }
-        String binaryString = this.wires.values().stream()
-            .filter(wire -> wire.getId().startsWith(prefix))
-            .sorted(Comparator.comparing(Wire::getId).reversed())
-            .map(wire -> wire.getSignal().toString())
-            .collect(Collectors.joining());
-        return Long.parseLong(binaryString.substring(NUM_INPUT_BITS-numBits, NUM_INPUT_BITS), 2);
     }
 
     /*

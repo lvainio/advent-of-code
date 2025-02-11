@@ -1,4 +1,4 @@
-package com.example.day24_2024;
+package leo.aoc.year2024.day24;
 
 public enum Signal {
     ZERO, 

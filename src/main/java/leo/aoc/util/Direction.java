@@ -137,6 +137,6 @@ public enum Direction {
      * @return an immutable list containing all directions.
      */
     public static List<Direction> getAllDirections() {
-        return List.of(EAST, NORTHEAST, NORTH, NORTHWEST, WEST, SOUTHWEST, SOUTH, SOUTHWEST); 
+        return List.of(EAST, NORTHEAST, NORTH, NORTHWEST, WEST, SOUTHWEST, SOUTH, SOUTHEAST); 
     }
 }

@@ -3,12 +3,14 @@ package leo.aoc;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Main {
@@ -19,6 +21,14 @@ public class Main {
         HashMap<String, String> parsedArgs = parseArgs(args);
         final String year = parsedArgs.get("year");
         final String day = parsedArgs.get("day");
+        final boolean postPart1 = parsedArgs.containsKey("p1");
+        final boolean postPart2 = parsedArgs.containsKey("p2");
+
+        System.out.println("PARSED: " + parsedArgs);
+        System.out.println(year);
+        System.out.println(day);
+        System.out.println(postPart1);
+        System.out.println(postPart2);
 
         validateYear(year);
         validateDay(day);
@@ -63,6 +73,17 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
+
+        if (postPart1) {
+            System.out.println("  Posting part1");
+            postAnswer(year, day, "1", solutionPart1, sessionCookie);
+            System.out.println();
+        }
+        if (postPart2) {
+            System.out.println("  Posting part2");
+            postAnswer(year, day, "2", solutionPart2, sessionCookie);
+            System.out.println();
+        }
         
         System.out.println("  Part1: " + solutionPart1);
         System.out.println("  part2: " + solutionPart2 + "\n");
@@ -73,13 +94,15 @@ public class Main {
 
     private static HashMap<String, String> parseArgs(String[] args) {
         HashMap<String, String> parsedArgs = new HashMap<>();
-        for (int i = 0; i < args.length; i+=2) {
-            switch (args[i]) {
-                case "-year" -> parsedArgs.put("year", args[i + 1]);
-                case "-day" -> parsedArgs.put("day", args[i + 1]);
-                default -> 
-                    throw new IllegalArgumentException("Invalid command line flag: " + args[i]);
-            }
+        final String year = System.getProperty("year");
+        final String day = System.getProperty("day");
+        parsedArgs.put("year", year);
+        parsedArgs.put("day", day);
+        if (Arrays.asList(args).contains("-p1")) {
+            parsedArgs.put("p1", "true");
+        }
+        if (Arrays.asList(args).contains("-p2")) {
+            parsedArgs.put("p2", "true");
         }
         return parsedArgs;
     }
@@ -167,5 +190,34 @@ public class Main {
             System.exit(1);
         }
         return input; 
+    }
+
+    private static void postAnswer(
+        String year, 
+        String day, 
+        String part, 
+        String answer,
+        String cookie
+    ) {
+        try {
+            URI uri = URI.create("https://adventofcode.com/" + year + "/day/" + day + "/answer");
+            String payload = "level=" + URLEncoder.encode(part, StandardCharsets.UTF_8) +
+                              "&answer=" + URLEncoder.encode(answer, StandardCharsets.UTF_8);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .header("Cookie", "session=" + cookie)
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .POST(HttpRequest.BodyPublishers.ofString(payload))
+                    .build();
+            HttpClient client = HttpClient.newHttpClient();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                System.out.println("  Answer posted successfully!");
+            } else {
+                System.out.println("  Failed to post answer. Status code: " + response.statusCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

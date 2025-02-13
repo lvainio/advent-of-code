@@ -24,12 +24,6 @@ public class Main {
         final boolean postPart1 = parsedArgs.containsKey("p1");
         final boolean postPart2 = parsedArgs.containsKey("p2");
 
-        System.out.println("PARSED: " + parsedArgs);
-        System.out.println(year);
-        System.out.println(day);
-        System.out.println(postPart1);
-        System.out.println(postPart2);
-
         validateYear(year);
         validateDay(day);
 

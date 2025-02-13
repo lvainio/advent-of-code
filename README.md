@@ -32,9 +32,9 @@ mvn exec:java -Dyear=<year> -Dday=<day>
 To automate posting answers to the Advent of Code website, you can use the following commands. Choose the appropriate command based on which part of the challenge you want to submit:
 
 ```bash
-mvn exec:java -Dyear=<year> -Dday=<day> -Dexec.args="-p1"
-mvn exec:java -Dyear=<year> -Dday=<day> -Dexec.args="-p2"
-mvn exec:java -Dyear=<year> -Dday=<day> -Dexec.args="-p1 -p2"
+mvn exec:java -Dyear=<year> -Dday=<day> "-Dexec.args=-p1 -p2"
+mvn exec:java -Dyear=<year> -Dday=<day> "-Dexec.args=-p1"
+mvn exec:java -Dyear=<year> -Dday=<day> "-Dexec.args=-p2"
 ```
 
 ## Solutions

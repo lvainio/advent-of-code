@@ -37,7 +37,7 @@
                         <argument>-year</argument>
                         <argument>${year}</argument>   
                         <argument>-day</argument>
-                        <argument>${day}</argument>
+                        <argument>${day}</argument> 
                     </arguments>
                 </configuration>
             </plugin>

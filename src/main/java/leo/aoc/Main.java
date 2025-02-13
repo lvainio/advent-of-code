@@ -19,6 +19,7 @@ public class Main {
 
     public static void main(String[] args) {
         HashMap<String, String> parsedArgs = parseArgs(args);
+        
         final String year = parsedArgs.get("year");
         final String day = parsedArgs.get("day");
         final boolean postPart1 = parsedArgs.containsKey("p1");

@@ -1,10 +1,10 @@
 package leo.aoc.year2015.day19;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -12,10 +12,8 @@ import leo.aoc.AbstractSolver;
 
 public class Solver extends AbstractSolver {
 
-    private record Node(String molecule, int steps) {
-    }
-
     private final Map<String, HashSet<String>> replacements;
+
     private final String originalMolecule;
 
     public Solver(String input) {
@@ -28,6 +26,7 @@ public class Solver extends AbstractSolver {
                 .collect(Collectors.groupingBy(
                         arr -> arr[0],
                         Collectors.mapping(arr -> arr[2], Collectors.toCollection(HashSet::new))));
+
         this.originalMolecule = parts[1];
     }
 
@@ -42,43 +41,29 @@ public class Solver extends AbstractSolver {
 
     @Override
     public String solvePart2() {
-        return "WRONG ANSWER";
-
-        // return Integer.toString(bfs());
-    }
-
-    public int bfs() {
-        HashSet<String> visited = new HashSet<>();
-        Queue<Node> queue = new LinkedList<>();
-
-        String startMolecule = "e";
-        Node startNode = new Node(startMolecule, 0);
-
-        visited.add(startMolecule);
-        queue.offer(startNode);
-
-        while (!queue.isEmpty()) {
-            Node currentNode = queue.poll();
-            String currentMolecule = currentNode.molecule();
-            int numSteps = currentNode.steps();
-  
-            if (currentMolecule.equals(this.originalMolecule)) {
-                return numSteps;
+        HashMap<String, String> reverseReplacements = new HashMap<>();
+        for (String key : this.replacements.keySet()) {
+            for (String replacement : this.replacements.get(key)) {
+                reverseReplacements.put(replacement, key);
             }
+        }
 
-            for (String key : this.replacements.keySet()) {
-                for (String replacement : this.replacements.get(key)) {
-                    HashSet<String> newMolecules = replace(currentMolecule, key, replacement);
-                    for (String newMolecule : newMolecules) {
-                        if (!visited.contains(newMolecule)) {
-                            queue.offer(new Node(newMolecule, numSteps + 1));
-                            visited.add(newMolecule);
-                        }
-                    }
+        List<Map.Entry<String, String>> sortedReplacements;
+        sortedReplacements = new ArrayList<>(reverseReplacements.entrySet());
+        sortedReplacements.sort((a, b) -> b.getKey().length() - a.getKey().length());
+
+        int steps = 0;
+        String molecule = this.originalMolecule;
+        while (!molecule.equals("e")) {
+            for (Map.Entry<String, String> entry : sortedReplacements) {
+                if (molecule.contains(entry.getKey())) {
+                    molecule = molecule.replaceFirst(entry.getKey(), entry.getValue()); 
+                    steps++;
+                    break;
                 }
             }
         }
-        throw new IllegalStateException("Could not make the molecule!");
+        return Integer.toString(steps);
     }
 
     private HashSet<String> replace(String molecule, String key, String replacement) {

@@ -45,29 +45,35 @@ Java
 
 ### 2023
 
-Python
+Java
 
 ### 2022
 
-Python
+Java
 
 ### 2021
 
-Typescript
+Scala
 
 ### 2020
 
-Python, Java, Kotlin, C, Prolog, Go, Javascript, Typescript, C++, Haskell, Ruby, Rust, PHP, Perl, Scala
+Clojure
 
 ### 2019
 
-Rust
+Clojure
 
 ### 2018
 
+Kotlin
+
 ### 2017
 
+Kotlin
+
 ### 2016
+
+Java
 
 ### 2015
 

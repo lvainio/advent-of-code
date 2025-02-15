@@ -1,7 +1,6 @@
 package leo.aoc.year2015.day22;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -39,8 +38,7 @@ public class Solver extends AbstractSolver {
         Player player = new Player(50, 500, 0, 0);
         Boss boss = new Boss(this.originalBoss.health(), this.originalBoss.damage());
         State state = new State(true, new HashSet<>(), player, boss);
-
-        return Integer.toString(findMinCost(state, new HashMap<>()));
+        return Integer.toString(findMinCost(state, false));
     }
 
     @Override
@@ -48,13 +46,11 @@ public class Solver extends AbstractSolver {
         Player player = new Player(50, 500, 0, 0);
         Boss boss = new Boss(this.originalBoss.health(), this.originalBoss.damage());
         State state = new State(true, new HashSet<>(), player, boss);
-
-        return Integer.toString(findMinCostPart2(state));
+        return Integer.toString(findMinCost(state, true));
     }
 
-    private int findMinCostPart2(State state) {
+    private int findMinCost(State state, boolean hardMode) {
         PriorityQueue<State> pq = new PriorityQueue<>(Comparator.comparingInt(s -> s.player().manaSpent()));
-    
         pq.add(state);
     
         while (!pq.isEmpty()) {
@@ -67,7 +63,7 @@ public class Solver extends AbstractSolver {
             Player player = currentState.player();
 
             int newPlayerHealthHardMode = player.health();
-            if (currentState.isPlayerTurn()) {
+            if (currentState.isPlayerTurn() && hardMode) {
                 newPlayerHealthHardMode--;
             }
 
@@ -106,39 +102,6 @@ public class Solver extends AbstractSolver {
             }
         }
         return Integer.MAX_VALUE;
-    }
-
-    private int findMinCost(State state, HashMap<State, Integer> seen) {
-
-        if (seen.containsKey(state)) {
-            return seen.get(state);
-        }
-
-        if (isPlayerDead(state)) {
-            return Integer.MAX_VALUE;
-        }
-
-        State stateAfterEffects = applyStartOfTurnEffects(state);
-
-        if (isBossDead(stateAfterEffects)) {
-            return stateAfterEffects.player().manaSpent();
-        }
-
-        int minCost = Integer.MAX_VALUE;
-        if (stateAfterEffects.isPlayerTurn()) {
-            for (Spell spell : SPELLS) {
-                if (canAffordSpell(stateAfterEffects, spell) && canCastSpell(stateAfterEffects, spell)) {
-                    State newState = applyPlayerTurn(stateAfterEffects, spell);
-                    minCost = Math.min(minCost, findMinCost(newState, seen));
-                }
-            }
-        } else {
-            State newState = applyBossTurn(stateAfterEffects);
-            minCost = Math.min(minCost, findMinCost(newState, seen));
-        }
-
-        seen.put(state, minCost);
-        return minCost;
     }
 
     private boolean canAffordSpell(State state, Spell spell) {

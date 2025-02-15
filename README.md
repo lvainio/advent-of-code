@@ -69,7 +69,7 @@ Kotlin
 
 ### 2017
 
-Kotlin
+Clojure
 
 ### 2016
 

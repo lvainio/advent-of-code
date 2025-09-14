@@ -1,0 +1,5 @@
+java_library(
+    name = "utils",
+    srcs = ["Utils.java"],
+    visibility = ["//visibility:public"],
+)

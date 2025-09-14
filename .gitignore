@@ -93,3 +93,13 @@ nb-configuration.xml
 ## Project
 ##############################
 aoc_cache/
+
+
+##############################
+## Bazel
+##############################
+bazel-*
+bazel-out/
+bazel-bin/
+bazel-genfiles/
+bazel-testlogs/

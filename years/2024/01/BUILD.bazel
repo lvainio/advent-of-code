@@ -24,4 +24,3 @@ java_junit5_test(
         "@maven//:org_junit_platform_junit_platform_launcher",
         "@maven//:org_junit_platform_junit_platform_reporting",
     ],
-)

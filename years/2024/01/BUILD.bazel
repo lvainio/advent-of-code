@@ -9,7 +9,7 @@ java_library(
 )
 
 java_binary(
-    name = "Solver",
+    name = "solver",
     main_class = "me.vainio.year2024.day01.Solver",
     runtime_deps = [":solver_library"],
 )

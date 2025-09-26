@@ -1,9 +1,12 @@
+"""My Advent of Code solutions."""
+
 module(
     name = "advent-of-code",
     version = "1.0.0",
     compatibility_level = 1,
 )
 
+bazel_dep(name = "rules_shell", version = "0.3.0")
 bazel_dep(name = "rules_java", version = "8.14.0")
 bazel_dep(name = "rules_jvm_external", version = "6.8")
 bazel_dep(name = "contrib_rules_jvm", version = "0.30.0")

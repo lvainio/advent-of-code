@@ -1,4 +1,4 @@
-"""Common Java dependencies for the project."""
+"""Java dependencies for the project."""
 
 JUNIT5_DEPS = [
     "@maven//:org_junit_jupiter_junit_jupiter_api",

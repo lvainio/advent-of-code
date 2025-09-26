@@ -1,0 +1,12 @@
+sh_binary(
+    name = "run",
+    srcs = ["run.sh"],
+    data = [
+        "//years/2024/01:solver",
+        # Add more day targets here as you create them
+        # "//years/2024/02:solve",
+        # "//years/2024/03:solve",
+        # etc.
+    ],
+    visibility = ["//visibility:public"],
+)

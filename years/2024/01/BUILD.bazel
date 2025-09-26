@@ -1,4 +1,6 @@
-load("@contrib_rules_jvm//docs:stardoc-input.bzl", "java_junit5_test")
+load("@contrib_rules_jvm//java:defs.bzl", "java_test_suite")
+load("@rules_java//java:defs.bzl", "java_binary", "java_library")
+load("//tools/java:deps.bzl", "JUNIT5_DEPS")
 
 java_library(
     name = "solver_library",
@@ -8,20 +10,15 @@ java_library(
 
 java_binary(
     name = "Solver",
-    main_class = "lvainio.year2024.day01.Solver",
+    main_class = "me.vainio.year2024.day01.Solver",
     runtime_deps = [":solver_library"],
 )
 
-java_junit5_test(
-    name = "SolverTest",
-    test_class = "lvainio.year2024.day01.SolverTest",
-    srcs = glob(["src/test/java/**/*.java"]),
+java_test_suite(
+    name = "all_tests",
+    srcs = glob(["src/test/java/**/*Test.java"]),
+    runner = "junit5",
     deps = [
         ":solver_library",
-        "@maven//:org_junit_jupiter_junit_jupiter_api",
-        "@maven//:org_junit_jupiter_junit_jupiter_params",
-        "@maven//:org_junit_jupiter_junit_jupiter_engine",
-        "@maven//:org_junit_platform_junit_platform_launcher",
-        "@maven//:org_junit_platform_junit_platform_reporting",
-    ],
+    ] + JUNIT5_DEPS,
 )

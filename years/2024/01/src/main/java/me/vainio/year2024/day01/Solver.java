@@ -1,4 +1,4 @@
-package lvainio.year2024.day01;
+package me.vainio.year2024.day01;
 
 import java.util.ArrayList;
 import java.util.Collections;

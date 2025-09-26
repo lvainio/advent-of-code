@@ -1,4 +1,4 @@
-package lvainio.year2024.day01;
+package me.vainio.year2024.day01;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;

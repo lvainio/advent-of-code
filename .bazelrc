@@ -3,4 +3,6 @@ common --java_runtime_version=remotejdk_21
 common --tool_java_language_version=21
 common --tool_java_runtime_version=remotejdk_21
 
+common --verbose_failures
+
 test --test_output=all

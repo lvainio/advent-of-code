@@ -14,7 +14,7 @@ public class SolverTest {
         3   9
         3   3
         """;
-        
+
     private static Solver solver;
 
     @BeforeAll
@@ -24,13 +24,11 @@ public class SolverTest {
 
     @Test
     void testSolvePart1() {
-        String result = solver.solvePart1();
-        assertEquals("11", result);
+        assertEquals("11", solver.solvePart1());
     }
 
     @Test
     void testSolvePart2() {
-        String result = solver.solvePart2();
-        assertEquals("31", result);
+        assertEquals("31", solver.solvePart2());
     }
 }

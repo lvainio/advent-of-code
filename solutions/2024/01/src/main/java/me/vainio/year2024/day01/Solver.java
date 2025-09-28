@@ -1,7 +1,7 @@
 package me.vainio.year2024.day01;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,23 +14,13 @@ public class Solver {
     private List<Integer> leftList;
     private List<Integer> rightList;
 
-    public static void main(String[] args) {        
+    public static void main(String[] args) {  
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            StringBuilder inputBuilder = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                inputBuilder.append(line).append("\n");
-            }
-            String input = inputBuilder.toString().trim();
-            
+            String input = new String(System.in.readAllBytes(), StandardCharsets.UTF_8).trim();
             Solver solver = new Solver(input);
-            String part1 = solver.solvePart1();
-            String part2 = solver.solvePart2();
-
-            System.out.println(part1);
-            System.out.println(part2);
-        } catch (Exception e) {
+            System.out.println(solver.solvePart1());
+            System.out.println(solver.solvePart2());
+        } catch (IOException e) {
             System.err.println("Error reading input: " + e.getMessage());
             System.exit(1);
         }
@@ -54,7 +44,7 @@ public class Solver {
         Collections.sort(leftListCopy);
         Collections.sort(rightListCopy);
 
-        int totalDistance = IntStream.range(0, leftListCopy.size()).map(idx -> {
+        final int totalDistance = IntStream.range(0, leftListCopy.size()).map(idx -> {
             int left = leftListCopy.get(idx);
             int right = rightListCopy.get(idx);
             return Math.abs(left - right);
@@ -64,10 +54,10 @@ public class Solver {
     }
 
     public String solvePart2() {
-        Map<Integer, Long> frequencyMap = this.rightList.stream()
+        final Map<Integer, Long> frequencyMap = this.rightList.stream()
             .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
-        long similarityScore = this.leftList.stream()
+        final long similarityScore = this.leftList.stream()
             .mapToLong(key -> key * frequencyMap.getOrDefault(key, 0L))
             .sum();
 

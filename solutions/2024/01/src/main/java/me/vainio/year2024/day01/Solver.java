@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Solver {
-    private List<Integer> leftList;
-    private List<Integer> rightList;
+    private final List<Integer> leftList;
+    private final List<Integer> rightList;
 
     public static void main(String[] args) {  
         try {
-            String input = new String(System.in.readAllBytes(), "UTF-8").trim();
-            Solver solver = new Solver(input);
+            final String input = new String(System.in.readAllBytes(), "UTF-8").trim();
+            final Solver solver = new Solver(input);
             System.out.println(solver.solvePart1());
             System.out.println(solver.solvePart2());
         } catch (IOException e) {

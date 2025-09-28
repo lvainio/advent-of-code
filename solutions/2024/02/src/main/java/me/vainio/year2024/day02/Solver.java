@@ -1,34 +1,41 @@
-package leo.aoc.year2024.day2;
+package me.vainio.year2024.day02;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import leo.aoc.AbstractSolver;
+public class Solver {
+    
+    final private List<List<Integer>> reports;
 
-public class Solver extends AbstractSolver {
-
-    private List<List<Integer>> reports;
+    public static void main(String[] args) {  
+        try {
+            final String input = new String(System.in.readAllBytes(), "UTF-8").trim();
+            final Solver solver = new Solver(input);
+            System.out.println(solver.solvePart1());
+            System.out.println(solver.solvePart2());
+        } catch (IOException e) {
+            System.err.println("Error reading input: " + e.getMessage());
+            System.exit(1);
+        }
+    }
 
     public Solver(String input) {
-        super(input);
-
-        this.reports = this.input.lines()
+        this.reports = input.lines()
                 .map(line -> line.split("\\s+")) 
                 .map(nums -> 
                     List.of(nums).stream().map(Integer::parseInt).collect(Collectors.toList()))
                 .collect(Collectors.toList());
     }
 
-    @Override
     public String solvePart1() {
-        long numSafe = this.reports.stream().filter(report -> isSafePart1(report)).count();
+        final long numSafe = this.reports.stream().filter(report -> isSafePart1(report)).count();
         return Long.toString(numSafe);
     }
 
-    @Override
     public String solvePart2() {
-        long numSafe = this.reports.stream().filter(report -> isSafePart2(report)).count();
+        final long numSafe = this.reports.stream().filter(report -> isSafePart2(report)).count();
         return Long.toString(numSafe);
     }
 
@@ -55,8 +62,8 @@ public class Solver extends AbstractSolver {
             return true; 
         }
         for (int i = 0; i < report.size() - 1; i++) {
-            int first = report.get(i);        
-            int second = report.get(i + 1);   
+            final int first = report.get(i);        
+            final int second = report.get(i + 1);   
             if (first >= second) {
                 return false;
             }
@@ -69,8 +76,8 @@ public class Solver extends AbstractSolver {
             return true; 
         }
         for (int i = 0; i < report.size() - 1; i++) {
-            int first = report.get(i);        
-            int second = report.get(i + 1);   
+            final int first = report.get(i);        
+            final int second = report.get(i + 1);   
             if (first <= second) {
                 return false;
             }
@@ -83,9 +90,9 @@ public class Solver extends AbstractSolver {
             return true; 
         }
         for (int i = 0; i < report.size() - 1; i++) {
-            int first = report.get(i);        
-            int second = report.get(i + 1);   
-            int diff = Math.abs(first - second);
+            final int first = report.get(i);        
+            final int second = report.get(i + 1);   
+            final int diff = Math.abs(first - second);
             if (diff < 1 || diff > 3) {
                 return false;
             }

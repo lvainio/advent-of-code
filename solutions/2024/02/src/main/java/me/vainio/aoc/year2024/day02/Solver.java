@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import me.vainio.aoc.cache.AocCache;
 
 public class Solver {
     private static final int YEAR = 2024;

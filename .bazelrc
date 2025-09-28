@@ -5,4 +5,6 @@ common --tool_java_runtime_version=remotejdk_21
 
 common --verbose_failures
 
+common --symlink_prefix=build/bazel-
+
 test --test_output=all

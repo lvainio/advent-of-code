@@ -5,13 +5,12 @@ load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 load("//tools/java:deps.bzl", "JUNIT5_DEPS")
 
 def java_day(year, day):
-    """Creates the standard Java Advent of Code day setup.
+    """Creates a standard Java Advent of Code day setup.
     
     Args:
         year: The year as an integer (e.g. 2024)
         day: The day as an integer (e.g. 1)
     """
-    # Format day with leading zero for the main class
     year_str = str(year)
     day_str = str(day)
     if day < 10:

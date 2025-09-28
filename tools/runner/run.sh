@@ -24,7 +24,7 @@ DAY_PADDED=$(printf "%02d" $DAY)
 echo "🎄 Running AoC $YEAR Day $DAY solver..."
 
 # Construct the Bazel target
-TARGET="//years/$YEAR/$DAY_PADDED:solver"
+TARGET="//solutions/$YEAR/$DAY_PADDED:solver"
 
 # Check if the BUILD file exists (basic check)
 # When running with bazel run, we need to find the workspace root
@@ -39,7 +39,7 @@ elif [ -f "../MODULE.bazel" ]; then
     WORKSPACE_ROOT=".."
 fi
 
-BUILD_FILE="$WORKSPACE_ROOT/years/$YEAR/$DAY_PADDED/BUILD.bazel"
+BUILD_FILE="$WORKSPACE_ROOT/solutions/$YEAR/$DAY_PADDED/BUILD.bazel"
 if [ ! -f "$BUILD_FILE" ]; then
     echo "❌ Error: Day $DAY for year $YEAR not found!"
     echo "Expected BUILD file at: $BUILD_FILE"
@@ -61,7 +61,7 @@ if ! bazel build "$TARGET"; then
 fi
 
 # Find the built binary
-BINARY_PATH=$(bazel info bazel-bin)/years/$YEAR/$DAY_PADDED/solver
+BINARY_PATH=$(bazel info bazel-bin)/solutions/$YEAR/$DAY_PADDED/solver
 if [ ! -f "$BINARY_PATH" ]; then
     echo "❌ Error: Built binary not found at: $BINARY_PATH"
     echo "The build may have failed or the binary name might be different."

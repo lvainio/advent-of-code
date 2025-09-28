@@ -18,6 +18,7 @@ ci
 Document command of running specific day manually: echo "input" | bazel run //years/2024/01:solver
 or bazel run //years/2024/01:solver then enter input + ctrl + d. 
 make a better run.sh script / should it even use bazel?
+generate java day script?
 
 The program automatically retrieves the problem input, and therefore requires the Advent of Code session cookie. To use it, retrieve the session cookie from your browser and set it as an environment variable `AOC_SESSION`. For example, in Windows it can be set with the following command:
 

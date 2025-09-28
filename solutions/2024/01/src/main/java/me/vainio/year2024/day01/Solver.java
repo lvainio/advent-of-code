@@ -1,7 +1,6 @@
 package me.vainio.year2024.day01;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +15,7 @@ public class Solver {
 
     public static void main(String[] args) {  
         try {
-            String input = new String(System.in.readAllBytes(), StandardCharsets.UTF_8).trim();
+            String input = new String(System.in.readAllBytes(), "UTF-8").trim();
             Solver solver = new Solver(input);
             System.out.println(solver.solvePart1());
             System.out.println(solver.solvePart2());

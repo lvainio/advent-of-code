@@ -17,11 +17,14 @@ def java_day(year, day):
         day_padded = "0" + day_str
     else:
         day_padded = day_str
-    main_class = "me.vainio.year{}.day{}.Solver".format(year_str, day_padded)
+    main_class = "me.vainio.aoc.year{}.day{}.Solver".format(year_str, day_padded)
     
     java_library(
         name = "solver_library",
         srcs = native.glob(["src/main/java/**/*.java"]),
+        deps = [
+            "//libraries/java:commons",
+        ],
     )
     
     java_binary(

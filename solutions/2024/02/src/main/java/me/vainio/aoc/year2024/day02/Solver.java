@@ -1,4 +1,4 @@
-package me.vainio.year2024.day02;
+package me.vainio.aoc.year2024.day02;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,19 +6,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Solver {
+    private static final int YEAR = 2024;
+    private static final int DAY = 2;
     
     final private List<List<Integer>> reports;
 
     public static void main(String[] args) {  
-        try {
-            final String input = new String(System.in.readAllBytes(), "UTF-8").trim();
-            final Solver solver = new Solver(input);
-            System.out.println(solver.solvePart1());
-            System.out.println(solver.solvePart2());
-        } catch (IOException e) {
-            System.err.println("Error reading input: " + e.getMessage());
-            System.exit(1);
-        }
+        final String input = AocCache.getInput(YEAR, DAY);
+        final Solver solver = new Solver(input);
+
+        final String part1 = solver.solvePart1();
+        final String part2 = solver.solvePart2();
+
+        System.out.println(part1);
+        System.out.println(part2);
+
+        AocCache.saveAnswer(YEAR, DAY, 1, part1);
+        AocCache.saveAnswer(YEAR, DAY, 2, part2);
     }
 
     public Solver(String input) {

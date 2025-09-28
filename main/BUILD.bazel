@@ -1,6 +1,0 @@
-java_binary(
-    name = "main",
-    srcs = ["Main.java"],
-    main_class = "main.Main",
-    deps = ["//core:utils"],
-)

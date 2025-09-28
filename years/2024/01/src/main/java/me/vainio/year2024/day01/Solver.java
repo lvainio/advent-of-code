@@ -54,9 +54,9 @@ public class Solver {
         Collections.sort(leftListCopy);
         Collections.sort(rightListCopy);
 
-        int totalDistance = IntStream.range(0, leftListCopy.size()).map(i -> {
-            int left = leftListCopy.get(i);
-            int right = rightListCopy.get(i);
+        int totalDistance = IntStream.range(0, leftListCopy.size()).map(idx -> {
+            int left = leftListCopy.get(idx);
+            int right = rightListCopy.get(idx);
             return Math.abs(left - right);
         }).sum();
 

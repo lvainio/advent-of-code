@@ -1,4 +1,4 @@
-load("//tools/java:macros.bzl", "java_day")
+load("//tools/java:defs.bzl", "java_day")
 
 java_day(
     year = 2024,

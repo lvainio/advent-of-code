@@ -11,6 +11,12 @@ Before running this project, make sure you have the following software installed
 
 ## Usage
 
+### TODOS
+java formatting
+bazel formatting
+ci
+
+
 The program automatically retrieves the problem input, and therefore requires the Advent of Code session cookie. To use it, retrieve the session cookie from your browser and set it as an environment variable `AOC_SESSION`. For example, in Windows it can be set with the following command:
 
 ```bash

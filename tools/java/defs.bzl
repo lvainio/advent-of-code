@@ -1,4 +1,4 @@
-"""Macros for Java Advent of Code solutions."""
+"""Defs for Java Advent of Code solutions."""
 
 load("@contrib_rules_jvm//java:defs.bzl", "java_test_suite")
 load("@rules_java//java:defs.bzl", "java_binary", "java_library")
@@ -9,7 +9,7 @@ def java_day(year, day):
     
     Args:
         year: The year as an integer (e.g. 2024)
-        day: The day as an integer (e.g. 1 for day 1)
+        day: The day as an integer (e.g. 1)
     """
     # Format day with leading zero for the main class
     year_str = str(year)

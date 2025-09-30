@@ -18,7 +18,9 @@ public class Solver {
     private final List<Integer> rightList;
 
     public static void main(String[] args) {  
-        final String input = AocCache.getInput(YEAR, DAY);
+        final AocCache cache = new AocCache();
+
+        final String input = cache.getInput(YEAR, DAY);
         final Solver solver = new Solver(input);
 
         final String part1 = solver.solvePart1();
@@ -27,8 +29,8 @@ public class Solver {
         System.out.println(part1);
         System.out.println(part2);
 
-        AocCache.saveAnswer(YEAR, DAY, 1, part1);
-        AocCache.saveAnswer(YEAR, DAY, 2, part2);
+        cache.saveAnswer(YEAR, DAY, 1, part1);
+        cache.saveAnswer(YEAR, DAY, 2, part2);
     }
 
     public Solver(String input) {

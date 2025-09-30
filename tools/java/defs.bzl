@@ -22,6 +22,7 @@ def java_day(year, day):
     java_library(
         name = "solver_library",
         srcs = native.glob(["src/main/java/**/*.java"]),
+        resources = native.glob(["src/main/resources/**/*"], allow_empty = True),
         deps = [
             "//libraries/java:commons",
         ],
@@ -37,6 +38,10 @@ def java_day(year, day):
     java_test_suite(
         name = "all_tests",
         srcs = native.glob(["src/test/java/**/*Test.java"]),
+        resources = native.glob([
+            "src/test/resources/**/*",
+            "src/main/resources/**/*"
+        ], allow_empty = True),
         runner = "junit5",
         deps = [
             ":solver_library",

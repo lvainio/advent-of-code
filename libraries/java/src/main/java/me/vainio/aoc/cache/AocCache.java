@@ -7,36 +7,41 @@ import java.io.IOException;
 import java.nio.file.StandardOpenOption;
 
 public class AocCache {
+    
+    private final Path cacheDir;
 
-    private static final String CACHE_DIR = ".aoc_cache";
+    public AocCache() {
+        this.cacheDir = Path.of(System.getProperty("user.home"), ".aoc_cache");
+    }
 
-    public static String getInput(int year, int day) {
+    public AocCache(Path cacheDir) {
+        this.cacheDir = cacheDir;
+    }
+    
+    public String getInput(int year, int day) {
         return read(cachePath(year, day, "input.txt"));
     }
 
-    public static void saveInput(int year, int day, String input) {
+    public void saveInput(int year, int day, String input) {
         write(cachePath(year, day, "input.txt"), input);
     }
 
-    public static String getAnswer(int year, int day, int part) {
+    public String getAnswer(int year, int day, int part) {
         return read(cachePath(year, day, "part" + part + ".txt"));
     }
 
-    public static void saveAnswer(int year, int day, int part, String answer) {
+    public void saveAnswer(int year, int day, int part, String answer) {
         write(cachePath(year, day, "part" + part + ".txt"), answer);
     }
 
-    private static Path cachePath(int year, int day, String fileName) {
-        return Path.of(
-            System.getProperty("user.home"),
-            CACHE_DIR,
-            String.valueOf(year),
-            String.format("%02d", day),
-            fileName
-        );
+    private Path cachePath(int year, int day, String fileName) {
+        return this.cacheDir
+            .resolve(String.valueOf(year))
+            .resolve(String.format("%02d", day))
+            .resolve(fileName);
     }
 
-    private static String read(Path path) {
+    private String read(Path path) {
         try {
             return Files.readString(path);
         } catch (IOException e) {
@@ -44,7 +49,7 @@ public class AocCache {
         }
     }
 
-    private static void write(Path path, String contents) {
+    private void write(Path path, String contents) {
         try {
             Files.createDirectories(path.getParent());
             Files.writeString(

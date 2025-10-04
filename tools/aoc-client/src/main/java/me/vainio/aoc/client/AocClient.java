@@ -10,7 +10,7 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Optional;
 
-public class AocClient {
+final class AocClient {
     private static final String BASE_URL = "https://adventofcode.com/";
     
     public static String downloadInput(String year, String day, String cookie) {

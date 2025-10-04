@@ -94,7 +94,7 @@ public class AocCacheTest {
                                     .resolve("input.txt");
         
         assertTrue(Files.exists(expectedPath), "File should exist with padded day directory");
-        assertEquals(input, Files.readString(expectedPath));
+        assertEquals(input, cache.getInput(year, day));
     }
     
     @Test

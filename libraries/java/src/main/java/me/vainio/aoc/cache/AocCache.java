@@ -2,7 +2,6 @@ package me.vainio.aoc.cache;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.io.IOException;
 import java.nio.file.StandardOpenOption;
 import java.util.Objects;
@@ -44,7 +43,7 @@ public class AocCache {
 
     private String read(final Path path) {
         try {
-            return Files.readString(path);
+            return Files.readString(path).trim();
         } catch (IOException e) {
             throw new RuntimeException("Failed to read file: " + path, e);
         }
@@ -53,9 +52,10 @@ public class AocCache {
     private void write(final Path path, final String contents) {
         try {
             Files.createDirectories(path.getParent());
+            String contentWithNewline = contents.endsWith("\n") ? contents : contents + "\n";
             Files.writeString(
                 path,
-                contents,
+                contentWithNewline,
                 StandardOpenOption.CREATE,
                 StandardOpenOption.TRUNCATE_EXISTING
             );

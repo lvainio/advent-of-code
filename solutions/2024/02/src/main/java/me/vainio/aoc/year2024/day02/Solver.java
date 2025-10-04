@@ -1,6 +1,5 @@
 package me.vainio.aoc.year2024.day02;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

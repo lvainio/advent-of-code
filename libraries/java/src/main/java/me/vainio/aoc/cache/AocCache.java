@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.IOException;
 import java.nio.file.StandardOpenOption;
+import java.util.Objects;
 
 public class AocCache {
     
@@ -15,7 +16,7 @@ public class AocCache {
     }
 
     public AocCache(final Path cacheDir) {
-        this.cacheDir = cacheDir;
+        this.cacheDir = Objects.requireNonNull(cacheDir);
     }
     
     public String getInput(final int year, final int day) {

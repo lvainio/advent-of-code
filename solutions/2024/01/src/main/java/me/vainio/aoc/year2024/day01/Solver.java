@@ -17,7 +17,7 @@ public class Solver {
     private final List<Integer> leftList;
     private final List<Integer> rightList;
 
-    public static void main(String[] args) {  
+    public static void main(final String[] args) {  
         final AocCache cache = new AocCache();
 
         final String input = cache.getInput(YEAR, DAY);
@@ -33,12 +33,12 @@ public class Solver {
         cache.saveAnswer(YEAR, DAY, 2, part2);
     }
 
-    public Solver(String input) {
+    public Solver(final String input) {
         this.leftList = new ArrayList<>();
         this.rightList = new ArrayList<>();
 
         input.lines().forEach(line -> {
-            String[] nums = line.trim().split("\\s+");
+            final String[] nums = line.trim().split("\\s+");
             this.leftList.add(Integer.valueOf(nums[0]));
             this.rightList.add(Integer.valueOf(nums[1]));
         });

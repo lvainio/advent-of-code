@@ -12,7 +12,7 @@ public class Solver {
     
     final private List<List<Integer>> reports;
 
-    public static void main(String[] args) {  
+    public static void main(final String[] args) {  
         final AocCache cache = new AocCache();
 
         final String input = cache.getInput(YEAR, DAY);
@@ -28,7 +28,7 @@ public class Solver {
         cache.saveAnswer(YEAR, DAY, 2, part2);
     }
 
-    public Solver(String input) {
+    public Solver(final String input) {
         this.reports = input.lines()
                 .map(line -> line.split("\\s+")) 
                 .map(nums -> 
@@ -46,11 +46,11 @@ public class Solver {
         return Long.toString(numSafe);
     }
 
-    private boolean isSafePart1(List<Integer> report) {
+    private boolean isSafePart1(final List<Integer> report) {
         return (isAscending(report) || isDescending(report)) && hasSafeDiffs(report);
     }
 
-    private boolean isSafePart2(List<Integer> report) {
+    private boolean isSafePart2(final List<Integer> report) {
         if ((isAscending(report) || isDescending(report)) && hasSafeDiffs(report)) {
             return true;
         }
@@ -64,7 +64,7 @@ public class Solver {
         return false;
     }
 
-    private boolean isAscending(List<Integer> report) {
+    private boolean isAscending(final List<Integer> report) {
         if (report.size() <= 1) {
             return true; 
         }
@@ -78,7 +78,7 @@ public class Solver {
         return true;
     }
 
-    private boolean isDescending(List<Integer> report) {
+    private boolean isDescending(final List<Integer> report) {
         if (report.size() <= 1) {
             return true; 
         }
@@ -92,7 +92,7 @@ public class Solver {
         return true;
     }
 
-    private boolean hasSafeDiffs(List<Integer> report) {
+    private boolean hasSafeDiffs(final List<Integer> report) {
         if (report.size() <= 1) {
             return true; 
         }

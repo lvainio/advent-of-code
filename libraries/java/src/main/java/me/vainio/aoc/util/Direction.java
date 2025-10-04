@@ -14,11 +14,11 @@ public enum Direction {
 
     private final int angle; 
 
-    Direction(int angle) {
+    Direction(final int angle) {
         this.angle = angle;
     }
 
-    private static Direction fromAngle(int angle) {
+    private static Direction fromAngle(final int angle) {
         for (Direction dir : Direction.values()) {
             if (dir.angle == angle) {
                 return dir;
@@ -43,7 +43,7 @@ public enum Direction {
      * @return The new direction after turning by the specified degrees.
      * @throws IllegalArgumentException if the angle is not a multiple of 45°.
      */
-    public Direction turnRight(int degrees) {
+    public Direction turnRight(final int degrees) {
         if (degrees % 45 != 0) {
             throw new IllegalArgumentException("Invalid angle, degrees must be a multiple of 45");
         }
@@ -70,7 +70,7 @@ public enum Direction {
      * @return The new direction after turning by the specified degrees.
      * @throws IllegalArgumentException if the angle is not a multiple of 45°.
      */
-    public Direction turnLeft(int degrees) {
+    public Direction turnLeft(final int degrees) {
         return turnRight(-degrees); 
     }
 

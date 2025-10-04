@@ -14,34 +14,34 @@ public class AocCache {
         this.cacheDir = Path.of(System.getProperty("user.home"), ".aoc_cache");
     }
 
-    public AocCache(Path cacheDir) {
+    public AocCache(final Path cacheDir) {
         this.cacheDir = cacheDir;
     }
     
-    public String getInput(int year, int day) {
+    public String getInput(final int year, final int day) {
         return read(cachePath(year, day, "input.txt"));
     }
 
-    public void saveInput(int year, int day, String input) {
+    public void saveInput(final int year, final int day, final String input) {
         write(cachePath(year, day, "input.txt"), input);
     }
 
-    public String getAnswer(int year, int day, int part) {
+    public String getAnswer(final int year, final int day, final int part) {
         return read(cachePath(year, day, "part" + part + ".txt"));
     }
 
-    public void saveAnswer(int year, int day, int part, String answer) {
+    public void saveAnswer(final int year, final int day, final int part, final String answer) {
         write(cachePath(year, day, "part" + part + ".txt"), answer);
     }
 
-    private Path cachePath(int year, int day, String fileName) {
+    private Path cachePath(final int year, final int day, final String fileName) {
         return this.cacheDir
             .resolve(String.valueOf(year))
             .resolve(String.format("%02d", day))
             .resolve(fileName);
     }
 
-    private String read(Path path) {
+    private String read(final Path path) {
         try {
             return Files.readString(path);
         } catch (IOException e) {
@@ -49,7 +49,7 @@ public class AocCache {
         }
     }
 
-    private void write(Path path, String contents) {
+    private void write(final Path path, final String contents) {
         try {
             Files.createDirectories(path.getParent());
             Files.writeString(

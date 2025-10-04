@@ -13,7 +13,7 @@ java_library(
 
 java_binary(
     name = "aoc_client",
-    main_class = "me.vainio.aoc.client.AocClient",
+    main_class = "me.vainio.aoc.client.Main",
     runtime_deps = [":aoc_client_lib"],
     visibility = ["//visibility:public"],
 )

@@ -1,0 +1,29 @@
+load("@contrib_rules_jvm//java:defs.bzl", "java_test_suite")
+load("@rules_java//java:defs.bzl", "java_binary", "java_library")
+load("//tools/java:deps.bzl", "JUNIT5_DEPS")
+
+java_library(
+    name = "aoc_client_lib",
+    srcs = glob(["src/main/java/**/*.java"]),
+    deps = [
+        "//libraries/java:commons",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+java_binary(
+    name = "aoc_client",
+    main_class = "me.vainio.aoc.client.AocClient",
+    runtime_deps = [":aoc_client_lib"],
+    visibility = ["//visibility:public"],
+)
+
+java_test_suite(
+    name = "tests",
+    srcs = glob(["src/test/java/**/*Test.java"]),
+    runner = "junit5",
+    deps = [
+        ":aoc_client_lib",
+        "//libraries/java:commons",
+    ] + JUNIT5_DEPS,
+)

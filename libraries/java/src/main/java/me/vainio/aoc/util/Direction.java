@@ -1,4 +1,4 @@
-package leo.aoc.util;
+package me.vainio.aoc.util;
 
 import java.util.List;
 
@@ -16,6 +16,15 @@ public enum Direction {
 
     Direction(int angle) {
         this.angle = angle;
+    }
+
+    private static Direction fromAngle(int angle) {
+        for (Direction dir : Direction.values()) {
+            if (dir.angle == angle) {
+                return dir;
+            }
+        }
+        throw new IllegalArgumentException("Invalid angle: " + angle);
     }
 
     /**
@@ -63,15 +72,6 @@ public enum Direction {
      */
     public Direction turnLeft(int degrees) {
         return turnRight(-degrees); 
-    }
-
-    private static Direction fromAngle(int angle) {
-        for (Direction dir : Direction.values()) {
-            if (dir.angle == angle) {
-                return dir;
-            }
-        }
-        throw new IllegalArgumentException("Invalid angle: " + angle);
     }
 
     /**

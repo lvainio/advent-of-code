@@ -26,5 +26,6 @@ java_test_suite(
     deps = [
         ":aoc_client_lib",
         "//libraries/java:commons",
+        "@maven//:info_picocli_picocli",
     ] + JUNIT5_DEPS,
 )

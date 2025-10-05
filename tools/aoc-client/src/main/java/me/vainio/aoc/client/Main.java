@@ -19,19 +19,21 @@ public final class Main {
         }
         sessionCookie = sessionCookie.trim();
         
-        System.out.println("*-----------------------------*");
-        System.out.println("*     Advent of Code Client   *");
-        System.out.println("*-----------------------------*\n");
-
-        System.out.println("  Year:  " + config.year());
-        System.out.println("  Day:   " + config.day());
-        System.out.println("  Fetch input: " + config.fetchInput());
-        System.out.println("  Post part1: " + config.postPart1());
-        System.out.println("  Post part2: " + config.postPart2());
-        System.out.println();
+        System.out.println( "\nAdvent of Code Client\n");
+        System.out.println(config + "\n");
         
         final AocClient aocClient = new AocClient();
-        System.out.println("FETCHING IF SET");
-        System.out.println("POST IF SET");
+
+        if (config.fetchInput()) {
+            System.out.println("Fetching input...");
+        }
+
+        if (config.postPart1()) {
+            System.out.println("Posting part1...");
+        }
+
+        if (config.postPart2()) {
+            System.out.println("Posting part2...");
+        }
     }
 }

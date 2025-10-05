@@ -40,7 +40,7 @@ import java.time.Month;
     },
     usageHelpWidth = 80
 )
-final class CLI implements Runnable {
+final class Cli implements Runnable {
     
     @Option(names = {"-h", "--help"}, usageHelp = true, description = "Show this help message and exit.")
     private boolean helpRequested;

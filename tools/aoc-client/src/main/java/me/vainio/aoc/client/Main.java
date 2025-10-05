@@ -5,7 +5,7 @@ import picocli.CommandLine;
 public final class Main {
 
     public static void main(String[] args) {
-        final CLI cli = new CLI();
+        final Cli cli = new Cli();
         final int exitCode = new CommandLine(cli).execute(args);
         if (exitCode != 0 || cli.getConfig() == null) {
             System.exit(exitCode);

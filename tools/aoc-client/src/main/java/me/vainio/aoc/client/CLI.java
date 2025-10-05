@@ -3,9 +3,13 @@ package me.vainio.aoc.client;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ParameterException;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Spec;
+import java.time.Year;
+import java.time.LocalDate;
+import java.time.Month;
 
 @Command(
     name = "aoc-client", 
@@ -19,16 +23,19 @@ import picocli.CommandLine.Spec;
         "Fetch daily puzzle input data and submit your solutions",
         "directly from the terminal to adventofcode.com.",
         "",
-        "Fetching saves input data to: home/.aoc_cache/<year>/<day>/input.txt",
-        "Posting answers expects solutions in: home/.aoc_cache/<year>/<day>/",
+        "Fetching saves input data to:",
+        " - <home>/.aoc_cache/<year>/<day>/input.txt",
+        "Posting answers expects solutions in:",
+        " - <home>/.aoc_cache/<year>/<day>/part1.txt",
+        " - <home>/.aoc_cache/<year>/<day>/part2.txt",
         ""
     },
     footer = {
         "",
         "Examples:",
-        "  aoc-client -y 2024 -d 1              # Fetch input for 2024 day 1", 
-        "  aoc-client -y 2024 -d 1 -1           # Submit part 1 answer",
-        "  aoc-client -y 2024 -d 1 -2           # Submit part 2 answer",
+        "  aoc-client 2024 1                    # Fetch input for 2024 day 1", 
+        "  aoc-client 2024 1 -1                 # Submit part 1 answer",
+        "  aoc-client 2024 1 -2                 # Submit part 2 answer",
         ""
     },
     usageHelpWidth = 80
@@ -41,10 +48,10 @@ final class CLI implements Runnable {
     @Option(names = {"-v", "--version"}, versionHelp = true, description = "Print version information and exit.")
     private boolean versionRequested;
     
-    @Option(names = {"-y", "--year"}, description = "Advent of Code year.", required = true)
+    @Parameters(index = "0", description = "Advent of Code year.")
     private int year;
     
-    @Option(names = {"-d", "--day"}, description = "Advent of Code day.", required = true)
+    @Parameters(index = "1", description = "Advent of Code day.")
     private int day;
     
     @Option(names = {"-f", "--fetch"}, description = "Fetch input data from AoC (default behavior).")
@@ -63,16 +70,34 @@ final class CLI implements Runnable {
 
     @Override
     public void run() {
-        if (year < 2015 || year > 2025) {
+        final int minYear = 2015;
+        final int maxYear = Year.now().getValue();
+
+        final int minDay = 1;
+        final int maxDay = 25;
+        
+        if (year < minYear || year > maxYear) {
             throw new ParameterException(spec.commandLine(),
-                    String.format("Invalid value '%d' for option '--year': " +
-                            "year must be between 2015 and 2025.", year));
+                    String.format("Invalid value '%d' for parameter 'year': " +
+                            "year must be between %d and %d.", year, minYear, maxYear));
+        }
+
+        if (day < minDay || day > maxDay) {
+            throw new ParameterException(spec.commandLine(),
+                    String.format("Invalid value '%d' for parameter 'day': " +
+                            "day must be between %d and %d.", day, minDay, maxDay));
         }
         
-        if (day < 1 || day > 25) {
-            throw new ParameterException(spec.commandLine(),
-                    String.format("Invalid value '%d' for option '--day': " +
-                            "day must be between 1 and 25.", day));
+        if (year == maxYear) {
+            LocalDate today = LocalDate.now();
+            if (today.getMonth() != Month.DECEMBER) {
+                throw new ParameterException(spec.commandLine(),
+                        String.format("Advent of Code %d hasn't started yet.", year));
+            }
+            if (today.getDayOfMonth() < day) {
+                throw new ParameterException(spec.commandLine(),
+                        String.format("Day %d is not available yet (today is December %d).", day, today.getDayOfMonth()));
+            }
         }
         
         if (!fetchInput && !postPart1 && !postPart2) {

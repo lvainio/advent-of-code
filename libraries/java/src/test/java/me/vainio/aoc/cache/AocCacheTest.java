@@ -164,4 +164,55 @@ public class AocCacheTest {
         assertEquals(input, cacheWithNonExistentDir.getInput(year, day));
         assertEquals(answer, cacheWithNonExistentDir.getAnswer(year, day, 1));
     }
+
+    @Test
+    void testHasInputReturnsFalseWhenInputDoesNotExist() {
+        final int year = 2024;
+        final int day = 1;
+        
+        assertFalse(cache.hasInput(year, day));
+    }
+
+    @Test
+    void testHasInputReturnsTrueAfterSavingInput() {
+        final int year = 2024;
+        final int day = 1;
+        final String input = "Test input for hasInput";
+        
+        assertFalse(cache.hasInput(year, day));
+        
+        cache.saveInput(year, day, input);
+        
+        assertTrue(cache.hasInput(year, day));
+    }
+
+    @Test
+    void testHasAnswerReturnsFalseWhenAnswerDoesNotExist() {
+        final int year = 2024;
+        final int day = 1;
+        
+        assertFalse(cache.hasAnswer(year, day, 1));
+        assertFalse(cache.hasAnswer(year, day, 2));
+    }
+
+    @Test
+    void testHasAnswerReturnsTrueAfterSavingAnswer() {
+        final int year = 2024;
+        final int day = 1;
+        final String answer1 = "Answer for part 1";
+        final String answer2 = "Answer for part 2";
+        
+        assertFalse(cache.hasAnswer(year, day, 1));
+        assertFalse(cache.hasAnswer(year, day, 2));
+        
+        cache.saveAnswer(year, day, 1, answer1);
+        
+        assertTrue(cache.hasAnswer(year, day, 1));
+        assertFalse(cache.hasAnswer(year, day, 2));
+        
+        cache.saveAnswer(year, day, 2, answer2);
+        
+        assertTrue(cache.hasAnswer(year, day, 1));
+        assertTrue(cache.hasAnswer(year, day, 2));
+    }
 }

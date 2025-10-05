@@ -11,7 +11,8 @@ record AocConfig(int year, int day, boolean fetchInput, boolean postPart1, boole
                 Day:         %d
                 Fetch Input: %s
                 Submit P1:   %s
-                Submit P2:   %s""", 
+                Submit P2:   %s
+                -----------------""", 
                 year, day, fetchInput, postPart1, postPart2);
     }
 }

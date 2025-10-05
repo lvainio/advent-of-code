@@ -26,12 +26,20 @@ public class AocCache {
         write(cachePath(year, day, "input.txt"), input);
     }
 
+    public boolean hasInput(final int year, final int day) {
+        return Files.exists(cachePath(year, day, "input.txt"));
+    }
+
     public String getAnswer(final int year, final int day, final int part) {
         return read(cachePath(year, day, "part" + part + ".txt"));
     }
 
     public void saveAnswer(final int year, final int day, final int part, final String answer) {
         write(cachePath(year, day, "part" + part + ".txt"), answer);
+    }
+
+    public boolean hasAnswer(final int year, final int day, final int part) {
+        return Files.exists(cachePath(year, day, "part" + part + ".txt"));
     }
 
     private Path cachePath(final int year, final int day, final String fileName) {

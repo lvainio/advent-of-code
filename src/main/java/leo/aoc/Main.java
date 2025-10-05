@@ -87,50 +87,6 @@ public class Main {
         System.out.println("*-----------------------------*\n");
     }
 
-    private static HashMap<String, String> parseArgs(String[] args) {
-        HashMap<String, String> parsedArgs = new HashMap<>();
-        final String year = System.getProperty("year");
-        final String day = System.getProperty("day");
-        parsedArgs.put("year", year);
-        parsedArgs.put("day", day);
-        if (Arrays.asList(args).contains("-p1")) {
-            parsedArgs.put("p1", "true");
-        }
-        if (Arrays.asList(args).contains("-p2")) {
-            parsedArgs.put("p2", "true");
-        }
-        return parsedArgs;
-    }
-
-    private static void validateYear(String yearStr) {
-        try {
-            int year = Integer.parseInt(yearStr);
-            if (year < 2015 || year > 2024) {
-                throw new IllegalArgumentException("Year must be between 2015 and 2024.");
-            }
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid year format. Must be a number.");
-        }
-    }
-
-    private static void validateDay(String dayStr) {
-        try {
-            int day = Integer.parseInt(dayStr);
-            if (day < 1 || day > 25) {
-                throw new IllegalArgumentException("Day must be between 1 and 25.");
-            }
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid day format. Must be a number.");
-        }
-    }
-
-    private static String retrieveSessionCookie() {
-        String sessionCookie = System.getenv("AOC_SESSION");
-        if (sessionCookie == null || sessionCookie.isEmpty()) {
-            throw new IllegalArgumentException("AOC_SESSION environment variable not set.");
-        }
-        return sessionCookie;
-    }
 
     private static String retrieveInput(String year, String day, String cookie) {
         final String fileName = CACHE_DIR + "/year" + year + "day" + day + ".txt";
@@ -157,34 +113,6 @@ public class Main {
             }
         }
         return input;
-    }
-
-    private static String retrieveInputFromAPI(String year, String day, String cookie) {
-        URI uri = URI.create("https://adventofcode.com/" + year + "/day/" + day + "/input");
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(uri)
-                .header("Cookie", "session=" + cookie)
-                .GET()
-                .build();
-        HttpResponse<String> response = null;
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-        final int statusCode = response.statusCode();
-        if (statusCode != 200) {
-            System.err.println("ERROR: failed to fetch input data, status code: " + statusCode);
-            System.exit(1);
-        }
-        final String input = response.body().trim();
-        if (input == null || input.isEmpty()) {
-            System.err.println("ERROR: failed to retrieve input data, input:" + input);
-            System.exit(1);
-        }
-        return input; 
     }
 
     private static void postAnswer(

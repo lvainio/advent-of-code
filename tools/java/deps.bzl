@@ -7,3 +7,8 @@ JUNIT5_DEPS = [
     "@maven//:org_junit_platform_junit_platform_launcher",
     "@maven//:org_junit_platform_junit_platform_reporting",
 ]
+
+MOCKITO_DEPS = [
+    "@maven//:org_mockito_mockito_core",
+    "@maven//:org_mockito_mockito_junit_jupiter",
+]

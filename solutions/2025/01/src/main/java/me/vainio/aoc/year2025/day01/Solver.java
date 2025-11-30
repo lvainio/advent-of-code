@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 import me.vainio.aoc.cache.AocCache;
 
 public class Solver {
-    private static final int YEAR = 2024;
+    private static final int YEAR = 2025;
     private static final int DAY = 1;
 
     private final List<Integer> leftList;

@@ -1,20 +1,18 @@
 package me.vainio.aoc.year2025.day01;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import me.vainio.aoc.cache.AocCache;
+
+import java.util.List;
 
 public class Solver {
     private static final int YEAR = 2025;
     private static final int DAY = 1;
 
-    private final List<Integer> leftList;
-    private final List<Integer> rightList;
+    private static final int MOD = 100;
+    private static final String LEFT = "L";
+    private static final String RIGHT = "R";
+
+    private final List<Rotation> rotations;
 
     public static void main(final String[] args) {  
         final AocCache cache = new AocCache();
@@ -33,40 +31,30 @@ public class Solver {
     }
 
     public Solver(final String input) {
-        this.leftList = new ArrayList<>();
-        this.rightList = new ArrayList<>();
-
-        input.lines().forEach(line -> {
-            final String[] nums = line.trim().split("\\s+");
-            this.leftList.add(Integer.valueOf(nums[0]));
-            this.rightList.add(Integer.valueOf(nums[1]));
-        });
+        this.rotations = input.lines().map(line -> {
+            final String direction = line.substring(0, 1);
+            final int clicks = Integer.parseInt(line.substring(1).trim());
+            return new Rotation(direction, clicks);
+        }).toList();
     }
 
     public String solvePart1() {
-        List<Integer> leftListCopy = new ArrayList<>(this.leftList);
-        List<Integer> rightListCopy = new ArrayList<>(this.rightList);
-
-        Collections.sort(leftListCopy);
-        Collections.sort(rightListCopy);
-
-        final int totalDistance = IntStream.range(0, leftListCopy.size()).map(idx -> {
-            int left = leftListCopy.get(idx);
-            int right = rightListCopy.get(idx);
-            return Math.abs(left - right);
-        }).sum();
-
-        return Integer.toString(totalDistance);
+        int count = 0;
+        int position = 50;
+        for (Rotation rotation : rotations) {
+            position = switch (rotation.direction()) {
+                case LEFT -> (position - rotation.clicks() + MOD) % MOD;
+                case RIGHT -> (position + rotation.clicks() + MOD) % MOD;
+                default -> throw new IllegalStateException("Unexpected value: " + rotation.direction());
+            };
+            if (position == 0) {
+                count++;
+            }
+        }
+        return String.valueOf(count);
     }
 
     public String solvePart2() {
-        final Map<Integer, Long> frequencyMap = this.rightList.stream()
-            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-
-        final long similarityScore = this.leftList.stream()
-            .mapToLong(key -> key * frequencyMap.getOrDefault(key, 0L))
-            .sum();
-
-        return Long.toString(similarityScore);
+        return "";
     }
 }

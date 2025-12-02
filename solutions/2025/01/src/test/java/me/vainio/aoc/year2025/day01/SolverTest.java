@@ -35,6 +35,6 @@ public class SolverTest {
 
     @Test
     void testSolvePart2() {
-        assertTrue(true);
+        assertEquals("6", solver.solvePart2());
     }
 }

@@ -43,10 +43,13 @@ public class Solver {
         int position = 50;
         for (Rotation rotation : rotations) {
             position = switch (rotation.direction()) {
-                case LEFT -> (position - rotation.clicks() + MOD) % MOD;
-                case RIGHT -> (position + rotation.clicks() + MOD) % MOD;
+                case LEFT -> (position - rotation.clicks()) % MOD;
+                case RIGHT -> (position + rotation.clicks()) % MOD;
                 default -> throw new IllegalStateException("Unexpected value: " + rotation.direction());
             };
+            if (position < 0) {
+                position += MOD;
+            }
             if (position == 0) {
                 count++;
             }
@@ -55,6 +58,17 @@ public class Solver {
     }
 
     public String solvePart2() {
-        return "";
+        int count = 0;
+        int position = 50;
+        for (Rotation rotation : rotations) {
+            int diff = rotation.direction().equals(LEFT) ? -1 : 1;
+            for (int i = 0; i < rotation.clicks(); i++) {
+                position = (position + diff + MOD) % MOD;
+                if (position == 0) {
+                    count++;
+                }
+            }
+        }
+        return String.valueOf(count);
     }
 }

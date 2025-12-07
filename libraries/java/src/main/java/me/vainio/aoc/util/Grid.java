@@ -10,6 +10,11 @@ public final class Grid<T> {
     private final int cols;
     private List<List<T>> grid;
 
+    /**
+     * Creates a deep copy of the given grid.
+     *
+     * @param other The grid to copy.
+     */
     public Grid(Grid<T> other) {
         this.rows = other.rows;
         this.cols = other.cols;
@@ -34,10 +39,35 @@ public final class Grid<T> {
         this.cols = grid.getFirst().size();
     }
 
+    /**
+     * Creates a Grid from the given input string using the provided mapper function.
+     *
+     * @param input  The input string representing the grid.
+     * @param mapper A function to map characters to the desired type T.
+     * @param <T>    The type of elements in the grid.
+     * @return A Grid of type T.
+     */
+    public static <T> Grid<T> from(String input, Function<Character, T> mapper) {
+        return new Grid<>(input, mapper);
+    }
+
+    /**
+     * Creates a Grid of Characters from the given input string.
+     *
+     * @param input The input string representing the grid.
+     * @return A Grid of Characters.
+     */
     public static Grid<Character> ofChars(String input) {
         return new Grid<>(input, c -> c);
     }
 
+    /**
+     * Creates a Grid of Integers from the given input string.
+     *
+     * @param input The input string representing the grid.
+     * @return A Grid of Integers.
+     * @throws IllegalArgumentException if the input contains non-digit characters.
+     */
     public static Grid<Integer> ofDigits(String input) {
         final boolean allDigits =  input.lines()
                 .flatMapToInt(String::chars)
@@ -48,24 +78,49 @@ public final class Grid<T> {
         return new Grid<>(input, Character::getNumericValue);
     }
 
+    /**
+     * Returns the number of rows in the grid.
+     * @return The number of rows.
+     */
     public int rows() {
         return rows;
     }
 
+    /**
+     * Returns the number of columns in the grid.
+     * @return The number of columns.
+     */
     public int cols() {
         return cols;
     }
 
+    /**
+     * Gets the value at the specified row and column.
+     *
+     * @param row The row index.
+     * @param col The column index.
+     * @return The value at the specified position.
+     * @throws IndexOutOfBoundsException if row or column is out of bounds.
+     */
     public T get(int row, int col) {
         if (!isInBounds(row, col)) {
-            throw new IllegalArgumentException("Row or column out of bounds");
+            throw new IndexOutOfBoundsException("Row or column out of bounds");
         }
         return grid.get(row).get(col);
     }
 
+    /**
+     * Sets the value at the specified row and column.
+     *
+     * @param row   The row index.
+     * @param col   The column index.
+     * @param value The value to set.
+     * @throws IndexOutOfBoundsException if row or column is out of bounds.
+     * @throws NullPointerException      if value is null.
+     */
     public void set(int row, int col, T value) {
         if (!isInBounds(row, col)) {
-            throw new IllegalArgumentException("Row or column out of bounds");
+            throw new IndexOutOfBoundsException("Row or column out of bounds");
         }
         Objects.requireNonNull(value);
         grid.get(row).set(col, value);

@@ -11,7 +11,7 @@ public final class Grid<T> {
     private List<List<T>> grid;
 
     /**
-     * Creates a deep copy of the given grid.
+     * Creates a copy of the given grid.
      *
      * @param other The grid to copy.
      */

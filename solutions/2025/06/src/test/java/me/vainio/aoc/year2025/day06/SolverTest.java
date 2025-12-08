@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 public class SolverTest {
 
     private static final String EXAMPLE_INPUT = """
-            123 328  51 64
-             45 64  387 23
+            123 328  51 64\s
+             45 64  387 23\s
               6 98  215 314
-            *   +   *   +""";
+            *   +   *   +  \s""";
 
     private static Solver solver;
 

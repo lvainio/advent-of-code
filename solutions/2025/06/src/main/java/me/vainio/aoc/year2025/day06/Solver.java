@@ -48,21 +48,13 @@ public class Solver {
 
         // Part 2
         final List<String> subList = lines.subList(0, lines.size() - 1);
-        final int maxLen = subList.stream()
-                .mapToInt(String::length)
-                .max()
-                .orElse(0);
-        final List<String> padded = subList.stream()
-                .map(s -> String.format("%-" + maxLen + "s", s))
-                .toList();
-        final String transposed = Grid.ofChars(String.join("\n", padded))
+        final String transposed = Grid.ofChars(String.join("\n", subList))
                 .transpose()
                 .toString();
         this.groups =
                 Arrays.stream(transposed.split("\n\\s*\n"))
                         .map(block -> Arrays.stream(block.split("\n"))
                                 .map(String::trim)
-                                .filter(s -> !s.isEmpty())
                                 .map(Long::parseLong)
                                 .toList())
                         .toList();

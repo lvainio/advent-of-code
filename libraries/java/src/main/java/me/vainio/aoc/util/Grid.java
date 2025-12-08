@@ -8,14 +8,20 @@ import java.util.function.Function;
 public final class Grid<T> {
     private final int rows;
     private final int cols;
-    private List<List<T>> grid;
+    private final List<List<T>> grid;
+
+    private Grid(final List<List<T>> grid) {
+        this.rows = grid.size();
+        this.cols = grid.getFirst().size();
+        this.grid = grid;
+    }
 
     /**
      * Creates a copy of the given grid.
      *
      * @param other The grid to copy.
      */
-    public Grid(Grid<T> other) {
+    public Grid(final Grid<T> other) {
         this.rows = other.rows;
         this.cols = other.cols;
         this.grid = new ArrayList<>(other.rows);
@@ -47,7 +53,7 @@ public final class Grid<T> {
      * @param <T>    The type of elements in the grid.
      * @return A Grid of type T.
      */
-    public static <T> Grid<T> from(String input, Function<Character, T> mapper) {
+    public static <T> Grid<T> from(final String input, final Function<Character, T> mapper) {
         return new Grid<>(input, mapper);
     }
 
@@ -57,8 +63,25 @@ public final class Grid<T> {
      * @param input The input string representing the grid.
      * @return A Grid of Characters.
      */
-    public static Grid<Character> ofChars(String input) {
+    public static Grid<Character> ofChars(final String input) {
         return new Grid<>(input, c -> c);
+    }
+
+    /**
+     * Returns a new Grid that is the transpose of this grid.
+     *
+     * @return a new transposed Grid.
+     */
+    public Grid<T> transpose() {
+        List<List<T>> transposed = new ArrayList<>(cols);
+        for (int col = 0; col < cols; col++) {
+            List<T> newRow = new ArrayList<>(rows);
+            for (int row = 0; row < rows; row++) {
+                newRow.add(grid.get(row).get(col));
+            }
+            transposed.add(newRow);
+        }
+        return new Grid<>(transposed);
     }
 
     /**
@@ -68,7 +91,7 @@ public final class Grid<T> {
      * @return A Grid of Integers.
      * @throws IllegalArgumentException if the input contains non-digit characters.
      */
-    public static Grid<Integer> ofDigits(String input) {
+    public static Grid<Integer> ofDigits(final String input) {
         final boolean allDigits =  input.lines()
                 .flatMapToInt(String::chars)
                 .allMatch(Character::isDigit);
@@ -102,11 +125,25 @@ public final class Grid<T> {
      * @return The value at the specified position.
      * @throws IndexOutOfBoundsException if row or column is out of bounds.
      */
-    public T get(int row, int col) {
+    public T get(final int row, final int col) {
         if (!isInBounds(row, col)) {
             throw new IndexOutOfBoundsException("Row or column out of bounds");
         }
         return grid.get(row).get(col);
+    }
+
+    /**
+     * Gets the entire row at the specified index.
+     *
+     * @param row The row index.
+     * @return A list representing the row.
+     * @throws IndexOutOfBoundsException if row is out of bounds.
+     */
+    public List<T> getRow(final int row) {
+        if (row < 0 || row >= rows) {
+            throw new IndexOutOfBoundsException("Row out of bounds: " + row);
+        }
+        return grid.get(row);
     }
 
     /**
@@ -118,7 +155,7 @@ public final class Grid<T> {
      * @throws IndexOutOfBoundsException if row or column is out of bounds.
      * @throws NullPointerException      if value is null.
      */
-    public void set(int row, int col, T value) {
+    public void set(final int row, final int col, T value) {
         if (!isInBounds(row, col)) {
             throw new IndexOutOfBoundsException("Row or column out of bounds");
         }
@@ -136,7 +173,7 @@ public final class Grid<T> {
      * @throws IllegalArgumentException if row or column is out of bounds.
      * @throws NullPointerException     if value is null.
      */
-    public int countAdjacent(int row, int col, T value) {
+    public int countAdjacent(final int row, final int col, T value) {
         if (!isInBounds(row, col)) {
             throw new IllegalArgumentException("Row or column out of bounds");
         }
@@ -144,10 +181,10 @@ public final class Grid<T> {
 
         int count = 0;
         for (Direction direction : Direction.values()) {
-            int dr = direction.getDr();
-            int dc = direction.getDc();
-            int adjacentRow = row + dr;
-            int adjacentCol = col + dc;
+            final int dr = direction.getDr();
+            final int dc = direction.getDc();
+            final int adjacentRow = row + dr;
+            final int adjacentCol = col + dc;
             if (isInBounds(adjacentRow, adjacentCol) && grid.get(adjacentRow).get(adjacentCol).equals(value)) {
                 count++;
             }
@@ -162,7 +199,23 @@ public final class Grid<T> {
      * @param col The column index to check.
      * @return true if the indices are within bounds, false otherwise.
      */
-    public boolean isInBounds(int row, int col) {
+    public boolean isInBounds(final int row, final int col) {
         return row >= 0 && row < rows && col >= 0 && col < cols;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(rows * (cols + 1));
+        for (int r = 0; r < rows; r++) {
+            List<T> row = grid.get(r);
+            for (int c = 0; c < cols; c++) {
+                T value = row.get(c);
+                sb.append(value != null ? value.toString() : "null");
+            }
+            if (r < rows - 1) {
+                sb.append('\n');
+            }
+        }
+        return sb.toString();
     }
 }

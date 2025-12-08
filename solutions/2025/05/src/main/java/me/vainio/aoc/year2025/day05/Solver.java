@@ -2,6 +2,8 @@ package me.vainio.aoc.year2025.day05;
 
 import me.vainio.aoc.cache.AocCache;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Solver {
@@ -28,7 +30,7 @@ public class Solver {
     }
 
     public Solver(final String input) {
-        String[] parts = input.split("\n\n");
+        final String[] parts = input.split("\n\n");
 
         ranges = parts[0].lines().map(line -> {
             String[] range = line.split("-");
@@ -41,7 +43,7 @@ public class Solver {
     }
 
     public String solvePart1() {
-        long count = ids.stream()
+        final long count = ids.stream()
                 .filter(id -> ranges.stream()
                         .anyMatch(range -> range.contains(id)))
                 .count();
@@ -49,8 +51,25 @@ public class Solver {
     }
 
     public String solvePart2() {
-        // FIXME: Implement solution for part 2
-        // ranges overlap
-        return "";
+        List<Range> ranges = new ArrayList<>(this.ranges);
+        ranges.sort(Comparator.comparingLong(Range::start));
+        List<Range> mergedRanges = new ArrayList<>();
+
+        Range current = ranges.getFirst();
+        for (int i = 1; i < ranges.size(); i++) {
+            final Range next = ranges.get(i);
+            if (next.start() <= current.end()) {
+                current = new Range(
+                        current.start(),
+                        Math.max(current.end(), next.end())
+                );
+            } else {
+                mergedRanges.add(current);
+                current = next;
+            }
+        }
+        mergedRanges.add(current);
+
+        return String.valueOf(mergedRanges.stream().mapToLong(Range::size).sum());
     }
 }

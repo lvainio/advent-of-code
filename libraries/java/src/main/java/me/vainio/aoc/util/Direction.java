@@ -1,6 +1,6 @@
 package me.vainio.aoc.util;
 
-import java.util.List;
+import java.util.Set;
 
 public enum Direction {
     EAST(0),       
@@ -127,16 +127,7 @@ public enum Direction {
      *
      * @return an immutable list containing the cardinal directions.
      */
-    public static List<Direction> getCardinalDirections() {
-        return List.of(EAST, NORTH, WEST, SOUTH);
-    }
-
-    /**
-     * Returns a list of all directions.
-     * 
-     * @return an immutable list containing all directions.
-     */
-    public static List<Direction> getAllDirections() {
-        return List.of(EAST, NORTHEAST, NORTH, NORTHWEST, WEST, SOUTHWEST, SOUTH, SOUTHEAST); 
+    public static Set<Direction> getCardinalDirections() {
+        return Set.of(EAST, NORTH, WEST, SOUTH);
     }
 }

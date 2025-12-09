@@ -33,8 +33,8 @@ public class Solver {
 
     public String solvePart1() {
         int count = 0;
-        for (int row = 0; row < grid.rows(); row++) {
-            for (int col = 0; col < grid.cols(); col++) {
+        for (int row = 0; row < grid.numRows(); row++) {
+            for (int col = 0; col < grid.numCols(); col++) {
                 if (grid.countAdjacent(row, col, PAPER) < 4 && grid.get(row, col) == PAPER) {
                     count++;
                 }
@@ -58,8 +58,8 @@ public class Solver {
 
     private int removePapers(Grid<Character> grid) {
         int count = 0;
-        for (int row = 0; row < grid.rows(); row++) {
-            for (int col = 0; col < grid.cols(); col++) {
+        for (int row = 0; row < grid.numRows(); row++) {
+            for (int col = 0; col < grid.numCols(); col++) {
                 if (grid.get(row, col) == PAPER && grid.countAdjacent(row, col, PAPER) < 4) {
                     count++;
                     grid.set(row, col, '.');

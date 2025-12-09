@@ -36,7 +36,7 @@ public class Solver {
     public Solver(final String input) {
         final List<String> lines = input.lines().toList();
 
-        // Part 1
+        // Parse for part 1
         this.numbers =  lines.subList(0, lines.size() - 1).stream()
                 .map(line -> Arrays.stream(line.trim().split("\\s+"))
                         .map(Long::parseLong)
@@ -46,7 +46,7 @@ public class Solver {
                 .map(String::trim)
                 .toList();
 
-        // Part 2
+        // Parse for part 2
         final List<String> subList = lines.subList(0, lines.size() - 1);
         final String transposed = Grid.ofChars(String.join("\n", subList))
                 .transpose()

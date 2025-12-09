@@ -4,57 +4,74 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public final class Grid<T> {
-    private final int rows;
-    private final int cols;
+    private final int numRows;
+    private final int numCols;
     private final List<List<T>> grid;
-
-    private Grid(final List<List<T>> grid) {
-        this.rows = grid.size();
-        this.cols = grid.getFirst().size();
-        this.grid = grid;
-    }
 
     /**
      * Creates a copy of the given grid.
      *
      * @param other The grid to copy.
+     * @throws NullPointerException if other is null.
      */
     public Grid(final Grid<T> other) {
-        this.rows = other.rows;
-        this.cols = other.cols;
-        this.grid = new ArrayList<>(other.rows);
-        for (int row = 0; row < other.rows; row++) {
-            this.grid.add(new ArrayList<>(other.grid.get(row)));
-        }
-    }
+        Objects.requireNonNull(other, "Other grid must not be null");
 
-    private Grid(final String input, final Function<Character, T> mapper) {
-        if (input == null) {
-            throw new IllegalArgumentException("Input must not be null");
+        this.numRows = other.numRows;
+        this.numCols = other.numCols;
+        this.grid = new ArrayList<>(other.numRows);
+        for (List<T> row : other.grid) {
+            this.grid.add(new ArrayList<>(row));
         }
-        this.grid = input.lines()
-                .map(line -> {
-                    List<T> row = new ArrayList<>();
-                    line.chars().forEach(c -> row.add(mapper.apply((char) c)));
-                    return row;
-                })
-                .toList();
-        this.rows = grid.size();
-        this.cols = grid.getFirst().size();
     }
 
     /**
      * Creates a Grid from the given input string using the provided mapper function.
      *
-     * @param input  The input string representing the grid.
+     * @param input The input string representing the grid.
      * @param mapper A function to map characters to the desired type T.
-     * @param <T>    The type of elements in the grid.
-     * @return A Grid of type T.
+     * @throws NullPointerException if input or mapper is null.
+     * @throws IllegalArgumentException if input is empty or rows have different lengths.
      */
-    public static <T> Grid<T> from(final String input, final Function<Character, T> mapper) {
-        return new Grid<>(input, mapper);
+    private Grid(final String input, final Function<Character, T> mapper) {
+        Objects.requireNonNull(input, "Input string must not be null");
+        Objects.requireNonNull(mapper, "Mapper function must not be null");
+        if (input.isEmpty()) {
+            throw new IllegalArgumentException("Input string must not be empty");
+        }
+        final List<String> lines = input.lines().toList();
+        final int expectedLength = lines.getFirst().length();
+        if (lines.stream().anyMatch(line -> line.length() != expectedLength)) {
+            throw new IllegalArgumentException("All lines must have the same length");
+        }
+
+        this.grid = input.lines()
+                .map(line -> line.chars()
+                        .mapToObj(c -> mapper.apply((char) c))
+                        .collect(Collectors.toCollection(ArrayList::new)))
+                .collect(Collectors.toCollection(ArrayList::new));
+        this.numRows = grid.size();
+        this.numCols = grid.getFirst().size();
+    }
+
+    /**
+     * Creates a grid from a list of lists.
+     *
+     * @param grid The list of lists representing the rows of the grid.
+     * @throws NullPointerException if grid is null.
+     */
+    private Grid(final List<List<T>> grid) {
+        Objects.requireNonNull(grid, "Grid must not be null");
+
+        this.numRows = grid.size();
+        this.numCols = grid.getFirst().size();
+        this.grid = new ArrayList<>(numRows);
+        for (List<T> row : grid) {
+            this.grid.add(new ArrayList<>(row));
+        }
     }
 
     /**
@@ -62,26 +79,13 @@ public final class Grid<T> {
      *
      * @param input The input string representing the grid.
      * @return A Grid of Characters.
+     * @throws NullPointerException if input is null.
+     * @throws IllegalArgumentException if input is empty or rows have different lengths.
      */
     public static Grid<Character> ofChars(final String input) {
-        return new Grid<>(input, c -> c);
-    }
+        Objects.requireNonNull(input, "Input string must not be null");
 
-    /**
-     * Returns a new Grid that is the transpose of this grid.
-     *
-     * @return a new transposed Grid.
-     */
-    public Grid<T> transpose() {
-        List<List<T>> transposed = new ArrayList<>(cols);
-        for (int col = 0; col < cols; col++) {
-            List<T> newRow = new ArrayList<>(rows);
-            for (int row = 0; row < rows; row++) {
-                newRow.add(grid.get(row).get(col));
-            }
-            transposed.add(newRow);
-        }
-        return new Grid<>(transposed);
+        return new Grid<>(input, c -> c);
     }
 
     /**
@@ -89,36 +93,52 @@ public final class Grid<T> {
      *
      * @param input The input string representing the grid.
      * @return A Grid of Integers.
-     * @throws IllegalArgumentException if the input contains non-digit characters.
+     * @throws NullPointerException if input is null.
+     * @throws IllegalArgumentException if the input contains non-digits, is empty, or rows have different lengths.
      */
     public static Grid<Integer> ofDigits(final String input) {
+        Objects.requireNonNull(input, "Input string must not be null");
         final boolean allDigits =  input.lines()
                 .flatMapToInt(String::chars)
                 .allMatch(Character::isDigit);
         if (!allDigits) {
             throw new IllegalArgumentException("Input contains non-digit characters");
         }
+
         return new Grid<>(input, Character::getNumericValue);
     }
 
     /**
      * Returns the number of rows in the grid.
+     *
      * @return The number of rows.
      */
-    public int rows() {
-        return rows;
+    public int numRows() {
+        return numRows;
     }
 
     /**
      * Returns the number of columns in the grid.
+     *
      * @return The number of columns.
      */
-    public int cols() {
-        return cols;
+    public int numCols() {
+        return numCols;
     }
 
     /**
-     * Gets the value at the specified row and column.
+     * Checks if the given row and column are within the bounds of the grid.
+     *
+     * @param row The row index to check.
+     * @param col The column index to check.
+     * @return true if the indices are within bounds, false otherwise.
+     */
+    public boolean isInBounds(final int row, final int col) {
+        return row >= 0 && row < numRows && col >= 0 && col < numCols;
+    }
+
+    /**
+     * Returns the value at the specified row and column.
      *
      * @param row The row index.
      * @param col The column index.
@@ -129,62 +149,147 @@ public final class Grid<T> {
         if (!isInBounds(row, col)) {
             throw new IndexOutOfBoundsException("Row or column out of bounds");
         }
-        return grid.get(row).get(col);
-    }
 
-    /**
-     * Gets the entire row at the specified index.
-     *
-     * @param row The row index.
-     * @return A list representing the row.
-     * @throws IndexOutOfBoundsException if row is out of bounds.
-     */
-    public List<T> getRow(final int row) {
-        if (row < 0 || row >= rows) {
-            throw new IndexOutOfBoundsException("Row out of bounds: " + row);
-        }
-        return grid.get(row);
+        return grid.get(row).get(col);
     }
 
     /**
      * Sets the value at the specified row and column.
      *
-     * @param row   The row index.
-     * @param col   The column index.
+     * @param row The row index.
+     * @param col The column index.
      * @param value The value to set.
      * @throws IndexOutOfBoundsException if row or column is out of bounds.
-     * @throws NullPointerException      if value is null.
+     * @throws NullPointerException if value is null.
      */
     public void set(final int row, final int col, T value) {
         if (!isInBounds(row, col)) {
             throw new IndexOutOfBoundsException("Row or column out of bounds");
         }
         Objects.requireNonNull(value);
+
         grid.get(row).set(col, value);
     }
 
     /**
-     * Counts how many adjacent cells (including diagonals) match the given value.
+     * Returns a copy of the row at the specified index.
      *
-     * @param row   The row index of the cell to check around.
-     * @param col   The column index of the cell to check around.
+     * @param row The row index.
+     * @return A list representing the row.
+     * @throws IndexOutOfBoundsException if row is out of bounds.
+     */
+    public List<T> getRow(final int row) {
+        if (row < 0 || row >= numRows) {
+            throw new IndexOutOfBoundsException("Row out of bounds: " + row);
+        }
+
+        return new ArrayList<>(grid.get(row));
+    }
+
+    /**
+     * Returns a copy of the first row.
+     *
+     * @return A list representing the first row.
+     */
+    public List<T> getFirstRow() {
+        return getRow(0);
+    }
+
+    /**
+     * Returns a copy of the last row.
+     *
+     * @return A list representing the last row.
+     */
+    public List<T> getLastRow() {
+        return getRow(numRows - 1);
+    }
+
+    /**
+     * Returns a copy of the column at the specified index.
+     *
+     * @param col The column index.
+     * @return A list representing the column.
+     * @throws IndexOutOfBoundsException if column is out of bounds.
+     */
+    public List<T> getCol(final int col) {
+        if (col < 0 || col >= numCols) {
+            throw new IndexOutOfBoundsException("Column out of bounds: " + col);
+        }
+
+        List<T> column = new ArrayList<>(numRows);
+        for (int row = 0; row < numRows; row++) {
+            column.add(grid.get(row).get(col));
+        }
+        return column;
+    }
+
+    /**
+     * Returns a copy of the first column.
+     *
+     * @return A list representing the first column.
+     */
+    public List<T> getFirstCol() {
+        return getCol(0);
+    }
+
+    /**
+     * Returns a copy of the last column.
+     *
+     * @return A list representing the last column.
+     */
+    public List<T> getLastCol() {
+        return getCol(numCols - 1);
+    }
+
+    /**
+     * Returns a copy of all rows in the grid.
+     *
+     * @return A list of lists representing the rows.
+     */
+    public List<List<T>> getRows() {
+        List<List<T>> rows = new ArrayList<>(numRows);
+        for (List<T> row : grid) {
+            rows.add(new ArrayList<>(row));
+        }
+        return rows;
+    }
+
+    /**
+     * Returns a copy of all columns in the grid.
+     *
+     * @return A list of lists representing the columns.
+     */
+    public List<List<T>> getCols() {
+        List<List<T>> cols = new ArrayList<>(numCols);
+        for (int col = 0; col < numCols; col++) {
+            cols.add(getCol(col));
+        }
+        return cols;
+    }
+
+    /**
+     * Counts how many adjacent cells match the given value.
+     *
+     * The count includes the eight possible directions around the specified cell,
+     * but not the cell itself.
+     *
+     * @param row The row index of the cell to check around.
+     * @param col The column index of the cell to check around.
      * @param value The value to count in adjacent cells.
      * @return The number of adjacent cells matching the given value.
-     * @throws IllegalArgumentException if row or column is out of bounds.
+     * @throws IndexOutOfBoundsException if row or column is out of bounds.
      * @throws NullPointerException     if value is null.
      */
     public int countAdjacent(final int row, final int col, T value) {
         if (!isInBounds(row, col)) {
-            throw new IllegalArgumentException("Row or column out of bounds");
+            throw new IndexOutOfBoundsException("Row or column out of bounds");
         }
         Objects.requireNonNull(value);
 
         int count = 0;
         for (Direction direction : Direction.values()) {
-            final int dr = direction.getDr();
-            final int dc = direction.getDc();
-            final int adjacentRow = row + dr;
-            final int adjacentCol = col + dc;
+            final int adjacentRow = row + direction.getDr();
+            final int adjacentCol = col + direction.getDc();
             if (isInBounds(adjacentRow, adjacentCol) && grid.get(adjacentRow).get(adjacentCol).equals(value)) {
                 count++;
             }
@@ -193,26 +298,71 @@ public final class Grid<T> {
     }
 
     /**
-     * Checks if the given row and column indices are within the bounds of the grid.
+     * Returns a new Grid that is the transpose of this grid.
      *
-     * @param row The row index to check.
-     * @param col The column index to check.
-     * @return true if the indices are within bounds, false otherwise.
+     * @return a new transposed Grid.
      */
-    public boolean isInBounds(final int row, final int col) {
-        return row >= 0 && row < rows && col >= 0 && col < cols;
+    public Grid<T> transpose() {
+        return new Grid<>(getCols());
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // FIXME: everything below needs to be cleaned up and verified by tests
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Grid<?> other)) {
+            return false;
+        }
+        if (this.numRows != other.numRows || this.numCols != other.numCols) {
+            return false;
+        }
+        return Objects.equals(this.grid, other.grid);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Integer.hashCode(numRows);
+        result = 31 * result + Integer.hashCode(numCols);
+        result = 31 * result + grid.hashCode();
+        return result;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(rows * (cols + 1));
-        for (int r = 0; r < rows; r++) {
+        StringBuilder sb = new StringBuilder(numRows * (numCols + 1));
+        for (int r = 0; r < numRows; r++) {
             List<T> row = grid.get(r);
-            for (int c = 0; c < cols; c++) {
+            for (int c = 0; c < numCols; c++) {
                 T value = row.get(c);
                 sb.append(value != null ? value.toString() : "null");
             }
-            if (r < rows - 1) {
+            if (r < numRows - 1) {
                 sb.append('\n');
             }
         }

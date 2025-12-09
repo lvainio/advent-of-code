@@ -32,8 +32,8 @@ public class Solver {
 
     public String solvePart1() {
         int count = 0;
-        for (int row = 0; row < grid.rows(); row++) {
-            for (int col = 0; col < grid.cols(); col++) {
+        for (int row = 0; row < grid.numRows(); row++) {
+            for (int col = 0; col < grid.numCols(); col++) {
                 for (Direction direction : Direction.values()) {
                     if (isXmasPart1(row, col, direction)) {
                         count++;
@@ -61,8 +61,8 @@ public class Solver {
 
     public String solvePart2() {
         int count = 0;
-        for (int row = 0; row < grid.rows(); row++) {
-            for (int col = 0; col < grid.cols(); col++) {
+        for (int row = 0; row < grid.numRows(); row++) {
+            for (int col = 0; col < grid.numCols(); col++) {
                 if (isXmasPart2(row, col)) {
                     count++;
                 }
@@ -75,7 +75,7 @@ public class Solver {
         if (grid.get(row, col) != 'A') {
             return false;
         }
-        if (row < 1 || row > grid.rows() - 2 || col < 1 || col > grid.cols() - 2) {
+        if (row < 1 || row > grid.numRows() - 2 || col < 1 || col > grid.numCols() - 2) {
             return false;
         }
 

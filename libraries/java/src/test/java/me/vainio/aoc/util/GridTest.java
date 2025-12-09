@@ -2,16 +2,57 @@ package me.vainio.aoc.util;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class GridTest {
 
     @Test
-    void ofCharsCreatesCorrectDimensionsAndValues() {
-        Grid<Character> grid = Grid.ofChars("ab\ncd");
+    void copyConstructorThrowsOnNull() {
+        assertThrows(NullPointerException.class, () -> new Grid<Character>(null));
+    }
 
-        assertEquals(2, grid.rows());
-        assertEquals(2, grid.cols());
+    @Test
+    void copyConstructorCreatesIdenticalGrid() {
+        final Grid<Character> original = Grid.ofChars("ab\ncd");
+        final Grid<Character> copy = new Grid<>(original);
+
+        assertEquals(original.numRows(), copy.numRows());
+        assertEquals(original.numCols(), copy.numCols());
+        assertEquals(original, copy);
+    }
+
+    @Test
+    void modifyingCopyDoesNotAffectOriginal() {
+        final Grid<Character> original = Grid.ofChars("ab\ncd");
+        final Grid<Character> copy = new Grid<>(original);
+
+        copy.set(0, 0, 'x');
+        assertNotEquals(original.get(0, 0), copy.get(0, 0));
+    }
+
+    @Test
+    void ofCharsThrowsOnNull() {
+        assertThrows(NullPointerException.class, () -> Grid.ofChars(null));
+    }
+
+    @Test
+    void ofCharsThrowsOnEmptyInput() {
+        assertThrows(IllegalArgumentException.class, () -> Grid.ofChars(""));
+    }
+
+    @Test
+    void ofCharsThrowsOnUnevenRows() {
+        assertThrows(IllegalArgumentException.class, () -> Grid.ofChars("ab\nc"));
+    }
+
+    @Test
+    void ofCharsCreatesCorrectGrid() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertEquals(2, grid.numRows());
+        assertEquals(2, grid.numCols());
         assertEquals('a', grid.get(0, 0));
         assertEquals('b', grid.get(0, 1));
         assertEquals('c', grid.get(1, 0));
@@ -19,11 +60,40 @@ class GridTest {
     }
 
     @Test
-    void ofDigitsCreatesCorrectDimensionsAndValues() {
-        Grid<Integer> grid = Grid.ofDigits("12\n34");
+    void ofCharsWorksWithSingleCharacter() {
+        final Grid<Character> grid = Grid.ofChars("x");
 
-        assertEquals(2, grid.rows());
-        assertEquals(2, grid.cols());
+        assertEquals(1, grid.numRows());
+        assertEquals(1, grid.numCols());
+        assertEquals('x', grid.get(0, 0));
+    }
+
+    @Test
+    void ofDigitsThrowsOnNull() {
+        assertThrows(NullPointerException.class, () -> Grid.ofDigits(null));
+    }
+
+    @Test
+    void ofDigitsThrowsOnEmptyInput() {
+        assertThrows(IllegalArgumentException.class, () -> Grid.ofDigits(""));
+    }
+
+    @Test
+    void ofDigitsThrowsOnUnevenRows() {
+        assertThrows(IllegalArgumentException.class, () -> Grid.ofDigits("12\n3"));
+    }
+
+    @Test
+    void ofDigitsThrowsOnNonDigitCharacters() {
+        assertThrows(IllegalArgumentException.class, () -> Grid.ofDigits("1a\n23"));
+    }
+
+    @Test
+    void ofDigitsCreatesCorrectGrid() {
+        final Grid<Integer> grid = Grid.ofDigits("12\n34");
+
+        assertEquals(2, grid.numRows());
+        assertEquals(2, grid.numCols());
         assertEquals(1, grid.get(0, 0));
         assertEquals(2, grid.get(0, 1));
         assertEquals(3, grid.get(1, 0));
@@ -31,18 +101,45 @@ class GridTest {
     }
 
     @Test
-    void ofDigitsThrowsOnNonDigitInput() {
-        assertThrows(IllegalArgumentException.class, () -> Grid.ofDigits("1a\n23"));
+    void ofDigitsWorksWithSingleDigit() {
+        final Grid<Integer> grid = Grid.ofDigits("7");
+
+        assertEquals(1, grid.numRows());
+        assertEquals(1, grid.numCols());
+        assertEquals(7, grid.get(0, 0));
     }
 
     @Test
-    void ofCharsThrowsOnNullInput() {
-        assertThrows(IllegalArgumentException.class, () -> Grid.ofChars(null));
+    void numRowsReturnsCorrectValue() {
+        final Grid<Character> grid = Grid.ofChars("abc\ndef\nghi");
+
+        assertEquals(3, grid.numRows());
+    }
+
+    @Test
+    void numColsReturnsCorrectValue() {
+        final Grid<Character> grid = Grid.ofChars("abc\ndef\nghi");
+
+        assertEquals(3, grid.numCols());
+    }
+
+    @Test
+    void isInBoundsReturnsCorrectValues() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertTrue(grid.isInBounds(0, 0));
+        assertTrue(grid.isInBounds(1, 1));
+        assertTrue(grid.isInBounds(0, 1));
+        assertTrue(grid.isInBounds(1, 0));
+        assertFalse(grid.isInBounds(-1, 0));
+        assertFalse(grid.isInBounds(0, -1));
+        assertFalse(grid.isInBounds(2, 0));
+        assertFalse(grid.isInBounds(0, 2));
     }
 
     @Test
     void getThrowsOnOutOfBounds() {
-        Grid<Character> grid = Grid.ofChars("ab\ncd");
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
 
         assertThrows(IndexOutOfBoundsException.class, () -> grid.get(-1, 0));
         assertThrows(IndexOutOfBoundsException.class, () -> grid.get(0, -1));
@@ -51,17 +148,25 @@ class GridTest {
     }
 
     @Test
-    void setUpdatesValue() {
-        Grid<Character> grid = Grid.ofChars("ab\ncd");
+    void getReturnsCorrectValues() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
 
-        grid.set(0, 1, 'x');
+        assertEquals('a', grid.get(0, 0));
+        assertEquals('b', grid.get(0, 1));
+        assertEquals('c', grid.get(1, 0));
+        assertEquals('d', grid.get(1, 1));
+    }
 
-        assertEquals('x', grid.get(0, 1));
+    @Test
+    void setThrowsOnNullValue() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertThrows(NullPointerException.class, () -> grid.set(0, 0, null));
     }
 
     @Test
     void setThrowsOnOutOfBounds() {
-        Grid<Character> grid = Grid.ofChars("ab\ncd");
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
 
         assertThrows(IndexOutOfBoundsException.class, () -> grid.set(-1, 0, 'x'));
         assertThrows(IndexOutOfBoundsException.class, () -> grid.set(0, -1, 'x'));
@@ -70,58 +175,121 @@ class GridTest {
     }
 
     @Test
-    void setThrowsOnNullValue() {
-        Grid<Character> grid = Grid.ofChars("ab\ncd");
+    void setUpdatesValue() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
 
-        assertThrows(NullPointerException.class, () -> grid.set(0, 0, null));
+        grid.set(0, 1, 'x');
+        assertEquals('x', grid.get(0, 1));
     }
 
     @Test
-    void isInBoundsWorksForEdgesAndOutside() {
-        Grid<Character> grid = Grid.ofChars("ab\ncd");
+    void getRowThrowsOnOutOfBounds() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
 
-        assertTrue(grid.isInBounds(0, 0));
-        assertTrue(grid.isInBounds(1, 1));
-        assertFalse(grid.isInBounds(-1, 0));
-        assertFalse(grid.isInBounds(0, -1));
-        assertFalse(grid.isInBounds(2, 0));
-        assertFalse(grid.isInBounds(0, 2));
+        assertThrows(IndexOutOfBoundsException.class, () -> grid.getRow(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> grid.getRow(2));
     }
 
     @Test
-    void countAdjacentCountsCorrectlyCenter() {
-        Grid<Integer> grid = Grid.ofDigits(
-                "111\n" +
-                        "101\n" +
-                        "111"
-        );
+    void getRowReturnsCorrectRow() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
 
-        int count = grid.countAdjacent(1, 1, 1);
-
-        assertEquals(8, count);
+        assertEquals(List.of('a', 'b'), grid.getRow(0));
+        assertEquals(List.of('c', 'd'), grid.getRow(1));
     }
 
     @Test
-    void countAdjacentCountsCorrectlyCorner() {
-        Grid<Integer> grid = Grid.ofDigits(
-                "111\n" +
-                        "101\n" +
-                        "111"
-        );
+    void modifyingReturnedRowDoesNotAffectGrid() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
 
-        int count = grid.countAdjacent(0, 0, 1);
+        List<Character> row = grid.getRow(0);
+        row.set(0, 'x');
 
-        assertEquals(2, count);
+        assertEquals('a', grid.get(0, 0));
+    }
+
+    @Test
+    void getFirstRowReturnsCorrectRow() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertEquals(List.of('a', 'b'), grid.getFirstRow());
+    }
+
+    @Test
+    void getLastRowReturnsCorrectRow() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertEquals(List.of('c', 'd'), grid.getLastRow());
+    }
+
+    @Test
+    void getColThrowsOnOutOfBounds() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertThrows(IndexOutOfBoundsException.class, () -> grid.getCol(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> grid.getCol(2));
+    }
+
+    @Test
+    void getColReturnsCorrectCol() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertEquals(List.of('a', 'c'), grid.getCol(0));
+        assertEquals(List.of('b', 'd'), grid.getCol(1));
+    }
+
+    @Test
+    void modifyingReturnedColDoesNotAffectGrid() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        List<Character> col = grid.getCol(0);
+        col.set(0, 'x');
+
+        assertEquals('a', grid.get(0, 0));
+    }
+
+    @Test
+    void getFirstColReturnsCorrectCol() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertEquals(List.of('a', 'c'), grid.getFirstCol());
+    }
+
+    @Test
+    void getLastColReturnsCorrectCol() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertEquals(List.of('b', 'd'), grid.getLastCol());
+    }
+
+    @Test
+    void getRowsReturnsAllRows() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        final List<List<Character>> rows = grid.getRows();
+        assertEquals(2, rows.size());
+        assertEquals(List.of('a', 'b'), rows.get(0));
+        assertEquals(List.of('c', 'd'), rows.get(1));
+    }
+
+    @Test
+    void getColsReturnsAllCols() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        final List<List<Character>> cols = grid.getCols();
+        assertEquals(2, cols.size());
+        assertEquals(List.of('a', 'c'), cols.get(0));
+        assertEquals(List.of('b', 'd'), cols.get(1));
     }
 
     @Test
     void countAdjacentThrowsOnOutOfBounds() {
         Grid<Integer> grid = Grid.ofDigits("12\n34");
 
-        assertThrows(IllegalArgumentException.class, () -> grid.countAdjacent(-1, 0, 1));
-        assertThrows(IllegalArgumentException.class, () -> grid.countAdjacent(0, -1, 1));
-        assertThrows(IllegalArgumentException.class, () -> grid.countAdjacent(2, 0, 1));
-        assertThrows(IllegalArgumentException.class, () -> grid.countAdjacent(0, 2, 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> grid.countAdjacent(-1, 0, 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> grid.countAdjacent(0, -1, 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> grid.countAdjacent(2, 0, 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> grid.countAdjacent(0, 2, 1));
     }
 
     @Test
@@ -132,21 +300,38 @@ class GridTest {
     }
 
     @Test
-    void copyConstructorCreatesDeepCopyOfRows() {
-        Grid<Character> original = Grid.ofChars("ab\ncd");
-        Grid<Character> copy = new Grid<>(original);
+    void countAdjacentCountsCorrectly() {
+        Grid<Integer> grid = Grid.ofDigits(
+                "111\n" +
+                        "101\n" +
+                        "111"
+        );
 
-        assertEquals(original.rows(), copy.rows());
-        assertEquals(original.cols(), copy.cols());
-        assertEquals(original.get(0, 0), copy.get(0, 0));
-        assertEquals(original.get(1, 1), copy.get(1, 1));
+        assertEquals(2, grid.countAdjacent(0, 0, 1));
+        assertEquals(4, grid.countAdjacent(0, 1, 1));
+        assertEquals(2, grid.countAdjacent(0, 2, 1));
+        assertEquals(4, grid.countAdjacent(1, 0, 1));
+        assertEquals(8, grid.countAdjacent(1, 1, 1));
+        assertEquals(4, grid.countAdjacent(1, 2, 1));
+        assertEquals(2, grid.countAdjacent(2, 0, 1));
+        assertEquals(4, grid.countAdjacent(2, 1, 1));
+        assertEquals(2, grid.countAdjacent(2, 2, 1));
+    }
 
-        original.set(0, 0, 'x');
-        assertEquals('x', original.get(0, 0));
-        assertEquals('a', copy.get(0, 0));
+    @Test
+    void transposeCreatesCorrectGrid() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+        final Grid<Character> expected = Grid.ofChars("ac\nbd");
+        final Grid<Character> actual = grid.transpose();
 
-        copy.set(1, 1, 'y');
-        assertEquals('d', original.get(1, 1));
-        assertEquals('y', copy.get(1, 1));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void transposeTwiceReturnsOriginalGrid() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+        final Grid<Character> actual = grid.transpose().transpose();
+
+        assertEquals(grid, actual);
     }
 }

@@ -3,8 +3,10 @@ package me.vainio.aoc.year2025.day07;
 import me.vainio.aoc.cache.AocCache;
 import me.vainio.aoc.util.Grid;
 import me.vainio.aoc.util.Location;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
@@ -62,26 +64,27 @@ public class Solver {
     }
 
     public String solvePart2() {
-        int count = 0;
-        Queue<Location> queue = new LinkedList<>();
-        queue.offer(startLocation);
-        while (!queue.isEmpty()) {
-            Location current = queue.poll();
-            if (!grid.isInBounds(current)) {
-                count++;
-                continue;
-            }
-            if (grid.get(current).equals(SPLIT)) {
-                queue.offer(new Location(current.row(), current.col() - 1));
-                queue.offer(new Location(current.row(), current.col() + 1));
-            } else {
-                queue.offer(new Location(current.row() + 1, current.col()));
-            }
-        }
-
-        // FIXME: we need a dynamic programming solution here I believe
-        // a simple dfs with memoization should work
-
+        Map<Location, Long> memory = new HashMap<>();
+        long count = countPaths(startLocation, memory);
         return String.valueOf(count);
+    }
+
+    private long countPaths(final Location location, Map<Location, Long> memory) {
+        if (!grid.isInBounds(location)) {
+            return 1;
+        }
+        if (memory.containsKey(location)) {
+            return memory.get(location);
+        }
+        long result;
+        if (grid.get(location).equals(SPLIT)) {
+            result =
+                countPaths(new Location(location.row(), location.col() - 1), memory) +
+                countPaths(new Location(location.row(), location.col() + 1), memory);
+        } else {
+            result = countPaths(new Location(location.row() + 1, location.col()), memory);
+        }
+        memory.put(location, result);
+        return result;
     }
 }

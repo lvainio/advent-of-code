@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class Grid<T> {
     private final int numRows;
@@ -106,6 +107,44 @@ public final class Grid<T> {
         }
 
         return new Grid<>(input, Character::getNumericValue);
+    }
+
+    /**
+     * Returns a new Grid representing a sub-grid of this grid.
+     *
+     * @param fromRow the starting row index (inclusive)
+     * @param toRow the ending row index (exclusive)
+     * @param fromCol the starting column index (inclusive)
+     * @param toCol the ending column index (exclusive)
+     * @return a new Grid containing the specified sub-grid
+     * @throws IllegalArgumentException if range is empty or invalid
+     * @throws IndexOutOfBoundsException if the specified range is out of bounds of the grid
+     */
+    public Grid<T> subGrid(
+            final int fromRow,
+            final int toRow,
+            final int fromCol,
+            final int toCol
+    ) {
+        if (fromRow >= toRow) {
+            throw new IllegalArgumentException("fromRow must be less than toRow");
+        }
+        if (fromCol >= toCol) {
+            throw new IllegalArgumentException("fromCol must be less than toCol");
+        }
+        if (!isInBounds(fromRow, fromCol) || !isInBounds(toRow-1, toCol-1)) {
+            throw new IndexOutOfBoundsException("Sub-grid range is out of bounds");
+        }
+
+        final List<List<T>> sub = new ArrayList<>(toRow - fromRow);
+        for (int row = fromRow; row < toRow; row++) {
+            final List<T> newRow = new ArrayList<>(toCol - fromCol);
+            for (int col = fromCol; col < toCol; col++) {
+                newRow.add(grid.get(row).get(col));
+            }
+            sub.add(newRow);
+        }
+        return new Grid<>(sub);
     }
 
     /**
@@ -268,6 +307,24 @@ public final class Grid<T> {
     }
 
     /**
+     * Returns a stream of rows in the grid.
+     *
+     * @return A stream of lists representing the rows.
+     */
+    public Stream<List<T>> streamRows() {
+        return grid.stream().map(ArrayList::new);
+    }
+
+    /**
+     * Returns a stream of columns in the grid.
+     *
+     * @return A stream of lists representing the columns.
+     */
+    public Stream<List<T>> streamCols() {
+        return getCols().stream();
+    }
+
+    /**
      * Counts how many adjacent cells match the given value.
      *
      * The count includes the eight possible directions around the specified cell,
@@ -305,6 +362,7 @@ public final class Grid<T> {
     public Grid<T> transpose() {
         return new Grid<>(getCols());
     }
+
 
 
 

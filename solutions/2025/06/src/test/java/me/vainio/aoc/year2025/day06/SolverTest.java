@@ -11,7 +11,7 @@ public class SolverTest {
             123 328  51 64\s
              45 64  387 23\s
               6 98  215 314
-            *   +   *   +  \s""";
+            *   +   *   + \s""";
 
     private static Solver solver;
 

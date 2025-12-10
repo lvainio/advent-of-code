@@ -110,6 +110,79 @@ class GridTest {
     }
 
     @Test
+    void subGridThrowsOnEmptyRowRange() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertThrows(IllegalArgumentException.class, () -> grid.subGrid(1, 1, 0, 2));
+        assertThrows(IllegalArgumentException.class, () -> grid.subGrid(1, 0, 0, 2));
+        assertThrows(IllegalArgumentException.class, () -> grid.subGrid(10, -100, 0, 2));
+    }
+
+    @Test
+    void subGridThrowsOnEmptyColRange() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertThrows(IllegalArgumentException.class, () -> grid.subGrid(0, 2, 1, 1));
+        assertThrows(IllegalArgumentException.class, () -> grid.subGrid(0, 2, 1, 0));
+        assertThrows(IllegalArgumentException.class, () -> grid.subGrid(0, 2, 10, -100));
+    }
+
+    @Test
+    void subGridThrowsWhenFromIndicesAreOutOfBounds() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertThrows(IndexOutOfBoundsException.class, () -> grid.subGrid(-1, 1, 0, 2));
+        assertThrows(IndexOutOfBoundsException.class, () -> grid.subGrid(0, 2, -1, 2));
+    }
+
+    @Test
+    void subGridThrowsWhenToIndicesAreOutOfBounds() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertThrows(IndexOutOfBoundsException.class, () -> grid.subGrid(0, 3, 0, 2));
+        assertThrows(IndexOutOfBoundsException.class, () -> grid.subGrid(0, 2, 0, 3));
+    }
+
+    @Test
+    void subGridCanReturnEntireGrid() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+        final Grid<Character> subGrid = grid.subGrid(0, 2, 0, 2);
+
+        assertEquals(grid, subGrid);
+    }
+
+    @Test
+    void subGridReturnsCorrectSubGrid() {
+        final Grid<Character> grid = Grid.ofChars(
+                "abcd\n" +
+                "efgh\n" +
+                "ijkl\n" +
+                "mnop"
+        );
+
+        final Grid<Character> actual1 = grid.subGrid(1, 3, 1, 4);
+        final Grid<Character> expected1 = Grid.ofChars(
+                "fgh\n" +
+                "jkl"
+        );
+        final Grid<Character> actual2 = grid.subGrid(2, 3, 1, 4);
+        final Grid<Character> expected2 = Grid.ofChars(
+                "jkl"
+        );
+        final Grid<Character> actual3 = grid.subGrid(0, 4, 0, 2);
+        final Grid<Character> expected3 = Grid.ofChars(
+                "ab\n" +
+                "ef\n" +
+                "ij\n" +
+                "mn"
+        );
+
+        assertEquals(expected1, actual1);
+        assertEquals(expected2, actual2);
+        assertEquals(expected3, actual3);
+    }
+
+    @Test
     void numRowsReturnsCorrectValue() {
         final Grid<Character> grid = Grid.ofChars("abc\ndef\nghi");
 
@@ -277,6 +350,26 @@ class GridTest {
         final Grid<Character> grid = Grid.ofChars("ab\ncd");
 
         final List<List<Character>> cols = grid.getCols();
+        assertEquals(2, cols.size());
+        assertEquals(List.of('a', 'c'), cols.get(0));
+        assertEquals(List.of('b', 'd'), cols.get(1));
+    }
+
+    @Test
+    void streamRowsReturnsAllRows() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        final List<List<Character>> rows = grid.streamRows().toList();
+        assertEquals(2, rows.size());
+        assertEquals(List.of('a', 'b'), rows.get(0));
+        assertEquals(List.of('c', 'd'), rows.get(1));
+    }
+
+    @Test
+    void streamColsReturnsAllCols() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        final List<List<Character>> cols = grid.streamCols().toList();
         assertEquals(2, cols.size());
         assertEquals(List.of('a', 'c'), cols.get(0));
         assertEquals(List.of('b', 'd'), cols.get(1));

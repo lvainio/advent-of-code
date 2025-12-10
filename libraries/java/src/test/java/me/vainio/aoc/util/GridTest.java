@@ -573,4 +573,18 @@ class GridTest {
         assertNotEquals(g1, g2);
         assertNotEquals(g1.hashCode(), g2.hashCode());
     }
+
+    @Test
+    void toStringReturnsCorrectRepresentation() {
+        Grid<Character> grid = Grid.ofChars("""
+            abc
+            def
+            ghi
+            """);
+
+        String expected = "abc\n" +
+                          "def\n" +
+                          "ghi";
+        assertEquals(expected, grid.toString());
+    }
 }

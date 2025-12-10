@@ -433,45 +433,12 @@ public final class Grid<T> {
         return Objects.hash(this.numRows, this.numCols, this.grid);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // FIXME: toString implementation could be improved for better readability
-
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(numRows * (numCols + 1));
-        for (int r = 0; r < numRows; r++) {
-            List<T> row = grid.get(r);
-            for (int c = 0; c < numCols; c++) {
-                T value = row.get(c);
-                sb.append(value != null ? value.toString() : "null");
-            }
-            if (r < numRows - 1) {
-                sb.append('\n');
-            }
-        }
-        return sb.toString();
+        return grid.stream()
+                .map(row -> row.stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining()))
+                .collect(Collectors.joining("\n"));
     }
 }

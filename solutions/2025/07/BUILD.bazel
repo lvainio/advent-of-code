@@ -1,0 +1,6 @@
+load("//tools/java:defs.bzl", "java_day")
+
+java_day(
+    day = 7,
+    year = 2025,
+)

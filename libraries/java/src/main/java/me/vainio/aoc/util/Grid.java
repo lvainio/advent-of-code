@@ -3,6 +3,7 @@ package me.vainio.aoc.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -177,6 +178,19 @@ public final class Grid<T> {
     }
 
     /**
+     * Checks if the given location is within the bounds of the grid.
+     *
+     * @param location The location to check.
+     * @return true if the location is within bounds, false otherwise.
+     * @throws NullPointerException if location is null.
+     */
+    public boolean isInBounds(final Location location) {
+        Objects.requireNonNull(location, "Location must not be null");
+
+        return isInBounds(location.row(), location.col());
+    }
+
+    /**
      * Returns the value at the specified row and column.
      *
      * @param row The row index.
@@ -190,6 +204,23 @@ public final class Grid<T> {
         }
 
         return grid.get(row).get(col);
+    }
+
+    /**
+     * Returns the value at the specified location.
+     *
+     * @param location The location object containing row and column indices.
+     * @return The value at the specified location.
+     * @throws IndexOutOfBoundsException if location is out of bounds.
+     * @throws NullPointerException if location is null.
+     */
+    public T get(final Location location) {
+        Objects.requireNonNull(location, "Location must not be null");
+        if (!isInBounds(location.row(), location.col())) {
+            throw new IndexOutOfBoundsException("Row or column out of bounds");
+        }
+
+        return get(location.row(), location.col());
     }
 
     /**
@@ -363,31 +394,25 @@ public final class Grid<T> {
         return new Grid<>(getCols());
     }
 
+    /**
+     * Finds the first occurrence of the specified value in the grid.
+     *
+     * @param value The value to search for.
+     * @return An Optional containing the Location of the first occurrence, or empty if not found.
+     * @throws NullPointerException if value is null.
+     */
+    public Optional<Location> findFirst(T value) {
+        Objects.requireNonNull(value, "Value must not be null");
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // FIXME: everything below needs to be cleaned up and verified by tests
+        for (int row = 0; row < numRows; row++) {
+            for (int col = 0; col < numCols; col++) {
+                if (grid.get(row).get(col).equals(value)) {
+                    return Optional.of(new Location(row, col));
+                }
+            }
+        }
+        return Optional.empty();
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -405,11 +430,34 @@ public final class Grid<T> {
 
     @Override
     public int hashCode() {
-        int result = Integer.hashCode(numRows);
-        result = 31 * result + Integer.hashCode(numCols);
-        result = 31 * result + grid.hashCode();
-        return result;
+        return Objects.hash(this.numRows, this.numCols, this.grid);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // FIXME: toString implementation could be improved for better readability
 
     @Override
     public String toString() {

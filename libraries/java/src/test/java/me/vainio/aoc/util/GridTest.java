@@ -211,6 +211,27 @@ class GridTest {
     }
 
     @Test
+    void isInboundsReturnsCorrectValuesWithLocation() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertTrue(grid.isInBounds(new Location(0, 0)));
+        assertTrue(grid.isInBounds(new Location(1, 1)));
+        assertTrue(grid.isInBounds(new Location(0, 1)));
+        assertTrue(grid.isInBounds(new Location(1, 0)));
+        assertFalse(grid.isInBounds(new Location(-1, 0)));
+        assertFalse(grid.isInBounds(new Location(0, -1)));
+        assertFalse(grid.isInBounds(new Location(2, 0)));
+        assertFalse(grid.isInBounds(new Location(0, 2)));
+    }
+
+    @Test
+    void isInboundsThrowsOnNullLocation() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertThrows(NullPointerException.class, () -> grid.isInBounds(null));
+    }
+
+    @Test
     void getThrowsOnOutOfBounds() {
         final Grid<Character> grid = Grid.ofChars("ab\ncd");
 
@@ -228,6 +249,33 @@ class GridTest {
         assertEquals('b', grid.get(0, 1));
         assertEquals('c', grid.get(1, 0));
         assertEquals('d', grid.get(1, 1));
+    }
+
+    @Test
+    void getWithLocationThrowsOnNull() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertThrows(NullPointerException.class, () -> grid.get(null));
+    }
+
+    @Test
+    void getWithLocationThrowsOnOutOfBounds() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertThrows(IndexOutOfBoundsException.class, () -> grid.get(new Location(-1, 0)));
+        assertThrows(IndexOutOfBoundsException.class, () -> grid.get(new Location(0, -1)));
+        assertThrows(IndexOutOfBoundsException.class, () -> grid.get(new Location(2, 0)));
+        assertThrows(IndexOutOfBoundsException.class, () -> grid.get(new Location(0, 2)));
+    }
+
+    @Test
+    void getWithLocationReturnsCorrectValues() {
+        final Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+        assertEquals('a', grid.get(new Location(0, 0)));
+        assertEquals('b', grid.get(new Location(0, 1)));
+        assertEquals('c', grid.get(new Location(1, 0)));
+        assertEquals('d', grid.get(new Location(1, 1)));
     }
 
     @Test
@@ -426,5 +474,103 @@ class GridTest {
         final Grid<Character> actual = grid.transpose().transpose();
 
         assertEquals(grid, actual);
+    }
+
+    @Test
+    void findFirstReturnsEmptyOnNoMatch() {
+        Grid<Character> grid = Grid.ofChars("""
+            abc
+            def
+            """);
+
+        assertTrue(grid.findFirst('x').isEmpty());
+    }
+
+    @Test
+    void findFirstReturnsCorrectLocation() {
+        Grid<Character> grid = Grid.ofChars("""
+            abc
+            def
+            """);
+
+        final Location actual = grid.findFirst('e').orElseThrow();
+        final Location expected = new Location(1, 1);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void findFirstReturnsFirstMatch() {
+        Grid<Character> grid = Grid.ofChars("""
+            aba
+            bab
+            """);
+
+        final Location actual = grid.findFirst('b').orElseThrow();
+        final Location expected = new Location(0, 1);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void gridEqualsItself() {
+        Grid<Character> grid = Grid.ofChars("""
+            abc
+            def
+            """);
+
+        assertEquals(grid, grid);
+    }
+
+    @Test
+    void gridNotEqualToNull() {
+        Grid<Character> grid = Grid.ofChars("""
+            abc
+            def
+            """);
+
+        assertNotEquals(null, grid);
+    }
+
+    @Test
+    void differentGridsShouldNotBeEqual() {
+        Grid<Character> g1 = Grid.ofChars("""
+            abc
+            def
+            """);
+        Grid<Character> g2 = Grid.ofChars("""
+            abc
+            deg
+            """);
+
+        assertNotEquals(g1, g2);
+    }
+
+    @Test
+    void equalGridsHaveEqualHashCodes() {
+        Grid<Character> g1 = Grid.ofChars("""
+            abc
+            def
+            """);
+        Grid<Character> g2 = Grid.ofChars("""
+            abc
+            def
+            """);
+
+        assertEquals(g1, g2);
+        assertEquals(g1.hashCode(), g2.hashCode());
+    }
+
+    @Test
+    void differentGridsShouldHaveDifferentHashCodes() {
+        Grid<Character> g1 = Grid.ofChars("""
+            abc
+            def
+            """);
+        Grid<Character> g2 = Grid.ofChars("""
+            abc
+            deg
+            """);
+
+        assertNotEquals(g1, g2);
+        assertNotEquals(g1.hashCode(), g2.hashCode());
     }
 }

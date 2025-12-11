@@ -1,0 +1,9 @@
+sh_binary(
+    name = "generate",
+    srcs = ["generate.sh"],
+    data = [
+        "templates/BUILD.bazel.template",
+        "templates/Solver.java.template",
+        "templates/SolverTest.java.template",
+    ],
+)

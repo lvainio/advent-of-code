@@ -1,9 +1,0 @@
-sh_binary(
-    name = "gen",
-    srcs = ["gen.sh"],
-    data = [
-        "templates/BUILD.bazel.template",
-        "templates/Solver.java.template",
-        "templates/SolverTest.java.template",
-    ],
-)

@@ -70,16 +70,14 @@ public class Solver {
     }
 
     public String solvePart1() {
-        long max = 0;
+        long maxArea = 0;
         for (int i = 0; i < locations.size(); i++) {
             for (int j = i + 1; j < locations.size(); j++) {
                 final Rectangle rect = new Rectangle(locations.get(i), locations.get(j));
-                if (rect.area() > max) {
-                    max = rect.area();
-                }
+                maxArea = Math.max(maxArea, rect.area());
             }
         }
-        return String.valueOf(max);
+        return String.valueOf(maxArea);
     }
 
     public String solvePart2() {

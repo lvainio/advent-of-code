@@ -10,137 +10,134 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class Main {
 
-    private static final String CACHE_DIR = "aoc_cache";
+  private static final String CACHE_DIR = "aoc_cache";
 
-    public static void main(String[] args) {
-        HashMap<String, String> parsedArgs = parseArgs(args);
-        
-        final String year = parsedArgs.get("year");
-        final String day = parsedArgs.get("day");
-        final boolean postPart1 = parsedArgs.containsKey("p1");
-        final boolean postPart2 = parsedArgs.containsKey("p2");
+  public static void main(String[] args) {
+    HashMap<String, String> parsedArgs = parseArgs(args);
 
-        validateYear(year);
-        validateDay(day);
+    final String year = parsedArgs.get("year");
+    final String day = parsedArgs.get("day");
+    final boolean postPart1 = parsedArgs.containsKey("p1");
+    final boolean postPart2 = parsedArgs.containsKey("p2");
 
-        System.out.println("\n*-----------------------------*");
-        System.out.println("*   Solving Advent of Code!   *");
-        System.out.println("*-----------------------------*\n");
-        System.out.println("  Year:  " + year);
-        System.out.println("  Day:   " + day + "\n");
+    validateYear(year);
+    validateDay(day);
 
-        final String sessionCookie = retrieveSessionCookie();
+    System.out.println("\n*-----------------------------*");
+    System.out.println("*   Solving Advent of Code!   *");
+    System.out.println("*-----------------------------*\n");
+    System.out.println("  Year:  " + year);
+    System.out.println("  Day:   " + day + "\n");
 
-        final String input = retrieveInput(year, day, sessionCookie);
+    final String sessionCookie = retrieveSessionCookie();
 
-        String solutionPart1 = null;
-        String solutionPart2 = null;
+    final String input = retrieveInput(year, day, sessionCookie);
 
-        Long durationPart1 = 0L;
-        Long durationPart2 = 0L;
+    String solutionPart1 = null;
+    String solutionPart2 = null;
 
-        try {
-            String className = "leo.aoc.year" + year + ".day" + day + ".Solver"; 
-            Class<?> solverClass = Class.forName(className);
-            if (AbstractSolver.class.isAssignableFrom(solverClass)) {
-                AbstractSolver solverInstance = 
-                    (AbstractSolver) solverClass.getConstructor(String.class).newInstance(input);
+    Long durationPart1 = 0L;
+    Long durationPart2 = 0L;
 
-                long startPart1 = System.nanoTime();
-                solutionPart1 = solverInstance.solvePart1();
-                long endPart1 = System.nanoTime();
-                durationPart1 = endPart1 - startPart1;
+    try {
+      String className = "leo.aoc.year" + year + ".day" + day + ".Solver";
+      Class<?> solverClass = Class.forName(className);
+      if (AbstractSolver.class.isAssignableFrom(solverClass)) {
+        AbstractSolver solverInstance =
+            (AbstractSolver) solverClass.getConstructor(String.class).newInstance(input);
 
-                long startPart2 = System.nanoTime();
-                solutionPart2 = solverInstance.solvePart2();
-                long endPart2 = System.nanoTime();
-                durationPart2 = endPart2 - startPart2;
-            } else {
-                System.err.println("ERROR: The class does not implement AbstractSolver!");
-                System.exit(1);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
+        long startPart1 = System.nanoTime();
+        solutionPart1 = solverInstance.solvePart1();
+        long endPart1 = System.nanoTime();
+        durationPart1 = endPart1 - startPart1;
 
-        if (postPart1) {
-            System.out.println("  Posting part1");
-            postAnswer(year, day, "1", solutionPart1, sessionCookie);
-            System.out.println();
-        }
-        if (postPart2) {
-            System.out.println("  Posting part2");
-            postAnswer(year, day, "2", solutionPart2, sessionCookie);
-            System.out.println();
-        }
-        
-        System.out.println("  Part1: " + solutionPart1);
-        System.out.println("  part2: " + solutionPart2 + "\n");
-        System.out.println("  Time part1: " + durationPart1 / 1_000_000.0 + " ms");
-        System.out.println("  Time part2: " + durationPart2 / 1_000_000.0 + " ms\n");
-        System.out.println("*-----------------------------*\n");
+        long startPart2 = System.nanoTime();
+        solutionPart2 = solverInstance.solvePart2();
+        long endPart2 = System.nanoTime();
+        durationPart2 = endPart2 - startPart2;
+      } else {
+        System.err.println("ERROR: The class does not implement AbstractSolver!");
+        System.exit(1);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.exit(1);
     }
 
-
-    private static String retrieveInput(String year, String day, String cookie) {
-        final String fileName = CACHE_DIR + "/year" + year + "day" + day + ".txt";
-        File cacheFile = new File(fileName);
-
-        String input = null;
-        if (cacheFile.exists()) {
-            try {
-                input = new String(Files.readAllBytes(cacheFile.toPath()), StandardCharsets.UTF_8);
-                System.out.println("  Input retrieved from cache!\n");
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.exit(1);
-            }
-        } else {
-            input = retrieveInputFromAPI(year, day, cookie);
-            try {
-                Files.createDirectories(Paths.get(CACHE_DIR));
-                Files.write(Paths.get(fileName), input.getBytes(StandardCharsets.UTF_8));
-                System.out.println("  Input retrieved from API!\n");
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.exit(1);
-            }
-        }
-        return input;
+    if (postPart1) {
+      System.out.println("  Posting part1");
+      postAnswer(year, day, "1", solutionPart1, sessionCookie);
+      System.out.println();
+    }
+    if (postPart2) {
+      System.out.println("  Posting part2");
+      postAnswer(year, day, "2", solutionPart2, sessionCookie);
+      System.out.println();
     }
 
-    private static void postAnswer(
-        String year, 
-        String day, 
-        String part, 
-        String answer,
-        String cookie
-    ) {
-        try {
-            URI uri = URI.create("https://adventofcode.com/" + year + "/day/" + day + "/answer");
-            String payload = "level=" + URLEncoder.encode(part, StandardCharsets.UTF_8) +
-                              "&answer=" + URLEncoder.encode(answer, StandardCharsets.UTF_8);
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(uri)
-                    .header("Cookie", "session=" + cookie)
-                    .header("Content-Type", "application/x-www-form-urlencoded")
-                    .POST(HttpRequest.BodyPublishers.ofString(payload))
-                    .build();
-            HttpClient client = HttpClient.newHttpClient();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() == 200) {
-                System.out.println("  Answer posted successfully!");
-            } else {
-                System.out.println("  Failed to post answer. Status code: " + response.statusCode());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    System.out.println("  Part1: " + solutionPart1);
+    System.out.println("  part2: " + solutionPart2 + "\n");
+    System.out.println("  Time part1: " + durationPart1 / 1_000_000.0 + " ms");
+    System.out.println("  Time part2: " + durationPart2 / 1_000_000.0 + " ms\n");
+    System.out.println("*-----------------------------*\n");
+  }
+
+  private static String retrieveInput(String year, String day, String cookie) {
+    final String fileName = CACHE_DIR + "/year" + year + "day" + day + ".txt";
+    File cacheFile = new File(fileName);
+
+    String input = null;
+    if (cacheFile.exists()) {
+      try {
+        input = new String(Files.readAllBytes(cacheFile.toPath()), StandardCharsets.UTF_8);
+        System.out.println("  Input retrieved from cache!\n");
+      } catch (IOException e) {
+        e.printStackTrace();
+        System.exit(1);
+      }
+    } else {
+      input = retrieveInputFromAPI(year, day, cookie);
+      try {
+        Files.createDirectories(Paths.get(CACHE_DIR));
+        Files.write(Paths.get(fileName), input.getBytes(StandardCharsets.UTF_8));
+        System.out.println("  Input retrieved from API!\n");
+      } catch (IOException e) {
+        e.printStackTrace();
+        System.exit(1);
+      }
     }
+    return input;
+  }
+
+  private static void postAnswer(
+      String year, String day, String part, String answer, String cookie) {
+    try {
+      URI uri = URI.create("https://adventofcode.com/" + year + "/day/" + day + "/answer");
+      String payload =
+          "level="
+              + URLEncoder.encode(part, StandardCharsets.UTF_8)
+              + "&answer="
+              + URLEncoder.encode(answer, StandardCharsets.UTF_8);
+      HttpRequest request =
+          HttpRequest.newBuilder()
+              .uri(uri)
+              .header("Cookie", "session=" + cookie)
+              .header("Content-Type", "application/x-www-form-urlencoded")
+              .POST(HttpRequest.BodyPublishers.ofString(payload))
+              .build();
+      HttpClient client = HttpClient.newHttpClient();
+      HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+      if (response.statusCode() == 200) {
+        System.out.println("  Answer posted successfully!");
+      } else {
+        System.out.println("  Failed to post answer. Status code: " + response.statusCode());
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 }

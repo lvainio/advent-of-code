@@ -23,6 +23,7 @@ def java_day(year, day):
         resources = native.glob(["src/main/resources/**/*"], allow_empty = True),
         deps = [
             "//libraries/java:commons",
+            "@maven//:com_google_ortools_ortools_java",
         ],
     )
 

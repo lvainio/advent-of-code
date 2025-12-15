@@ -99,3 +99,4 @@ aoc_cache/
 ## Bazel
 ##############################
 .build/
+.bazelbsp/

@@ -19,8 +19,6 @@ JUNIT_PLATFORM_VERSION = "1.13.4"
 
 MOCKITO_VERSION = "5.8.0"
 
-GOOGLE_JAVA_FORMAT_VERSION = "1.25.2"
-
 maven.install(
     artifacts = [
         "org.junit.platform:junit-platform-launcher:%s" % JUNIT_PLATFORM_VERSION,

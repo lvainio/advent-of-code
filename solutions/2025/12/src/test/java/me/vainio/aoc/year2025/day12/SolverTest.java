@@ -1,4 +1,4 @@
-package me.vainio.aoc.year{{YEAR}}.day{{DAY_PADDED}};
+package me.vainio.aoc.year2025.day12;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

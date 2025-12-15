@@ -1,10 +1,10 @@
-package me.vainio.aoc.year{{YEAR}}.day{{DAY_PADDED}};
+package me.vainio.aoc.year2025.day11;
 
 import me.vainio.aoc.cache.AocCache;
 
 public class Solver {
-  private static final int YEAR = {{YEAR}};
-  private static final int DAY = {{DAY}};
+  private static final int YEAR = 2025;
+  private static final int DAY = 11;
 
   public static void main(final String[] args) {
     final AocCache cache = new AocCache();

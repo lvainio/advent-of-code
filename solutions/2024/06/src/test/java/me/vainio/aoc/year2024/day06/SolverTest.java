@@ -1,4 +1,4 @@
-package me.vainio.aoc.year2025.day10;
+package me.vainio.aoc.year2024.day06;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -9,9 +9,16 @@ public class SolverTest {
 
   private static final String EXAMPLE_INPUT =
       """
-      INPUT
-      INPUT
-      INPUT\
+      ....#.....
+      .........#
+      ..........
+      ..#.......
+      .......#..
+      ..........
+      .#..^.....
+      ........#.
+      #.........
+      ......#...\
       """;
 
   private static Solver solver;
@@ -23,11 +30,11 @@ public class SolverTest {
 
   @Test
   void testSolvePart1() {
-    assertEquals("", solver.solvePart1());
+    assertEquals("41", solver.solvePart1());
   }
 
   @Test
   void testSolvePart2() {
-    assertEquals("", solver.solvePart2());
+    assertEquals("6", solver.solvePart2());
   }
 }

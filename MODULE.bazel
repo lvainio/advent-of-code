@@ -4,10 +4,10 @@ module(
     compatibility_level = 1,
 )
 
-bazel_dep(name = "rules_java", version = "8.14.0")
-bazel_dep(name = "rules_jvm_external", version = "6.8")
-bazel_dep(name = "contrib_rules_jvm", version = "0.30.0")
-bazel_dep(name = "rules_shell", version = "0.3.0")
+bazel_dep(name = "rules_java", version = "9.3.0")
+bazel_dep(name = "rules_jvm_external", version = "6.9")
+bazel_dep(name = "contrib_rules_jvm", version = "0.31.1")
+bazel_dep(name = "rules_shell", version = "0.6.1")
 
 bazel_dep(
     name = "buildifier_prebuilt",

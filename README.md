@@ -61,8 +61,8 @@ REPIN=1 bazel mod tidy
 
 ## Solutions
 
-| Year | Language | Link |
-|------|----------|-------|
+| Year | Language | Link                                                                       |
+|------|----------|----------------------------------------------------------------------------|
 | 2025 | Java     | [View](https://github.com/lvainio/advent-of-code/tree/main/solutions/2025) |
 | 2024 | Java     | [View](https://github.com/lvainio/advent-of-code/tree/main/solutions/2024) |
 | 2023 |          | [View](https://github.com/lvainio/advent-of-code/tree/main/solutions/2023) |

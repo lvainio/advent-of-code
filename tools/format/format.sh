@@ -13,7 +13,7 @@ echo "Formatting Bazel files..."
 bazel run //tools/format:buildifier-fix
 echo "Done formatting Bazel files"
 
-JAVA_FILES=$(find "$WORKSPACE_ROOT" -name "*.java" -not -path "*/bazel-*" -not -path "*/.git/*" -not -path "*/.bazelbsp/*")
+JAVA_FILES=$(find "$WORKSPACE_ROOT" -name "*.java" -not -path "*/.build/*" -not -path "*/.git/*" -not -path "*/.bazelbsp/*")
 if [ -z "$JAVA_FILES" ]; then
   echo "No Java files found to format"
   exit 0
@@ -22,7 +22,7 @@ fi
 echo "Formatting Java files..."
 find "$WORKSPACE_ROOT" \
   -name "*.java" \
-  -not -path "*/bazel-*" \
+  -not -path "*/.build/*" \
   -not -path "*/.git/*" \
   -not -path "*/.bazelbsp/*" \
 | xargs bazel run //tools/format:google-java-format -- --replace

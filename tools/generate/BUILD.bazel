@@ -1,11 +1,11 @@
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 
 sh_binary(
-    name = "generate",
-    srcs = ["generate.sh"],
+    name = "generate-java",
+    srcs = ["generate_java.sh"],
     data = [
-        "templates/BUILD.bazel.template",
-        "templates/Solver.java.template",
-        "templates/SolverTest.java.template",
+        "templates/java/BUILD.bazel.template",
+        "templates/java/Solver.java.template",
+        "templates/java/SolverTest.java.template",
     ],
 )

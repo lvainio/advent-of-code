@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [ "$#" -ne 2 ]; then
-  echo "Usage: bazel run //tools/generate:generate -- <year> <day>" >&2
+  echo "Usage: bazel run //tools/generate:generate-java -- <year> <day>" >&2
   exit 1
 fi
 
@@ -33,7 +33,7 @@ sed \
   -e "s/{{YEAR}}/$YEAR/g" \
   -e "s/{{DAY}}/$DAY/g" \
   -e "s/{{DAY_PADDED}}/$DAY_PADDED/g" \
-  tools/generate/templates/Solver.java.template \
+  tools/generate/templates/java/Solver.java.template \
   > "${MAIN_DIR}/Solver.java"
 
 # SolverTest.java
@@ -41,7 +41,7 @@ echo "LOG: Generating SolverTest.java"
 sed \
   -e "s/{{YEAR}}/$YEAR/g" \
   -e "s/{{DAY_PADDED}}/$DAY_PADDED/g" \
-  tools/generate/templates/SolverTest.java.template \
+  tools/generate/templates/java/SolverTest.java.template \
   > "${TEST_DIR}/SolverTest.java"
 
 # BUILD.bazel
@@ -49,7 +49,7 @@ echo "LOG: Generating BUILD.bazel"
 sed \
   -e "s/{{YEAR}}/$YEAR/g" \
   -e "s/{{DAY}}/$DAY/g" \
-  tools/generate/templates/BUILD.bazel.template \
+  tools/generate/templates/java/BUILD.bazel.template \
   > "${ROOT_DIR}/BUILD.bazel"
 
 echo "LOG: Generated files in $ROOT_DIR:"

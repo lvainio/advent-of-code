@@ -22,7 +22,7 @@ buildifier(
     exclude_patterns = [
         "./.git/*",
         "./.idea/*",
-        "./bazel-*",
+        "./.build/*",
         "./.bazelbsp/*",
     ],
     lint_mode = "warn",
@@ -34,7 +34,7 @@ buildifier(
     exclude_patterns = [
         "./.git/*",
         "./.idea/*",
-        "./bazel-*",
+        "./.build/*",
         "./.bazelbsp/*",
     ],
     lint_mode = "fix",

@@ -1,5 +1,3 @@
-"""Java dependencies for the project."""
-
 JUNIT5_DEPS = [
     "@maven//:org_junit_jupiter_junit_jupiter_api",
     "@maven//:org_junit_jupiter_junit_jupiter_params",

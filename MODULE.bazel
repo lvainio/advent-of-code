@@ -5,7 +5,7 @@ module(
 )
 
 bazel_dep(name = "rules_java", version = "8.14.0")
-bazel_dep(name = "rules_jvm_external", version = "6.9")
+bazel_dep(name = "rules_jvm_external", version = "6.8")
 bazel_dep(name = "contrib_rules_jvm", version = "0.30.0")
 bazel_dep(name = "rules_shell", version = "0.3.0")
 
@@ -31,7 +31,7 @@ maven.install(
         "org.junit.jupiter:junit-jupiter-engine:%s" % JUNIT_JUPITER_VERSION,
         "org.mockito:mockito-core:%s" % MOCKITO_VERSION,
         "org.mockito:mockito-junit-jupiter:%s" % MOCKITO_VERSION,
-        "info.picocli:picocli:4.7.6",
+        "info.picocli:picocli:4.7.7",
         "com.google.googlejavaformat:google-java-format:1.32.0:all-deps",
     ],
     lock_file = "//:maven_install.json",

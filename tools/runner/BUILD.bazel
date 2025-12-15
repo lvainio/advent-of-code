@@ -1,8 +1,0 @@
-sh_binary(
-    name = "run",
-    srcs = ["run.sh"],
-    data = [
-        "//solutions/2024/01:solver",
-    ],
-    visibility = ["//visibility:public"],
-)

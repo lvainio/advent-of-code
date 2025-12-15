@@ -1,3 +1,4 @@
+load("@buildifier_prebuilt//:rules.bzl", "buildifier")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 
 java_binary(
@@ -14,4 +15,16 @@ java_binary(
     runtime_deps = [
         "@maven//:com_google_googlejavaformat_google_java_format_all_deps",
     ],
+)
+
+buildifier(
+    name = "buildifier-check",
+    exclude_patterns = [
+        "./.git/*",
+        "./.idea/*",
+        "./bazel-*",
+        "./.bazelbsp/*",
+    ],
+    lint_mode = "warn",
+    mode = "diff",
 )

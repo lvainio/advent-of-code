@@ -34,6 +34,10 @@ maven.install(
         "info.picocli:picocli:4.7.7",
         "com.google.googlejavaformat:google-java-format:1.32.0:all-deps",
     ],
+    known_contributing_modules = [
+        "advent-of-code",
+        "protobuf",
+    ],
     lock_file = "//:maven_install.json",
     repositories = [
         "https://repo1.maven.org/maven2",

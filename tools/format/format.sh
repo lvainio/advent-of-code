@@ -9,6 +9,10 @@ if [ -z "$WORKSPACE_ROOT" ]; then
 fi
 cd "$WORKSPACE_ROOT"
 
+echo "Formatting Bazel files..."
+bazel run //tools/format:buildifier-fix
+echo "Done formatting Bazel files"
+
 JAVA_FILES=$(find "$WORKSPACE_ROOT" -name "*.java" -not -path "*/bazel-*" -not -path "*/.git/*" -not -path "*/.bazelbsp/*")
 if [ -z "$JAVA_FILES" ]; then
   echo "No Java files found to format"

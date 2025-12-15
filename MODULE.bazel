@@ -1,17 +1,12 @@
-"""My Advent of Code solutions."""
-
 module(
     name = "advent-of-code",
     version = "1.0.0",
     compatibility_level = 1,
 )
 
-bazel_dep(name = "rules_shell", version = "0.3.0")
 bazel_dep(name = "rules_java", version = "8.14.0")
-bazel_dep(name = "rules_jvm_external", version = "6.8")
+bazel_dep(name = "rules_jvm_external", version = "6.9")
 bazel_dep(name = "contrib_rules_jvm", version = "0.30.0")
-
-maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 
 JUNIT_JUPITER_VERSION = "5.13.4"
 
@@ -19,6 +14,7 @@ JUNIT_PLATFORM_VERSION = "1.13.4"
 
 MOCKITO_VERSION = "5.8.0"
 
+maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 maven.install(
     artifacts = [
         "org.junit.platform:junit-platform-launcher:%s" % JUNIT_PLATFORM_VERSION,
@@ -31,6 +27,7 @@ maven.install(
         "info.picocli:picocli:4.7.6",
         "com.google.googlejavaformat:google-java-format:1.32.0:all-deps",
     ],
+    lock_file = "//:maven_install.json",
     repositories = [
         "https://repo1.maven.org/maven2",
     ],

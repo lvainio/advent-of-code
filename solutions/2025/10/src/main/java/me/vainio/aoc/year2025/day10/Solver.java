@@ -124,40 +124,35 @@ public class Solver {
       final List<Integer> target = machine.joltageRequirements();
       final List<Set<Integer>> buttons = new ArrayList<>(machine.buttons());
 
-      int numCounters = target.size();
-      int numButtons = buttons.size();
+      final MPSolver solver = MPSolver.createSolver("CBC");
 
-      MPSolver solver =
-          new MPSolver("Solver", MPSolver.OptimizationProblemType.CBC_MIXED_INTEGER_PROGRAMMING);
-
-      MPVariable[] x = new MPVariable[numButtons];
-      for (int j = 0; j < numButtons; j++) {
-        x[j] = solver.makeIntVar(0.0, Double.POSITIVE_INFINITY, "x_" + j);
+      final MPVariable[] x = new MPVariable[buttons.size()];
+      for (int button = 0; button < buttons.size(); button++) {
+        x[button] = solver.makeIntVar(0.0, Double.POSITIVE_INFINITY, "x_" + button);
       }
 
-      // Constraint is that buttons affecting each counter must equal target of that counter
-      for (int i = 0; i < numCounters; i++) {
-        MPConstraint c = solver.makeConstraint(target.get(i), target.get(i), "c_" + i);
-        for (int j = 0; j < numButtons; j++) {
-          if (buttons.get(j).contains(i)) {
-            c.setCoefficient(x[j], 1.0);
+      for (int counter = 0; counter < target.size(); counter++) {
+        final MPConstraint constraint =
+            solver.makeConstraint(target.get(counter), target.get(counter), "c_" + counter);
+        for (int button = 0; button < buttons.size(); button++) {
+          if (buttons.get(button).contains(counter)) {
+            constraint.setCoefficient(x[button], 1.0);
           }
         }
       }
 
-      // Objective is to minimize total button presses
-      MPObjective obj = solver.objective();
-      for (int j = 0; j < numButtons; j++) {
-        obj.setCoefficient(x[j], 1.0);
+      final MPObjective objective = solver.objective();
+      for (int button = 0; button < buttons.size(); button++) {
+        objective.setCoefficient(x[button], 1.0);
       }
-      obj.setMinimization();
+      objective.setMinimization();
 
       MPSolver.ResultStatus status = solver.solve();
       if (status != MPSolver.ResultStatus.OPTIMAL) {
-        throw new RuntimeException("Solving failed");
+        throw new IllegalStateException("Solving failed for machine " + machine);
       }
 
-      totalPresses += Math.round(obj.value());
+      totalPresses += Math.round(objective.value());
     }
     return String.valueOf(totalPresses);
   }

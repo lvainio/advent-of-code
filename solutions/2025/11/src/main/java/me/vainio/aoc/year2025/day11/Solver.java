@@ -1,10 +1,22 @@
 package me.vainio.aoc.year2025.day11;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import me.vainio.aoc.cache.AocCache;
 
 public class Solver {
   private static final int YEAR = 2025;
   private static final int DAY = 11;
+
+  private static final String YOU = "you";
+  private static final String SVR = "svr";
+  private static final String OUT = "out";
+  private static final String DAC = "dac";
+  private static final String FFT = "fft";
+
+  private final Map<String, Set<String>> dag;
 
   public static void main(final String[] args) {
     final AocCache cache = new AocCache();
@@ -23,16 +35,47 @@ public class Solver {
   }
 
   public Solver(final String input) {
-    // FIXME: Parse input
+    this.dag =
+        input
+            .lines()
+            .map(line -> line.split(": "))
+            .collect(Collectors.toMap(parts -> parts[0], parts -> Set.of(parts[1].split(" "))));
   }
 
   public String solvePart1() {
-    // FIXME: Implement solution for part 1
-    return "";
+    return String.valueOf(dfs(YOU, OUT, new HashMap<>(), Set.of()));
   }
 
   public String solvePart2() {
-    // FIXME: Implement solution for part 2
-    return "";
+    long startToDac = dfs(SVR, DAC, new HashMap<>(), Set.of(FFT, OUT));
+    long startToFft = dfs(SVR, FFT, new HashMap<>(), Set.of(DAC, OUT));
+    long dacToFft = dfs(DAC, FFT, new HashMap<>(), Set.of(SVR, OUT));
+    long fftToDac = dfs(FFT, DAC, new HashMap<>(), Set.of(SVR, OUT));
+    long dacToOUT = dfs(DAC, OUT, new HashMap<>(), Set.of(SVR, FFT));
+    long fftToOUT = dfs(FFT, OUT, new HashMap<>(), Set.of(SVR, DAC));
+
+    long numPaths = startToDac * dacToFft * fftToOUT + startToFft * fftToDac * dacToOUT;
+    return String.valueOf(numPaths);
+  }
+
+  private long dfs(
+      final String node, final String goal, Map<String, Long> memo, Set<String> exclude) {
+    if (node.equals(goal)) {
+      return 1;
+    }
+    if (exclude.contains(node)) {
+      return 0;
+    }
+    if (memo.containsKey(node)) {
+      return memo.get(node);
+    }
+
+    long paths = 0;
+    for (String neighbor : dag.get(node)) {
+      paths += dfs(neighbor, goal, memo, exclude);
+    }
+
+    memo.put(node, paths);
+    return paths;
   }
 }

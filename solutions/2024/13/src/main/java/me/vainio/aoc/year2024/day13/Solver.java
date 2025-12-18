@@ -1,20 +1,22 @@
-package leo.aoc.year2024.day13;
+package me.vainio.aoc.year2024.day13;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import leo.aoc.AbstractSolver;
+import me.vainio.aoc.cache.AocCache;
 
-public class Solver extends AbstractSolver {
+public class Solver {
+  private static final int YEAR = 2024;
+  private static final int DAY = 13;
 
   private record ClawMachine(long ax, long ay, long bx, long by, long px, long py) {
     public long calculateCheapestWin() {
       double aPresses =
           (double) (this.by * this.px - this.bx * this.py)
               / (this.ax * this.by - this.ay * this.bx);
-      double bPresses = (double) (this.px - aPresses * this.ax) / this.bx;
+      double bPresses = (this.px - aPresses * this.ax) / this.bx;
       if (aPresses >= 0.0 && bPresses >= 0.0 && aPresses % 1.0 == 0.0 && bPresses % 1 == 0.0) {
         return (long) (aPresses * 3.0 + bPresses);
       }
@@ -28,11 +30,25 @@ public class Solver extends AbstractSolver {
 
   private final List<ClawMachine> clawMachines;
 
-  public Solver(String input) {
-    super(input);
+  public static void main(final String[] args) {
+    final AocCache cache = new AocCache();
 
-    List<String> lines = input.lines().collect(Collectors.toList());
-    List<ClawMachine> clawMachines =
+    final String input = cache.getInput(YEAR, DAY);
+    final Solver solver = new Solver(input);
+
+    final String part1 = solver.solvePart1();
+    final String part2 = solver.solvePart2();
+
+    System.out.println(part1);
+    System.out.println(part2);
+
+    cache.saveAnswer(YEAR, DAY, 1, part1);
+    cache.saveAnswer(YEAR, DAY, 2, part2);
+  }
+
+  public Solver(final String input) {
+    List<String> lines = input.lines().toList();
+    clawMachines =
         IntStream.iterate(0, idx -> idx < lines.size(), idx -> idx + 4)
             .mapToObj(
                 idx -> {
@@ -49,21 +65,20 @@ public class Solver extends AbstractSolver {
                   return new ClawMachine(ax, ay, bx, by, px, py);
                 })
             .collect(Collectors.toList());
-    this.clawMachines = clawMachines;
   }
 
   private int getNext(Matcher matcher) {
-    matcher.find();
+    if (!matcher.find()) {
+      throw new IllegalStateException("No more matches found");
+    }
     return Integer.parseInt(matcher.group());
   }
 
-  @Override
   public String solvePart1() {
     long sum = this.clawMachines.stream().mapToLong(ClawMachine::calculateCheapestWin).sum();
     return Long.toString(sum);
   }
 
-  @Override
   public String solvePart2() {
     long sum =
         this.clawMachines.stream()

@@ -152,14 +152,27 @@ class GridTest {
 
   @Test
   void subGridReturnsCorrectSubGrid() {
-    final Grid<Character> grid = Grid.ofChars("abcd\n" + "efgh\n" + "ijkl\n" + "mnop");
-
+    final Grid<Character> grid =
+        Grid.ofChars(
+            """
+            abcd
+            efgh
+            ijkl
+            mnop\
+            """);
     final Grid<Character> actual1 = grid.subGrid(1, 3, 1, 4);
     final Grid<Character> expected1 = Grid.ofChars("fgh\n" + "jkl");
     final Grid<Character> actual2 = grid.subGrid(2, 3, 1, 4);
     final Grid<Character> expected2 = Grid.ofChars("jkl");
     final Grid<Character> actual3 = grid.subGrid(0, 4, 0, 2);
-    final Grid<Character> expected3 = Grid.ofChars("ab\n" + "ef\n" + "ij\n" + "mn");
+    final Grid<Character> expected3 =
+        Grid.ofChars(
+            """
+            ab
+            ef
+            ij
+            mn\
+            """);
 
     assertEquals(expected1, actual1);
     assertEquals(expected2, actual2);
@@ -409,7 +422,7 @@ class GridTest {
 
   @Test
   void countAdjacentThrowsOnOutOfBounds() {
-    Grid<Integer> grid = Grid.ofDigits("12\n34");
+    final Grid<Integer> grid = Grid.ofDigits("12\n34");
 
     assertThrows(IndexOutOfBoundsException.class, () -> grid.countAdjacent(-1, 0, 1));
     assertThrows(IndexOutOfBoundsException.class, () -> grid.countAdjacent(0, -1, 1));
@@ -419,14 +432,20 @@ class GridTest {
 
   @Test
   void countAdjacentThrowsOnNullValue() {
-    Grid<Character> grid = Grid.ofChars("ab\ncd");
+    final Grid<Character> grid = Grid.ofChars("ab\ncd");
 
     assertThrows(NullPointerException.class, () -> grid.countAdjacent(0, 0, null));
   }
 
   @Test
   void countAdjacentCountsCorrectly() {
-    Grid<Integer> grid = Grid.ofDigits("111\n" + "101\n" + "111");
+    final Grid<Integer> grid =
+        Grid.ofDigits(
+            """
+            111
+            101
+            111\
+            """);
 
     assertEquals(2, grid.countAdjacent(0, 0, 1));
     assertEquals(4, grid.countAdjacent(0, 1, 1));
@@ -441,14 +460,14 @@ class GridTest {
 
   @Test
   void countOccurrencesThrowsOnNullValue() {
-    Grid<Character> grid = Grid.ofChars("ab\ncd");
+    final Grid<Character> grid = Grid.ofChars("ab\ncd");
 
     assertThrows(NullPointerException.class, () -> grid.countOccurrences(null));
   }
 
   @Test
   void countOccurrencesCountsCorrectly() {
-    Grid<Character> grid = Grid.ofChars("aba\ncbc\ndaa");
+    final Grid<Character> grid = Grid.ofChars("aba\ncbc\ndaa");
 
     assertEquals(4, grid.countOccurrences('a'));
     assertEquals(2, grid.countOccurrences('b'));
@@ -545,7 +564,7 @@ class GridTest {
 
   @Test
   void findFirstReturnsEmptyOnNoMatch() {
-    Grid<Character> grid =
+    final Grid<Character> grid =
         Grid.ofChars(
             """
             abc
@@ -557,7 +576,7 @@ class GridTest {
 
   @Test
   void findFirstReturnsCorrectLocation() {
-    Grid<Character> grid =
+    final Grid<Character> grid =
         Grid.ofChars(
             """
             abc
@@ -571,7 +590,7 @@ class GridTest {
 
   @Test
   void findFirstReturnsFirstMatch() {
-    Grid<Character> grid =
+    final Grid<Character> grid =
         Grid.ofChars(
             """
             aba
@@ -585,7 +604,7 @@ class GridTest {
 
   @Test
   void gridEqualsItself() {
-    Grid<Character> grid =
+    final Grid<Character> grid =
         Grid.ofChars(
             """
             abc
@@ -597,7 +616,7 @@ class GridTest {
 
   @Test
   void gridNotEqualToNull() {
-    Grid<Character> grid =
+    final Grid<Character> grid =
         Grid.ofChars(
             """
             abc
@@ -609,13 +628,13 @@ class GridTest {
 
   @Test
   void differentGridsShouldNotBeEqual() {
-    Grid<Character> g1 =
+    final Grid<Character> g1 =
         Grid.ofChars(
             """
             abc
             def
             """);
-    Grid<Character> g2 =
+    final Grid<Character> g2 =
         Grid.ofChars(
             """
             abc
@@ -627,13 +646,13 @@ class GridTest {
 
   @Test
   void equalGridsHaveEqualHashCodes() {
-    Grid<Character> g1 =
+    final Grid<Character> g1 =
         Grid.ofChars(
             """
             abc
             def
             """);
-    Grid<Character> g2 =
+    final Grid<Character> g2 =
         Grid.ofChars(
             """
             abc
@@ -646,13 +665,13 @@ class GridTest {
 
   @Test
   void differentGridsShouldHaveDifferentHashCodes() {
-    Grid<Character> g1 =
+    final Grid<Character> g1 =
         Grid.ofChars(
             """
             abc
             def
             """);
-    Grid<Character> g2 =
+    final Grid<Character> g2 =
         Grid.ofChars(
             """
             abc
@@ -665,15 +684,20 @@ class GridTest {
 
   @Test
   void toStringReturnsCorrectRepresentation() {
-    Grid<Character> grid =
+    final Grid<Character> grid =
         Grid.ofChars(
             """
             abc
             def
             ghi
             """);
+    final String expected =
+        """
+        abc
+        def
+        ghi\
+        """;
 
-    String expected = "abc\n" + "def\n" + "ghi";
     assertEquals(expected, grid.toString());
   }
 }

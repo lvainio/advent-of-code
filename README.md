@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-[Bazelisk](https://github.com/bazelbuild/bazelisk).
+- [Bazelisk](https://github.com/bazelbuild/bazelisk)
 
 ## Usage
 
@@ -32,7 +32,7 @@ bazel run //tools/aoc-client:aoc_client -- <year> <day>
 ### Run solver for a day
 
 ```bash
-bazel run //solutions/<year>/day<day>:solver
+bazel run //solutions/<year>/<day>:solver
 ```
 
 ### Post answers to Advent Of Code

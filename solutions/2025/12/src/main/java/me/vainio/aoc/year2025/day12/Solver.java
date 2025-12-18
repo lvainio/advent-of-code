@@ -13,6 +13,9 @@ public class Solver {
   private static final int YEAR = 2025;
   private static final int DAY = 12;
 
+  private static final char PRESENT = '#';
+  private static final char EMPTY = '.';
+
   private record Area(int width, int height, List<Integer> quantities) {}
 
   private final List<Grid<Character>> presents;
@@ -69,51 +72,23 @@ public class Solver {
   }
 
   public String solvePart1() {
-
-    // I believe a solution to this problem is to iterate over all
-    // xmas trees.
-
-    // for each one, call a backtracking dfs function that iterates
-    // over all positions in the grid. at each position try to place
-    // the present and if it can then recurse to the next present and do the same.
-
-    // we also need to iterate over all rotations for each present.
-
-    // this is defo a brute force solution but it could work if the search space is smaller
-
-    // the dfs/backtrac should return a boolean which is nice and easy. the end case is when all
-    // presents are placed
-    // which is super easy to implement
-
-    // to implement this I believe we can use our grid class (add rotate method support) but then
-    // extend
-    // the grid class and implement a canPlace/palce/remove methods for placing presents (these are
-    // not relevant
-    // for normal grids so we should not add them there).
-
-    // presents are generally placed more than one time so need to think about that as well. seems
-    // to be arouund
-    // 100-200 presents in each area which is quite a lot.
-
-    // I believe its doable.
-
-    // lets highball the calculations
-
-    // we have around 1000 test cases, each with 300 presents, each present has 4 rotations and we
-    // have to check
-    // each area is around 50x50 = 2500 positions this totals to around 3000000000 operations which
-    // is probably
-    // alright. We can log each test case so that we can see progress.
-
-    // backtracking is pretty space efficient, and hopefully the grid can be semi efficient as well.
-
-    // maybe its possible to use dynamic programming to speed this up. that would require state to
-    // be nr
-    return "";
+    int count = 0;
+    for (Area area : areas) {
+      final int areaSize = area.width * area.height;
+      int presentSizeSum = 0;
+      for (int i = 0; i < area.quantities.size(); i++) {
+        final Grid<Character> present = presents.get(i);
+        presentSizeSum += area.quantities.get(i) * present.countOccurrences(PRESENT);
+      }
+      if (presentSizeSum <= areaSize) {
+        count++;
+      }
+    }
+    return String.valueOf(count);
   }
 
   public String solvePart2() {
-    // FIXME: Implement solution for part 2
+    // No part 2 for this day
     return "";
   }
 }

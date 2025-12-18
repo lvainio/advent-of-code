@@ -1,21 +1,36 @@
-package leo.aoc.year2024.day9;
+package me.vainio.aoc.year2024.day09;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
-import leo.aoc.AbstractSolver;
+import me.vainio.aoc.cache.AocCache;
 
-public class Solver extends AbstractSolver {
+public class Solver {
+  private static final int YEAR = 2024;
+  private static final int DAY = 9;
 
   private static final int FREE_SPACE = -1;
 
-  private List<Integer> memory;
+  private final List<Integer> memory;
 
-  public Solver(String input) {
-    super(input);
+  public static void main(final String[] args) {
+    final AocCache cache = new AocCache();
 
-    List<Integer> digits = input.chars().map(Character::getNumericValue).boxed().toList();
+    final String input = cache.getInput(YEAR, DAY);
+    final Solver solver = new Solver(input);
 
+    final String part1 = solver.solvePart1();
+    final String part2 = solver.solvePart2();
+
+    System.out.println(part1);
+    System.out.println(part2);
+
+    cache.saveAnswer(YEAR, DAY, 1, part1);
+    cache.saveAnswer(YEAR, DAY, 2, part2);
+  }
+
+  public Solver(final String input) {
+    final List<Integer> digits = input.chars().map(Character::getNumericValue).boxed().toList();
     List<Integer> memory = new ArrayList<>();
     for (int i = 0; i < digits.size(); i++) {
       if (i % 2 == 0) {
@@ -31,7 +46,6 @@ public class Solver extends AbstractSolver {
     this.memory = memory;
   }
 
-  @Override
   public String solvePart1() {
     List<Integer> memoryCopy = new ArrayList<>(memory);
     int pointer = 0;
@@ -52,17 +66,16 @@ public class Solver extends AbstractSolver {
     return Long.toString(calculateChecksum(memoryCopy));
   }
 
-  @Override
   public String solvePart2() {
     List<Integer> memoryCopy = new ArrayList<>(memory);
     for (int i = memoryCopy.size() - 1; i >= 0; i--) {
-      int id = memoryCopy.get(i);
+      final int id = memoryCopy.get(i);
       int fileSize = 1;
       while (i - 1 >= 0 && memoryCopy.get(i - 1) == id) {
         fileSize++;
         i--;
       }
-      int firstFreeSpace = findFreeSpace(memoryCopy, fileSize, i);
+      final int firstFreeSpace = findFreeSpace(memoryCopy, fileSize, i);
       for (int j = i; j < i + fileSize; j++) {
         memoryCopy.set(j, -1);
       }
@@ -73,13 +86,14 @@ public class Solver extends AbstractSolver {
     return Long.toString(calculateChecksum(memoryCopy));
   }
 
-  private static long calculateChecksum(List<Integer> memory) {
+  private static long calculateChecksum(final List<Integer> memory) {
     return IntStream.range(0, memory.size())
         .mapToLong(i -> memory.get(i) == -1 ? 0 : (long) i * memory.get(i))
         .sum();
   }
 
-  private static int findFreeSpace(List<Integer> memory, int fileSize, int fileIndex) {
+  private static int findFreeSpace(
+      final List<Integer> memory, final int fileSize, final int fileIndex) {
     int count = 0;
     for (int i = 0; i < fileIndex; i++) {
       if (memory.get(i) != -1) {

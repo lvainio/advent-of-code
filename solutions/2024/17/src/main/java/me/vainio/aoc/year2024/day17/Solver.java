@@ -1,30 +1,53 @@
-package leo.aoc.year2024.day17;
+package me.vainio.aoc.year2024.day17;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import leo.aoc.AbstractSolver;
+import me.vainio.aoc.cache.AocCache;
 
-public class Solver extends AbstractSolver {
+public class Solver {
+  private static final int YEAR = 2024;
+  private static final int DAY = 17;
 
-  private long a = 0;
-  private long b = 0;
-  private long c = 0;
+  private final long a;
+  private final long b;
+  private final long c;
 
-  private List<Integer> instructions;
+  private final List<Integer> instructions;
 
-  public Solver(String input) {
-    super(input);
+  public static void main(final String[] args) {
+    final AocCache cache = new AocCache();
 
+    final String input = cache.getInput(YEAR, DAY);
+    final Solver solver = new Solver(input);
+
+    final String part1 = solver.solvePart1();
+    final String part2 = solver.solvePart2();
+
+    System.out.println(part1);
+    System.out.println(part2);
+
+    cache.saveAnswer(YEAR, DAY, 1, part1);
+    cache.saveAnswer(YEAR, DAY, 2, part2);
+  }
+
+  public Solver(final String input) {
     Pattern pattern = Pattern.compile("\\d+");
     Matcher matcher = pattern.matcher(input);
 
-    matcher.find();
+    if (!matcher.find()) {
+      throw new IllegalArgumentException("Invalid input: missing a");
+    }
     this.a = Long.parseLong(matcher.group());
-    matcher.find();
+    if (!matcher.find()) {
+      throw new IllegalArgumentException("Invalid input: missing b");
+    }
     this.b = Long.parseLong(matcher.group());
-    matcher.find();
+    if (!matcher.find()) {
+      throw new IllegalArgumentException("Invalid input: missing c");
+    }
     this.c = Long.parseLong(matcher.group());
 
     List<Integer> instructions = new ArrayList<>();
@@ -34,19 +57,15 @@ public class Solver extends AbstractSolver {
     this.instructions = instructions;
   }
 
-  @Override
   public String solvePart1() {
     Computer computer = new Computer(a, b, c, new ArrayList<>(instructions));
     computer.runProgram();
-    return computer.getOutput().trim();
+    return computer.getOutput().trim().substring(0, computer.getOutput().length() - 1);
   }
 
-  @Override
   public String solvePart2() {
     long a2 = 0b000;
-    long b2 = b;
-    long c2 = c;
-    long minValue = findMin(instructions, instructions.size() - 1, 0, a2, b2, c2);
+    long minValue = findMin(instructions, instructions.size() - 1, 0, a2, b, c);
     return Long.toString(minValue);
   }
 
@@ -62,7 +81,7 @@ public class Solver extends AbstractSolver {
       computer.runProgram();
 
       List<Integer> output = computer.getOutputList();
-      if (output.get(outputIdx) == instructions.get(instructionIdx)) {
+      if (Objects.equals(output.get(outputIdx), instructions.get(instructionIdx))) {
         validAValues.add(a);
       }
       a++;
@@ -73,7 +92,7 @@ public class Solver extends AbstractSolver {
         .orElse(Long.MAX_VALUE);
   }
 
-  public class Computer {
+  public static class Computer {
 
     private enum Instruction {
       ADV(0),
@@ -105,12 +124,12 @@ public class Solver extends AbstractSolver {
     private long b;
     private long c;
 
-    private List<Integer> instructions;
+    private final List<Integer> instructions;
     private int ip;
 
-    private StringBuilder output;
+    private final StringBuilder output;
 
-    private List<Integer> outputList;
+    private final List<Integer> outputList;
 
     public Computer(long a, long b, long c, List<Integer> instructions) {
       this.a = a;

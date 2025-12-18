@@ -1,20 +1,36 @@
-package leo.aoc.year2024.day15;
+package me.vainio.aoc.year2024.day15;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
-import leo.aoc.AbstractSolver;
+import me.vainio.aoc.cache.AocCache;
 
-public class Solver extends AbstractSolver {
+public class Solver {
+  private static final int YEAR = 2024;
+  private static final int DAY = 15;
 
-  private Cell[][] map1 = null;
-  private Cell[][] map2 = null;
-  private List<Move> moves = null;
+  private final Cell[][] map1;
+  private final Cell[][] map2;
+  private final List<Move> moves;
 
-  public Solver(String input) {
-    super(input);
+  public static void main(final String[] args) {
+    final AocCache cache = new AocCache();
 
+    final String input = cache.getInput(YEAR, DAY);
+    final Solver solver = new Solver(input);
+
+    final String part1 = solver.solvePart1();
+    final String part2 = solver.solvePart2();
+
+    System.out.println(part1);
+    System.out.println(part2);
+
+    cache.saveAnswer(YEAR, DAY, 1, part1);
+    cache.saveAnswer(YEAR, DAY, 2, part2);
+  }
+
+  public Solver(final String input) {
     String[] mapAndMoves = input.lines().collect(Collectors.joining("\n")).split("\r?\n\r?\n");
 
     this.map1 =
@@ -55,14 +71,12 @@ public class Solver extends AbstractSolver {
     }
   }
 
-  @Override
   public String solvePart1() {
     Warehouse warehouse1 = new Warehouse(map1);
     warehouse1.makeMoves(moves);
     return Integer.toString(warehouse1.countScore());
   }
 
-  @Override
   public String solvePart2() {
     Warehouse warehouse2 = new Warehouse(map2);
     warehouse2.makeMovesPart2(moves);
@@ -115,12 +129,11 @@ public class Solver extends AbstractSolver {
     }
   }
 
-  private class Warehouse {
+  private static class Warehouse {
 
     private record Point(int row, int col) {}
-    ;
 
-    private Cell[][] map;
+    private final Cell[][] map;
 
     private int robotRow;
     private int robotCol;
@@ -138,11 +151,11 @@ public class Solver extends AbstractSolver {
     }
 
     public void makeMoves(List<Move> moves) {
-      moves.forEach(m -> move(m));
+      moves.forEach(this::move);
     }
 
     public void makeMovesPart2(List<Move> moves) {
-      moves.forEach(m -> movePart2(m));
+      moves.forEach(this::movePart2);
     }
 
     public int countScore() {

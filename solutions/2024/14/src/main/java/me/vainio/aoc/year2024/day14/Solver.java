@@ -1,19 +1,35 @@
-package leo.aoc.year2024.day14;
+package me.vainio.aoc.year2024.day14;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import leo.aoc.AbstractSolver;
+import me.vainio.aoc.cache.AocCache;
 
-public class Solver extends AbstractSolver {
+public class Solver {
+  private static final int YEAR = 2024;
+  private static final int DAY = 14;
 
-  private List<Robot> robots;
+  private final List<Robot> robots;
 
-  public Solver(String input) {
-    super(input);
+  public static void main(final String[] args) {
+    final AocCache cache = new AocCache();
 
+    final String input = cache.getInput(YEAR, DAY);
+    final Solver solver = new Solver(input);
+
+    final String part1 = solver.solvePart1();
+    final String part2 = solver.solvePart2();
+
+    System.out.println(part1);
+    System.out.println(part2);
+
+    cache.saveAnswer(YEAR, DAY, 1, part1);
+    cache.saveAnswer(YEAR, DAY, 2, part2);
+  }
+
+  public Solver(final String input) {
     Pattern pattern = Pattern.compile("-?\\d+");
     this.robots =
         input
@@ -31,17 +47,18 @@ public class Solver extends AbstractSolver {
   }
 
   private int getNext(Matcher matcher) {
-    matcher.find();
+    if (!matcher.find()) {
+      throw new IllegalStateException("No match found!");
+    }
     return Integer.parseInt(matcher.group());
   }
 
-  @Override
   public String solvePart1() {
     final int width = 101;
     final int height = 103;
     IntStream.range(0, 100)
         .forEach(
-            _ -> {
+            dummy -> {
               robots.forEach(robot -> robot.step(width, height));
             });
     int[] counts = new int[4];
@@ -60,7 +77,6 @@ public class Solver extends AbstractSolver {
     return Integer.toString(counts[0] * counts[1] * counts[2] * counts[3]);
   }
 
-  @Override
   public String solvePart2() {
     final int width = 101;
     final int height = 103;
@@ -90,8 +106,8 @@ public class Solver extends AbstractSolver {
   }
 
   public static boolean isXmasTree(char[][] grid) {
-    for (int row = 0; row < grid.length; row++) {
-      String rowStr = new String(grid[row]);
+    for (char[] chars : grid) {
+      String rowStr = new String(chars);
       int sub = longestHashSubstring(rowStr);
       if (sub > 10) {
         return true;
@@ -113,7 +129,7 @@ public class Solver extends AbstractSolver {
     return maxCount;
   }
 
-  private class Robot {
+  public static class Robot {
     private int x;
     private int y;
 

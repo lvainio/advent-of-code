@@ -386,12 +386,84 @@ public final class Grid<T> {
   }
 
   /**
+   * Counts how many times the specified value appears in the grid.
+   *
+   * @param value The value to count.
+   * @return The total number of occurrences of the value.
+   * @throws NullPointerException if value is null.
+   */
+  public int countOccurrences(T value) {
+    Objects.requireNonNull(value, "Value must not be null");
+
+    int count = 0;
+    for (List<T> row : grid) {
+      for (T cell : row) {
+        if (value.equals(cell)) {
+          count++;
+        }
+      }
+    }
+    return count;
+  }
+
+  /**
    * Returns a new Grid that is the transpose of this grid.
    *
    * @return a new transposed Grid.
    */
   public Grid<T> transpose() {
     return new Grid<>(getCols());
+  }
+
+  /**
+   * Returns a new Grid that is rotated 90 degrees clockwise.
+   *
+   * @return a new Grid rotated 90 degrees clockwise.
+   */
+  public Grid<T> rotateRight() {
+    final List<List<T>> rotated = new ArrayList<>(numCols);
+    for (int col = 0; col < numCols; col++) {
+      final List<T> newRow = new ArrayList<>(numRows);
+      for (int row = numRows - 1; row >= 0; row--) {
+        newRow.add(grid.get(row).get(col));
+      }
+      rotated.add(newRow);
+    }
+    return new Grid<>(rotated);
+  }
+
+  /**
+   * Returns a new Grid that is rotated 90 degrees counterclockwise.
+   *
+   * @return a new Grid rotated 90 degrees counterclockwise.
+   */
+  public Grid<T> rotateLeft() {
+    final List<List<T>> rotated = new ArrayList<>(numCols);
+    for (int col = numCols - 1; col >= 0; col--) {
+      final List<T> newRow = new ArrayList<>(numRows);
+      for (int row = 0; row < numRows; row++) {
+        newRow.add(grid.get(row).get(col));
+      }
+      rotated.add(newRow);
+    }
+    return new Grid<>(rotated);
+  }
+
+  /**
+   * Returns a new Grid that is rotated 180 degrees.
+   *
+   * @return a new Grid rotated 180 degrees.
+   */
+  public Grid<T> rotate180() {
+    final List<List<T>> rotated = new ArrayList<>(numRows);
+    for (int row = numRows - 1; row >= 0; row--) {
+      final List<T> newRow = new ArrayList<>(numCols);
+      for (int col = numCols - 1; col >= 0; col--) {
+        newRow.add(grid.get(row).get(col));
+      }
+      rotated.add(newRow);
+    }
+    return new Grid<>(rotated);
   }
 
   /**

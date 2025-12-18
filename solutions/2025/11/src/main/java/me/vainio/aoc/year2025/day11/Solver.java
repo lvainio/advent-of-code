@@ -47,14 +47,14 @@ public class Solver {
   }
 
   public String solvePart2() {
-    long startToDac = dfs(SVR, DAC, new HashMap<>(), Set.of(FFT, OUT));
-    long startToFft = dfs(SVR, FFT, new HashMap<>(), Set.of(DAC, OUT));
+    long svrToDac = dfs(SVR, DAC, new HashMap<>(), Set.of(FFT, OUT));
+    long svrToFft = dfs(SVR, FFT, new HashMap<>(), Set.of(DAC, OUT));
     long dacToFft = dfs(DAC, FFT, new HashMap<>(), Set.of(SVR, OUT));
     long fftToDac = dfs(FFT, DAC, new HashMap<>(), Set.of(SVR, OUT));
-    long dacToOUT = dfs(DAC, OUT, new HashMap<>(), Set.of(SVR, FFT));
-    long fftToOUT = dfs(FFT, OUT, new HashMap<>(), Set.of(SVR, DAC));
+    long dacToOut = dfs(DAC, OUT, new HashMap<>(), Set.of(SVR, FFT));
+    long fftToOut = dfs(FFT, OUT, new HashMap<>(), Set.of(SVR, DAC));
 
-    long numPaths = startToDac * dacToFft * fftToOUT + startToFft * fftToDac * dacToOUT;
+    long numPaths = svrToDac * dacToFft * fftToOut + svrToFft * fftToDac * dacToOut;
     return String.valueOf(numPaths);
   }
 

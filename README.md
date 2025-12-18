@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-The only required tool is [Bazelisk](https://github.com/bazelbuild/bazelisk).
+[Bazelisk](https://github.com/bazelbuild/bazelisk).
 
 ## Usage
 
@@ -20,7 +20,7 @@ export AOC_SESSION="your_session_token_here"
 
 Java:
 ```bash
-bazel run //tools/generate:generate -- <year> <day>
+bazel run //tools/generate:generate-java -- <year> <day>
 ```
 
 ### Fetch input data for a day

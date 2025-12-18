@@ -440,6 +440,24 @@ class GridTest {
   }
 
   @Test
+  void countOccurrencesThrowsOnNullValue() {
+    Grid<Character> grid = Grid.ofChars("ab\ncd");
+
+    assertThrows(NullPointerException.class, () -> grid.countOccurrences(null));
+  }
+
+  @Test
+  void countOccurrencesCountsCorrectly() {
+    Grid<Character> grid = Grid.ofChars("aba\ncbc\ndaa");
+
+    assertEquals(4, grid.countOccurrences('a'));
+    assertEquals(2, grid.countOccurrences('b'));
+    assertEquals(2, grid.countOccurrences('c'));
+    assertEquals(1, grid.countOccurrences('d'));
+    assertEquals(0, grid.countOccurrences('x'));
+  }
+
+  @Test
   void transposeCreatesCorrectGrid() {
     final Grid<Character> grid = Grid.ofChars("ab\ncd");
     final Grid<Character> expected = Grid.ofChars("ac\nbd");
@@ -452,6 +470,75 @@ class GridTest {
   void transposeTwiceReturnsOriginalGrid() {
     final Grid<Character> grid = Grid.ofChars("ab\ncd");
     final Grid<Character> actual = grid.transpose().transpose();
+
+    assertEquals(grid, actual);
+  }
+
+  @Test
+  void rotateRightCreatesCorrectGrid() {
+    final Grid<Character> grid = Grid.ofChars("ab\ncd");
+    final Grid<Character> expected = Grid.ofChars("ca\ndb");
+    final Grid<Character> actual = grid.rotateRight();
+
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  void rotateRightTwiceCreatesCorrectGrid() {
+    final Grid<Character> grid = Grid.ofChars("ab\ncd");
+    final Grid<Character> expected = Grid.ofChars("dc\nba");
+    final Grid<Character> actual = grid.rotateRight().rotateRight();
+
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  void rotateRightFourTimesReturnsOriginalGrid() {
+    final Grid<Character> grid = Grid.ofChars("ab\ncd");
+    final Grid<Character> actual = grid.rotateRight().rotateRight().rotateRight().rotateRight();
+
+    assertEquals(grid, actual);
+  }
+
+  @Test
+  void rotateLeftCreatesCorrectGrid() {
+    final Grid<Character> grid = Grid.ofChars("ab\ncd");
+    final Grid<Character> expected = Grid.ofChars("bd\nac");
+    final Grid<Character> actual = grid.rotateLeft();
+
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  void rotateLeftTwiceCreatesCorrectGrid() {
+    final Grid<Character> grid = Grid.ofChars("ab\ncd");
+    final Grid<Character> expected = Grid.ofChars("dc\nba");
+    final Grid<Character> actual = grid.rotateLeft().rotateLeft();
+
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  void rotateLeftFourTimesReturnsOriginalGrid() {
+    final Grid<Character> grid = Grid.ofChars("ab\ncd");
+    final Grid<Character> actual = grid.rotateLeft().rotateLeft().rotateLeft().rotateLeft();
+
+    assertEquals(grid, actual);
+  }
+
+  @Test
+  void rotate180CreatesCorrectGrid() {
+    final Grid<Character> grid = Grid.ofChars("ab\ncd");
+    final Grid<Character> expected = Grid.ofChars("dc\nba");
+    final Grid<Character> actual = grid.rotate180();
+
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  void rotate180TwiceReturnsOriginalGrid() {
+    final Grid<Character> grid = Grid.ofChars("ab\ncd");
+    final Grid<Character> actual = grid.rotate180().rotate180();
 
     assertEquals(grid, actual);
   }

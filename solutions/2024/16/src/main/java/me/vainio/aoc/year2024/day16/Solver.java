@@ -1,13 +1,15 @@
-package leo.aoc.year2024.day16;
+package me.vainio.aoc.year2024.day16;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
-import leo.aoc.AbstractSolver;
-import leo.aoc.util.Direction;
+import me.vainio.aoc.cache.AocCache;
+import me.vainio.aoc.util.Direction;
 
-public class Solver extends AbstractSolver {
+public class Solver {
+  private static final int YEAR = 2024;
+  private static final int DAY = 16;
 
   private static final char START = 'S';
   private static final char END = 'E';
@@ -29,9 +31,23 @@ public class Solver extends AbstractSolver {
   private final Node start;
   private final Node end;
 
-  public Solver(String input) {
-    super(input);
+  public static void main(final String[] args) {
+    final AocCache cache = new AocCache();
 
+    final String input = cache.getInput(YEAR, DAY);
+    final Solver solver = new Solver(input);
+
+    final String part1 = solver.solvePart1();
+    final String part2 = solver.solvePart2();
+
+    System.out.println(part1);
+    System.out.println(part2);
+
+    cache.saveAnswer(YEAR, DAY, 1, part1);
+    cache.saveAnswer(YEAR, DAY, 2, part2);
+  }
+
+  public Solver(final String input) {
     char[][] grid = input.lines().map(String::trim).map(String::toCharArray).toArray(char[][]::new);
 
     Node start = null;
@@ -53,7 +69,6 @@ public class Solver extends AbstractSolver {
     this.end = end;
   }
 
-  @Override
   public String solvePart1() {
     PriorityQueue<PriorityQueueNode> pq = new PriorityQueue<>();
     HashMap<NodeAndDirection, Integer> bestScores = new HashMap<>();
@@ -96,7 +111,6 @@ public class Solver extends AbstractSolver {
     throw new IllegalStateException("No path found part1!");
   }
 
-  @Override
   public String solvePart2() {
     int bestScoreToEnd = Integer.MAX_VALUE;
     HashSet<Node> bestPathNodes = new HashSet<>();

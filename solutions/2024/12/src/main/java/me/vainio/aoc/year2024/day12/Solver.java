@@ -1,28 +1,43 @@
-package leo.aoc.year2024.day12;
+package me.vainio.aoc.year2024.day12;
 
 import java.util.HashSet;
 import java.util.stream.IntStream;
-import leo.aoc.AbstractSolver;
+import me.vainio.aoc.cache.AocCache;
 
-public class Solver extends AbstractSolver {
+public class Solver {
+  private static final int YEAR = 2024;
+  private static final int DAY = 12;
 
-  private record Node(int row, int col) {}
+  public record Node(int row, int col) {}
 
-  private record Counts(int area, int perimeter) {
+  public record Counts(int area, int perimeter) {
     public Counts add(Counts other) {
       return new Counts(this.area + other.area, this.perimeter + other.perimeter);
     }
   }
 
-  private char[][] grid;
+  private final char[][] grid;
 
-  public Solver(String input) {
-    super(input);
+  public static void main(final String[] args) {
+    final AocCache cache = new AocCache();
 
-    this.grid = input.lines().map(line -> line.toCharArray()).toArray(char[][]::new);
+    final String input = cache.getInput(YEAR, DAY);
+    final Solver solver = new Solver(input);
+
+    final String part1 = solver.solvePart1();
+    final String part2 = solver.solvePart2();
+
+    System.out.println(part1);
+    System.out.println(part2);
+
+    cache.saveAnswer(YEAR, DAY, 1, part1);
+    cache.saveAnswer(YEAR, DAY, 2, part2);
   }
 
-  @Override
+  public Solver(final String input) {
+    this.grid = input.lines().map(String::toCharArray).toArray(char[][]::new);
+  }
+
   public String solvePart1() {
     final int numRows = grid.length;
     final int numCols = grid[0].length;
@@ -47,7 +62,6 @@ public class Solver extends AbstractSolver {
     return Integer.toString(total);
   }
 
-  @Override
   public String solvePart2() {
     final int numRows = grid.length;
     final int numCols = grid[0].length;

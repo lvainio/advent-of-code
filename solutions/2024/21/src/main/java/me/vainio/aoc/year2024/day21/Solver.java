@@ -1,4 +1,4 @@
-package leo.aoc.year2024.day21;
+package me.vainio.aoc.year2024.day21;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,19 +7,34 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import leo.aoc.AbstractSolver;
+import me.vainio.aoc.cache.AocCache;
 
-public class Solver extends AbstractSolver {
+public class Solver {
+  private static final int YEAR = 2024;
+  private static final int DAY = 21;
 
-  private List<String> codes = null;
+  private final List<String> codes;
 
-  public Solver(String input) {
-    super(input);
+  public static void main(final String[] args) {
+    final AocCache cache = new AocCache();
 
+    final String input = cache.getInput(YEAR, DAY);
+    final Solver solver = new Solver(input);
+
+    final String part1 = solver.solvePart1();
+    final String part2 = solver.solvePart2();
+
+    System.out.println(part1);
+    System.out.println(part2);
+
+    cache.saveAnswer(YEAR, DAY, 1, part1);
+    cache.saveAnswer(YEAR, DAY, 2, part2);
+  }
+
+  public Solver(final String input) {
     this.codes = input.lines().toList();
   }
 
-  @Override
   public String solvePart1() {
     Keypad nkp = new Keypad(Keypad.NUMERIC_KEYPAD);
     Keypad dkp = new Keypad(Keypad.DIRECTIONAL_KEYPAD);
@@ -37,7 +52,6 @@ public class Solver extends AbstractSolver {
     return Long.toString(total);
   }
 
-  @Override
   public String solvePart2() {
     Keypad nkp = new Keypad(Keypad.NUMERIC_KEYPAD);
     Keypad dkp = new Keypad(Keypad.DIRECTIONAL_KEYPAD);
@@ -65,7 +79,7 @@ public class Solver extends AbstractSolver {
     private final int dc;
     private final char symbol;
 
-    private Direction(int dr, int dc, char symbol) {
+    Direction(int dr, int dc, char symbol) {
       this.dr = dr;
       this.dc = dc;
       this.symbol = symbol;
@@ -84,18 +98,14 @@ public class Solver extends AbstractSolver {
     }
   }
 
-  public class Keypad {
+  public static class Keypad {
     private record Node(int row, int col) {}
-    ;
 
     private record BFSNode(Node node, String path) {}
-    ;
 
     private record Pair(char from, char to) {}
-    ;
 
     private record MemoPair(String sequence, int depth) {}
-    ;
 
     public static final Character[][] NUMERIC_KEYPAD = {
       {'7', '8', '9'},
@@ -109,11 +119,11 @@ public class Solver extends AbstractSolver {
       {'<', 'v', '>'}
     };
 
-    private HashMap<Pair, HashSet<String>> shortestPaths;
+    private final HashMap<Pair, HashSet<String>> shortestPaths;
 
-    private HashMap<Pair, Integer> shortestLengths;
+    private final HashMap<Pair, Integer> shortestLengths;
 
-    private Map<MemoPair, Long> memMap;
+    private final Map<MemoPair, Long> memMap;
 
     public Keypad(Character[][] keypad) {
       this.shortestPaths = computeShortestPaths(keypad);
@@ -168,15 +178,15 @@ public class Solver extends AbstractSolver {
 
     private List<Pair> getKeyPairs(Character[][] keypad) {
       List<Pair> pairs = new ArrayList<>();
-      for (int row1 = 0; row1 < keypad.length; row1++) {
+      for (Character[] characters : keypad) {
         for (int col1 = 0; col1 < keypad[0].length; col1++) {
-          Character c1 = keypad[row1][col1];
+          Character c1 = characters[col1];
           if (c1 == null) {
             continue;
           }
-          for (int row2 = 0; row2 < keypad.length; row2++) {
+          for (Character[] value : keypad) {
             for (int col2 = 0; col2 < keypad[0].length; col2++) {
-              Character c2 = keypad[row2][col2];
+              Character c2 = value[col2];
               if (c2 == null) {
                 continue;
               }

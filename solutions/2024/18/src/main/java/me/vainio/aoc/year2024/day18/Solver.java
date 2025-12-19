@@ -1,4 +1,4 @@
-package leo.aoc.year2024.day18;
+package me.vainio.aoc.year2024.day18;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -7,18 +7,33 @@ import java.util.List;
 import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import leo.aoc.AbstractSolver;
+import me.vainio.aoc.cache.AocCache;
 
-public class Solver extends AbstractSolver {
+public class Solver {
+  private static final int YEAR = 2024;
+  private static final int DAY = 18;
 
   public record Coordinate(int x, int y) {}
 
-  private List<Coordinate> coordinates;
+  private final List<Coordinate> coordinates;
 
-  public Solver(String input) {
-    super(input);
+  public static void main(final String[] args) {
+    final AocCache cache = new AocCache();
 
+    final String input = cache.getInput(YEAR, DAY);
+    final Solver solver = new Solver(input);
+
+    final String part1 = solver.solvePart1();
+    final String part2 = solver.solvePart2();
+
+    System.out.println(part1);
+    System.out.println(part2);
+
+    cache.saveAnswer(YEAR, DAY, 1, part1);
+    cache.saveAnswer(YEAR, DAY, 2, part2);
+  }
+
+  public Solver(final String input) {
     Pattern pattern = Pattern.compile("\\d+");
     this.coordinates =
         input
@@ -26,16 +41,19 @@ public class Solver extends AbstractSolver {
             .map(
                 s -> {
                   Matcher matcher = pattern.matcher(s);
-                  matcher.find();
+                  if (!matcher.find()) {
+                    throw new IllegalArgumentException("Invalid input line: " + s);
+                  }
                   int x = Integer.parseInt(matcher.group());
-                  matcher.find();
+                  if (!matcher.find()) {
+                    throw new IllegalArgumentException("Invalid input line: " + s);
+                  }
                   int y = Integer.parseInt(matcher.group());
                   return new Coordinate(x, y);
                 })
-            .collect(Collectors.toList());
+            .toList();
   }
 
-  @Override
   public String solvePart1() {
     Coordinate starCoordinate = new Coordinate(0, 0);
     Coordinate endCoordinate = new Coordinate(70, 70);
@@ -46,12 +64,11 @@ public class Solver extends AbstractSolver {
     return Integer.toString(gridGraph.bfs());
   }
 
-  @Override
   public String solvePart2() {
     Coordinate starCoordinate = new Coordinate(0, 0);
     Coordinate endCoordinate = new Coordinate(70, 70);
 
-    GridGraph gridGraph = null;
+    GridGraph gridGraph;
     for (int i = 1; i <= coordinates.size(); i++) {
       try {
         gridGraph = new GridGraph(starCoordinate, endCoordinate);
@@ -65,17 +82,17 @@ public class Solver extends AbstractSolver {
     throw new IllegalStateException("Part2 could not be solved");
   }
 
-  public class GridGraph {
+  public static class GridGraph {
     private static final char SAFE = '.';
     private static final char CORRUPTED = '#';
 
     private static final int NUM_ROWS = 71;
     private static final int NUM_COLS = 71;
 
-    private char[][] grid;
+    private final char[][] grid;
 
-    private Coordinate startCoordinate;
-    private Coordinate endCoordinate;
+    private final Coordinate startCoordinate;
+    private final Coordinate endCoordinate;
 
     private enum Direction {
       NORTH(0, -1),
@@ -86,7 +103,7 @@ public class Solver extends AbstractSolver {
       private final int dx;
       private final int dy;
 
-      private Direction(int dx, int dy) {
+      Direction(int dx, int dy) {
         this.dx = dx;
         this.dy = dy;
       }

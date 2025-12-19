@@ -1,40 +1,50 @@
-package leo.aoc.year2024.day22;
+package me.vainio.aoc.year2024.day22;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-import leo.aoc.AbstractSolver;
+import me.vainio.aoc.cache.AocCache;
 
-public class Solver extends AbstractSolver {
+public class Solver {
+  private static final int YEAR = 2024;
+  private static final int DAY = 22;
 
   private record SecretPriceChange(long secret, long price, long change) {}
 
   public record ChangeSequence(long c1, long c2, long c3, long c4) {}
 
-  private List<Long> numbers = null;
+  private final List<Long> numbers;
 
-  public Solver(String input) {
-    super(input);
+  public static void main(final String[] args) {
+    final AocCache cache = new AocCache();
 
-    this.numbers = input.lines().map(line -> Long.parseLong(line)).collect(Collectors.toList());
+    final String input = cache.getInput(YEAR, DAY);
+    final Solver solver = new Solver(input);
+
+    final String part1 = solver.solvePart1();
+    final String part2 = solver.solvePart2();
+
+    System.out.println(part1);
+    System.out.println(part2);
+
+    cache.saveAnswer(YEAR, DAY, 1, part1);
+    cache.saveAnswer(YEAR, DAY, 2, part2);
   }
 
-  @Override
+  public Solver(final String input) {
+    this.numbers = input.lines().map(Long::parseLong).toList();
+  }
+
   public String solvePart1() {
     Hasher hasher = new Hasher();
-    List<List<SecretPriceChange>> mem = new ArrayList<>();
     long total = 0;
     for (Long secret : numbers) {
       List<SecretPriceChange> secretsPricesChanges = hasher.getSecretsPricesChanges(secret, 2000);
-      mem.add(secretsPricesChanges);
-
-      total += secretsPricesChanges.get(secretsPricesChanges.size() - 1).secret();
+      total += secretsPricesChanges.getLast().secret();
     }
     return Long.toString(total);
   }
 
-  @Override
   public String solvePart2() {
     Hasher hasher = new Hasher();
     List<List<SecretPriceChange>> mem = new ArrayList<>();
@@ -79,7 +89,7 @@ public class Solver extends AbstractSolver {
     return Long.toString(maxSale);
   }
 
-  private class Hasher {
+  private static class Hasher {
     public List<SecretPriceChange> getSecretsPricesChanges(long secret, int n) {
       List<SecretPriceChange> secretsPricesChanges = new ArrayList<>();
       secretsPricesChanges.add(new SecretPriceChange(secret, secret % 10, Long.MIN_VALUE));

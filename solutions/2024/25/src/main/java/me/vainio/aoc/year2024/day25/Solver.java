@@ -1,18 +1,20 @@
-package leo.aoc.year2024.day25;
+package me.vainio.aoc.year2024.day25;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
-import leo.aoc.AbstractSolver;
+import me.vainio.aoc.cache.AocCache;
 
-public class Solver extends AbstractSolver {
+public class Solver {
+  private static final int YEAR = 2024;
+  private static final int DAY = 25;
 
   private record Key(int[] key) {}
 
   private record Lock(int[] lock) {
-    private static int NUM_ROWS = 6;
-    private static int NUM_COLS = 5;
+    private static final int NUM_ROWS = 6;
+    private static final int NUM_COLS = 5;
 
     public boolean fitsKey(Key key) {
       return IntStream.range(0, NUM_COLS)
@@ -21,12 +23,26 @@ public class Solver extends AbstractSolver {
     }
   }
 
-  private List<Key> keys;
-  private List<Lock> locks;
+  private final List<Key> keys;
+  private final List<Lock> locks;
 
-  public Solver(String input) {
-    super(input);
+  public static void main(final String[] args) {
+    final AocCache cache = new AocCache();
 
+    final String input = cache.getInput(YEAR, DAY);
+    final Solver solver = new Solver(input);
+
+    final String part1 = solver.solvePart1();
+    final String part2 = solver.solvePart2();
+
+    System.out.println(part1);
+    System.out.println(part2);
+
+    cache.saveAnswer(YEAR, DAY, 1, part1);
+    cache.saveAnswer(YEAR, DAY, 2, part2);
+  }
+
+  public Solver(final String input) {
     List<Key> keys = new ArrayList<>();
     List<Lock> locks = new ArrayList<>();
     Arrays.stream(input.split("\r?\n\r?\n"))
@@ -41,6 +57,16 @@ public class Solver extends AbstractSolver {
             });
     this.keys = keys;
     this.locks = locks;
+  }
+
+  public String solvePart1() {
+    long count = locks.stream().flatMap(lock -> keys.stream().filter(lock::fitsKey)).count();
+    return Long.toString(count);
+  }
+
+  public String solvePart2() {
+    // No part 2 for day 25
+    return "";
   }
 
   private boolean isLock(String keyOrLock) {
@@ -58,16 +84,5 @@ public class Solver extends AbstractSolver {
       }
     }
     return colCounts;
-  }
-
-  @Override
-  public String solvePart1() {
-    long count = locks.stream().flatMap(lock -> keys.stream().filter(lock::fitsKey)).count();
-    return Long.toString(count);
-  }
-
-  @Override
-  public String solvePart2() {
-    return "Day 25 has no part2";
   }
 }

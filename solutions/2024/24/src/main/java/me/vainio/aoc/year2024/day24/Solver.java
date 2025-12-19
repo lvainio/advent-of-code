@@ -1,18 +1,34 @@
-package leo.aoc.year2024.day24;
+package me.vainio.aoc.year2024.day24;
 
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import leo.aoc.AbstractSolver;
+import me.vainio.aoc.cache.AocCache;
 
-public class Solver extends AbstractSolver {
+public class Solver {
+  private static final int YEAR = 2024;
+  private static final int DAY = 24;
 
-  private Circuit circuit;
+  private final Circuit circuit;
 
-  public Solver(String input) {
-    super(input);
+  public static void main(final String[] args) {
+    final AocCache cache = new AocCache();
 
+    final String input = cache.getInput(YEAR, DAY);
+    final Solver solver = new Solver(input);
+
+    final String part1 = solver.solvePart1();
+    final String part2 = solver.solvePart2();
+
+    System.out.println(part1);
+    System.out.println(part2);
+
+    cache.saveAnswer(YEAR, DAY, 1, part1);
+    cache.saveAnswer(YEAR, DAY, 2, part2);
+  }
+
+  public Solver(final String input) {
     String[] inputsAndGates = input.split("\r?\n\r?\n");
 
     Map<String, Wire> wires =
@@ -76,12 +92,10 @@ public class Solver extends AbstractSolver {
     this.circuit = new Circuit(gates, wires);
   }
 
-  @Override
   public String solvePart1() {
     return Long.toString(this.circuit.computeOutputValue(46));
   }
 
-  @Override
   public String solvePart2() {
     return circuit.getBrokenWires();
   }

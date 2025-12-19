@@ -1,4 +1,4 @@
-package leo.aoc.year2024.day20;
+package me.vainio.aoc.year2024.day20;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,12 +6,14 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import leo.aoc.AbstractSolver;
-import leo.aoc.util.Direction;
+import me.vainio.aoc.cache.AocCache;
+import me.vainio.aoc.util.Direction;
 
-public class Solver extends AbstractSolver {
+public class Solver {
+  private static final int YEAR = 2024;
+  private static final int DAY = 20;
 
-  private enum Cell {
+  public enum Cell {
     WALL,
     EMPTY,
     START,
@@ -40,9 +42,23 @@ public class Solver extends AbstractSolver {
   private Node startPosition = null;
   private Node endPosition = null;
 
-  public Solver(String input) {
-    super(input);
+  public static void main(final String[] args) {
+    final AocCache cache = new AocCache();
 
+    final String input = cache.getInput(YEAR, DAY);
+    final Solver solver = new Solver(input);
+
+    final String part1 = solver.solvePart1();
+    final String part2 = solver.solvePart2();
+
+    System.out.println(part1);
+    System.out.println(part2);
+
+    cache.saveAnswer(YEAR, DAY, 1, part1);
+    cache.saveAnswer(YEAR, DAY, 2, part2);
+  }
+
+  public Solver(final String input) {
     this.grid =
         input
             .lines()
@@ -62,22 +78,20 @@ public class Solver extends AbstractSolver {
     }
   }
 
-  @Override
   public String solvePart1() {
     GridGraph gridGraph = new GridGraph(grid, this.startPosition, this.endPosition);
     return Integer.toString(gridGraph.countSavings(2));
   }
 
-  @Override
   public String solvePart2() {
     GridGraph gridGraph = new GridGraph(grid, this.startPosition, this.endPosition);
     return Integer.toString(gridGraph.countSavings(20));
   }
 
-  public class GridGraph {
-    private Cell[][] grid;
-    private Node startNode;
-    private Node endNode;
+  public static class GridGraph {
+    private final Cell[][] grid;
+    private final Node startNode;
+    private final Node endNode;
 
     public GridGraph(Cell[][] grid, Node startNode, Node endNode) {
       this.grid = grid;

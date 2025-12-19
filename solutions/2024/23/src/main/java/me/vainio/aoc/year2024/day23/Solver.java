@@ -1,22 +1,36 @@
-package leo.aoc.year2024.day23;
+package me.vainio.aoc.year2024.day23;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import leo.aoc.AbstractSolver;
+import me.vainio.aoc.cache.AocCache;
 
-public class Solver extends AbstractSolver {
+public class Solver {
+  private static final int YEAR = 2024;
+  private static final int DAY = 23;
 
-  private HashMap<String, HashSet<String>> network;
+  private final HashMap<String, HashSet<String>> network;
 
-  public Solver(String input) {
-    super(input);
+  public static void main(final String[] args) {
+    final AocCache cache = new AocCache();
 
+    final String input = cache.getInput(YEAR, DAY);
+    final Solver solver = new Solver(input);
+
+    final String part1 = solver.solvePart1();
+    final String part2 = solver.solvePart2();
+
+    System.out.println(part1);
+    System.out.println(part2);
+
+    cache.saveAnswer(YEAR, DAY, 1, part1);
+    cache.saveAnswer(YEAR, DAY, 2, part2);
+  }
+
+  public Solver(final String input) {
     HashMap<String, HashSet<String>> network = new HashMap<>();
     input
         .lines()
@@ -25,13 +39,12 @@ public class Solver extends AbstractSolver {
               String[] edge = line.split("-");
               String n1 = edge[0].trim();
               String n2 = edge[1].trim();
-              network.computeIfAbsent(n1, _ -> new HashSet<>()).add(n2);
-              network.computeIfAbsent(n2, _ -> new HashSet<>()).add(n1);
+              network.computeIfAbsent(n1, k -> new HashSet<>()).add(n2);
+              network.computeIfAbsent(n2, k -> new HashSet<>()).add(n1);
             });
     this.network = network;
   }
 
-  @Override
   public String solvePart1() {
     Set<Set<String>> triples = findFullyConnectedTriples(network);
     int count = 0;
@@ -46,12 +59,11 @@ public class Solver extends AbstractSolver {
     return Integer.toString(count);
   }
 
-  @Override
   public String solvePart2() {
     Set<String> largestClique = findLargestClique(network, 14);
     List<String> lanParty = new ArrayList<>(largestClique);
     Collections.sort(lanParty);
-    return lanParty.stream().collect(Collectors.joining(","));
+    return String.join(",", lanParty);
   }
 
   public static Set<Set<String>> findFullyConnectedTriples(
@@ -95,10 +107,7 @@ public class Solver extends AbstractSolver {
       }
     }
 
-    Iterator<String> iterator = new HashSet<>(P).iterator();
-    while (iterator.hasNext()) {
-      String v = iterator.next();
-
+    for (String v : new HashSet<>(P)) {
       Set<String> newR = new HashSet<>(R);
       newR.add(v);
 
